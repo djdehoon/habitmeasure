@@ -1,0 +1,100 @@
+# HabitMeasure — Cursor Rules v1.0
+
+## PROJECT
+Marketing landing page for HabitMeasure — a habit timer app.
+Tagline: "Kleine gewoontes. Grote verandering. Jij meet het."
+Goal: Capture waitlist emails. No working app features yet.
+Audience: People (28–45) who want to build healthy habits and track progress.
+
+## TECH STACK
+- Next.js 14 (App Router)
+- TypeScript (strict — no `any`)
+- Tailwind CSS
+- Framer Motion (animations)
+- localStorage (email capture only — no backend)
+- Vercel (deployment — auto-deploy on push to main)
+
+## ROUTING
+/ → Marketing landing page (only page for now)
+
+## CODE RULES
+- Read the codebase first — only change what is asked
+- Add "use client" when using: useState, useEffect, onClick, Framer Motion, localStorage, window
+- Use next/image for images, next/link for internal navigation
+- Mobile-first. Every section must work on iPhone.
+- No external images — CSS/SVG/Tailwind only for mockups
+- Animations: smooth, not flashy
+
+## BRANCH & VERSIE
+- Work directly on `main` — no dev branch
+- Push to main → Vercel deploys automatically (~30 sec)
+- Update `package.json` version at every task
+- Versie: Patch (Z) per taak · Minor (Y) per feature-groep · Major (X) bij redesign
+
+## COMMIT FORMAAT
+vX.Y.Z type(scope): Imperatieve beschrijving (Engels, geen punt, ≤50 tekens)
+
+Types: feat ✨ | fix 🐛 | refactor ♻️ | chore 🔧 | style 🎨 | docs 📝 | perf ⚡
+
+Voorbeelden:
+  v1.1.0 feat(mockups): Replace product preview mockups
+  v1.1.1 feat(waitlist): Add Beehiiv email capture
+  v1.1.2 fix(mobile): Fix overflow on small screens
+  v1.0.2 chore: Add cursor rules and fix gitignore
+
+## DESIGN SYSTEM — "Morning Energy"
+Philosophy: Fresh, energetic, positive. Headspace × Linear — warmer and human.
+NOT a dark gym app. YES: sunny morning, fresh air.
+
+Colors:
+  bg-primary:      #0C0F14   deep night blue (NOT pure black)
+  bg-surface:      #141820   cards
+  bg-elevated:     #1C2230   elevated cards
+  color-lime:      #A8FF3E   energy, growth, success
+  color-orange:    #FF8C42   sunrise orange — warmth, human
+  color-teal:      #4ECDC4   fresh, data, dashboard
+  color-purple:    #B794F4   AI insights (subtle)
+  text-primary:    #F0F4FF   warm white
+  text-secondary:  #8892A4   blue-gray
+  text-muted:      #4A5568   subtle
+  border:          rgba(168,255,62,0.08)
+  border-hover:    rgba(168,255,62,0.20)
+
+Typography:
+  Headlines: Plus Jakarta Sans (700, 900)
+  Body:      Inter (400, 500)
+
+Hero background:
+  radial-gradient(ellipse 80% 50% at 20% 40%, rgba(168,255,62,0.06) 0%, transparent 60%),
+  radial-gradient(ellipse 60% 40% at 80% 60%, rgba(255,140,66,0.05) 0%, transparent 60%),
+  #0C0F14
+
+Gradient text:
+  background: linear-gradient(135deg, #A8FF3E 0%, #4ECDC4 50%, #FF8C42 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+Primary button:
+  background: #A8FF3E; color: #0C0F14; font-weight: 700;
+  border-radius: 100px; padding: 14px 32px;
+
+## FORBIDDEN
+- No `pages/` directory — only `app/`
+- No `any` types in TypeScript
+- No hardcoded API keys or secrets
+- No Supabase or backend (v1.x = marketing only)
+- No external images for mockups
+- Never delete code without explicit approval
+
+## WERKWIJZE (always follow)
+1. Read .cursor/rules + scan existing codebase
+2. Show plan first — wait for approval
+3. Execute
+4. End every task with a TESTSCRIPT of max 5 points
+
+## TESTSCRIPT (required at end of every prompt)
+Format:
+  ## TESTSCRIPT
+  1. [Concrete action] → [Expected result]
+  2. ...
+  (max 5 points)

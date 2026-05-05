@@ -25,20 +25,20 @@ export function Problem() {
   return (
     <motion.section
       id="how"
-      className="container-shell section-wrap"
+      className="container-shell section-wrap flex flex-col items-center"
       variants={fadeInUp}
       initial="hidden"
       whileInView="visible"
       viewport={viewportIn}
     >
-      <h2 className="heading-font text-3xl font-black md:text-5xl">
+      <h2 className="heading-font text-center text-3xl font-black md:text-5xl">
         Je weet wat je moet doen.
       </h2>
-      <p className="mt-4 max-w-2xl text-slate-500">
+      <p className="mt-4 max-w-2xl text-center text-slate-500">
         Maar bijhouden of je het ook echt doet? Dat is het probleem.
       </p>
       <motion.div
-        className="mt-10 grid gap-5 md:grid-cols-3"
+        className="mt-10 grid w-full gap-5 md:grid-cols-3"
         variants={staggerContainer}
         initial="hidden"
         whileInView="visible"

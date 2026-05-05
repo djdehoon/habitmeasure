@@ -16,17 +16,17 @@ const steps = [
 export function HowItWorks() {
   return (
     <motion.section
-      className="container-shell section-wrap"
+      className="container-shell section-wrap flex flex-col items-center"
       variants={fadeInUp}
       initial="hidden"
       whileInView="visible"
       viewport={viewportIn}
     >
-      <h2 className="heading-font text-3xl font-black md:text-5xl">
+      <h2 className="heading-font text-center text-3xl font-black md:text-5xl">
         Zo simpel werkt HabitMeasure
       </h2>
       <motion.div
-        className="mt-10 grid gap-5 md:grid-cols-3"
+        className="mt-10 grid w-full gap-5 md:grid-cols-3"
         variants={staggerContainer}
         initial="hidden"
         whileInView="visible"

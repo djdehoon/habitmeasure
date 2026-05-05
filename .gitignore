@@ -40,5 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Cursor debug logs
-.cursor/
+# Cursor logs — wel rules bewaren
+.cursor/*.log
+.cursor/tmp/
+
+# Cursor logs
+.cursor/*.log
