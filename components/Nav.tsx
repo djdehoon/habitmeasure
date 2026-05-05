@@ -36,8 +36,8 @@ export function Nav() {
             Prijzen
           </a>
         </div>
-        <a href="#waitlist" className="btn-primary px-5 py-2 text-sm">
-          Wachtlijst
+        <a href="#waitlist" className="btn-primary shrink-0 px-5 py-2 text-sm">
+          Ik wil early access →
         </a>
       </nav>
     </header>

@@ -49,7 +49,7 @@ export function Pricing() {
             <li>Maandrapport</li>
           </ul>
           <a href="#waitlist" className="btn-primary mt-auto block w-full pt-[60px] text-center">
-            Kom op de wachtlijst
+            Sign up for waiting list
           </a>
         </motion.article>
 

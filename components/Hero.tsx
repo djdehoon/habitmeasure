@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { LocaleBanner } from "@/components/LocaleBanner";
 import { float, glowPulse, viewportIn } from "./motion";
 
 export function Hero() {
@@ -44,6 +45,8 @@ export function Hero() {
         Start een timer. HabitMeasure onthoudt de rest. Zie je groei dag na dag.
       </motion.p>
 
+      <LocaleBanner />
+
       <motion.div
         className="flex w-full flex-col items-center gap-4 sm:flex-row sm:justify-center"
         initial={{ opacity: 0, y: 24 }}
@@ -56,7 +59,7 @@ export function Hero() {
           variants={glowPulse}
           animate="animate"
         >
-          Kom op de wachtlijst →
+          Sign up for waiting list
         </motion.a>
         <a href="#how" className="btn-ghost w-full sm:w-auto">
           Bekijk hoe het werkt
