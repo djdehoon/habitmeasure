@@ -4,11 +4,22 @@ import { FormEvent, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { fadeInUp, viewportIn } from "./motion";
 
-const storageKey = "habitmeasure_waitlist";
+function isWaitlistResponse(
+  value: unknown,
+): value is { success: boolean; message: string } {
+  if (typeof value !== "object" || value === null) return false;
+  if (!("success" in value) || !("message" in value)) return false;
+  return (
+    typeof value.success === "boolean" && typeof value.message === "string"
+  );
+}
 
 export function Waitlist() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   /** Avoid hydrating real <input>: some browser extensions inject attributes (e.g. __gcruniqueid) and break SSR/CSR match. */
   const [mounted, setMounted] = useState(false);
 
@@ -16,14 +27,47 @@ export function Waitlist() {
     setMounted(true);
   }, []);
 
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const trimmed = email.trim();
-    if (!trimmed) return;
-    const current = localStorage.getItem(storageKey);
-    const parsed = current ? (JSON.parse(current) as string[]) : [];
-    localStorage.setItem(storageKey, JSON.stringify([...parsed, trimmed]));
-    setSubmitted(true);
+    if (!trimmed || submitting) return;
+
+    setSubmitting(true);
+    setErrorMessage(null);
+
+    try {
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: trimmed }),
+      });
+
+      let payload: unknown;
+      try {
+        payload = await res.json();
+      } catch {
+        setErrorMessage("Probeer het later opnieuw.");
+        setSubmitting(false);
+        return;
+      }
+
+      if (!isWaitlistResponse(payload)) {
+        setErrorMessage("Probeer het later opnieuw.");
+        setSubmitting(false);
+        return;
+      }
+
+      if (payload.success) {
+        setSuccessMessage(payload.message);
+        setSubmitted(true);
+      } else {
+        setErrorMessage(payload.message);
+      }
+    } catch {
+      setErrorMessage("Probeer het later opnieuw.");
+    }
+
+    setSubmitting(false);
   };
 
   return (
@@ -41,10 +85,8 @@ export function Waitlist() {
           HabitMeasure lanceert binnenkort. Schrijf je in en ontvang early access + korting.
         </p>
 
-        {submitted ? (
-          <p className="mt-8 text-lg text-[#4B5D75]">
-            Bedankt. Je staat op de lijst. We sturen je een bericht bij launch.
-          </p>
+        {submitted && successMessage ? (
+          <p className="mt-8 text-lg text-[#4B5D75]">{successMessage}</p>
         ) : !mounted ? (
           <div
             className="mx-auto mt-8 flex max-w-xl flex-col gap-3 sm:flex-row"
@@ -57,17 +99,32 @@ export function Waitlist() {
             </div>
           </div>
         ) : (
-          <form onSubmit={onSubmit} className="mx-auto mt-8 flex max-w-xl flex-col gap-3 sm:flex-row">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="jouw@email.nl"
-              className="h-12 flex-1 rounded-full border border-slate-300 bg-white/95 px-5 outline-none focus:border-[#8BA2B5]"
-              required
-            />
-            <button type="submit" className="btn-primary h-12 px-7">
-              Ik wil early access →
+          <form
+            onSubmit={onSubmit}
+            className="mx-auto mt-8 flex max-w-xl flex-col gap-3 sm:flex-row"
+          >
+            <div className="flex min-w-0 flex-1 flex-col gap-2">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="jouw@email.nl"
+                disabled={submitting}
+                className="h-12 w-full rounded-full border border-slate-300 bg-white/95 px-5 outline-none focus:border-[#8BA2B5] disabled:opacity-60"
+                required
+              />
+              {errorMessage ? (
+                <p className="text-left text-sm text-red-600" role="alert">
+                  {errorMessage}
+                </p>
+              ) : null}
+            </div>
+            <button
+              type="submit"
+              disabled={submitting}
+              className="btn-primary h-12 shrink-0 px-7 disabled:opacity-60 sm:w-auto"
+            >
+              {submitting ? "Aanmelden..." : "Ik wil early access →"}
             </button>
           </form>
         )}

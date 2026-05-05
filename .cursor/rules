@@ -11,7 +11,7 @@ Audience: People (28–45) who want to build healthy habits and track progress.
 - TypeScript (strict — no `any`)
 - Tailwind CSS
 - Framer Motion (animations)
-- localStorage (email capture only — no backend)
+- Supabase (waitlist: `app/api/waitlist` + anon key only)
 - Vercel (deployment — auto-deploy on push to main)
 
 ## ROUTING
@@ -98,7 +98,7 @@ Primary button:
 - No `pages/` directory — only `app/`
 - No `any` types in TypeScript
 - No hardcoded API keys or secrets
-- No Supabase or backend (v1.x = marketing only)
+- No service_role / server-only Supabase secrets in the app
 - No external images for mockups
 - Never delete code without explicit approval
 
