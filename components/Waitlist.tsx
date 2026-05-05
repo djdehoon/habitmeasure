@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { fadeInUp, viewportIn } from "./motion";
 
@@ -9,6 +9,12 @@ const storageKey = "habitmeasure_waitlist";
 export function Waitlist() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  /** Avoid hydrating real <input>: some browser extensions inject attributes (e.g. __gcruniqueid) and break SSR/CSR match. */
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -39,6 +45,17 @@ export function Waitlist() {
           <p className="mt-8 text-lg text-[#4B5D75]">
             Bedankt. Je staat op de lijst. We sturen je een bericht bij launch.
           </p>
+        ) : !mounted ? (
+          <div
+            className="mx-auto mt-8 flex max-w-xl flex-col gap-3 sm:flex-row"
+            aria-busy="true"
+            aria-label="Wachtlijstformulier wordt geladen"
+          >
+            <div className="h-12 flex-1 rounded-full border border-slate-300 bg-white/95" />
+            <div className="btn-primary flex h-12 shrink-0 items-center justify-center px-7 sm:w-auto">
+              <span className="invisible">Ik wil early access →</span>
+            </div>
+          </div>
         ) : (
           <form onSubmit={onSubmit} className="mx-auto mt-8 flex max-w-xl flex-col gap-3 sm:flex-row">
             <input
