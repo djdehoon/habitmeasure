@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { fadeInUp, staggerContainer, viewportIn } from "./motion";
 
@@ -22,6 +23,45 @@ const pains = [
 ];
 
 export function Problem() {
+  const firstCardRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const logAlignment = () => {
+      const card = firstCardRef.current;
+      if (!card) return;
+      const cardStyle = window.getComputedStyle(card);
+
+      // #region agent log
+      fetch("http://127.0.0.1:7590/ingest/c26c24ef-b105-424a-8eca-912c561200b9", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Debug-Session-Id": "61b61d",
+        },
+        body: JSON.stringify({
+          sessionId: "61b61d",
+          runId: "align-check",
+          hypothesisId: "H-problem-card-align",
+          location: "components/Problem.tsx:first-card",
+          message: "Problem first card computed alignment",
+          data: {
+            viewportWidth: window.innerWidth,
+            cardTextAlign: cardStyle.textAlign,
+          },
+          timestamp: Date.now(),
+        }),
+      }).catch(() => {});
+      // #endregion
+    };
+
+    const raf = requestAnimationFrame(logAlignment);
+    window.addEventListener("resize", logAlignment);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", logAlignment);
+    };
+  }, []);
+
   return (
     <motion.section
       id="how"
@@ -44,8 +84,13 @@ export function Problem() {
         whileInView="visible"
         viewport={viewportIn}
       >
-        {pains.map((pain) => (
-          <motion.article key={pain.title} className="card-shell p-6" variants={fadeInUp}>
+        {pains.map((pain, index) => (
+          <motion.article
+            ref={index === 0 ? firstCardRef : undefined}
+            key={pain.title}
+            className="card-shell p-6 text-center"
+            variants={fadeInUp}
+          >
             <p className="text-2xl">{pain.icon}</p>
             <h3 className="mt-4 heading-font text-xl font-bold">{pain.title}</h3>
             <p className="mt-3 text-sm leading-relaxed text-slate-500">{pain.text}</p>

@@ -38,18 +38,39 @@ export function Stats() {
 
   const waitlist = useCountUp(312, active);
   const days = useCountUp(21, active);
-  const euros = useCountUp(249, active);
+  const euros = useCountUp(200, active);
+
+  useEffect(() => {
+    // #region agent log
+    fetch("http://127.0.0.1:7590/ingest/c26c24ef-b105-424a-8eca-912c561200b9", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Debug-Session-Id": "61b61d",
+      },
+      body: JSON.stringify({
+        sessionId: "61b61d",
+        runId: "price-debug",
+        hypothesisId: "H-price-200",
+        location: "components/Stats.tsx:41",
+        message: "Stats euro target (cents) configured",
+        data: { euroTargetCents: 200 },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion
+  }, []);
 
   return (
     <motion.section
       ref={ref}
-      className="container-shell section-wrap"
+      className="container-shell section-wrap flex flex-col items-center text-center"
       variants={fadeInUp}
       initial="hidden"
       whileInView="visible"
       viewport={viewportIn}
     >
-      <div className="grid gap-5 md:grid-cols-3">
+      <div className="mt-2 grid w-full max-w-3xl gap-5 md:grid-cols-3">
         <div className="card-shell p-6">
           <div className="heading-font text-4xl font-black text-[#6D8294]">{waitlist}+</div>
           <p className="mt-2 text-sm text-slate-500">Mensen op de wachtlijst</p>

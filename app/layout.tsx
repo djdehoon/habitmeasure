@@ -45,11 +45,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="nl" className={`${plusJakartaSans.variable} ${inter.variable}`}>
+    <html lang="nl" suppressHydrationWarning className={`${plusJakartaSans.variable} ${inter.variable}`}>
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
       </head>
-      <body className="min-h-full flex flex-col antialiased">
+      <body suppressHydrationWarning className="min-h-full flex flex-col antialiased">
         {children}
         <Analytics />
       </body>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { fadeInUp, staggerContainer, viewportIn } from "./motion";
 
@@ -14,6 +15,45 @@ const steps = [
 ];
 
 export function HowItWorks() {
+  const firstCardRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const logAlignment = () => {
+      const card = firstCardRef.current;
+      if (!card) return;
+      const cardStyle = window.getComputedStyle(card);
+
+      // #region agent log
+      fetch("http://127.0.0.1:7590/ingest/c26c24ef-b105-424a-8eca-912c561200b9", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Debug-Session-Id": "61b61d",
+        },
+        body: JSON.stringify({
+          sessionId: "61b61d",
+          runId: "align-check",
+          hypothesisId: "H-howitworks-card-align",
+          location: "components/HowItWorks.tsx:first-card",
+          message: "HowItWorks first card computed alignment",
+          data: {
+            viewportWidth: window.innerWidth,
+            cardTextAlign: cardStyle.textAlign,
+          },
+          timestamp: Date.now(),
+        }),
+      }).catch(() => {});
+      // #endregion
+    };
+
+    const raf = requestAnimationFrame(logAlignment);
+    window.addEventListener("resize", logAlignment);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", logAlignment);
+    };
+  }, []);
+
   return (
     <motion.section
       className="container-shell section-wrap flex flex-col items-center"
@@ -32,8 +72,13 @@ export function HowItWorks() {
         whileInView="visible"
         viewport={viewportIn}
       >
-        {steps.map(([num, title, text]) => (
-          <motion.article key={num} className="card-shell p-6" variants={fadeInUp}>
+        {steps.map(([num, title, text], index) => (
+          <motion.article
+            ref={index === 0 ? firstCardRef : undefined}
+            key={num}
+            className="card-shell p-6 text-center"
+            variants={fadeInUp}
+          >
             <div className="heading-font text-4xl font-black text-[#6D8294]">{num}</div>
             <h3 className="mt-4 heading-font text-xl font-bold">{title}</h3>
             <p className="mt-3 text-sm text-slate-500">{text}</p>

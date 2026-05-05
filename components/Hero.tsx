@@ -7,7 +7,7 @@ export function Hero() {
   return (
     <section className="container-shell flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center gap-9 py-16 text-center">
       <motion.span
-        className="badge-pill"
+        className="badge-pill w-full text-center whitespace-nowrap"
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -45,20 +45,20 @@ export function Hero() {
       </motion.p>
 
       <motion.div
-        className="flex flex-col items-center gap-4 sm:flex-row"
+        className="flex w-full flex-col items-center gap-4 sm:flex-row sm:justify-center"
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
         <motion.a
           href="#waitlist"
-          className="btn-primary"
+          className="btn-primary w-full sm:w-auto"
           variants={glowPulse}
           animate="animate"
         >
           Kom op de wachtlijst →
         </motion.a>
-        <a href="#how" className="btn-ghost">
+        <a href="#how" className="btn-ghost w-full sm:w-auto">
           Bekijk hoe het werkt
         </a>
       </motion.div>

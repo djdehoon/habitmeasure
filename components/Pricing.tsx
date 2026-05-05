@@ -5,7 +5,7 @@ import { fadeInUp, staggerContainer, viewportIn } from "./motion";
 
 export function Pricing() {
   return (
-    <section id="prijzen" className="container-shell section-wrap">
+    <section id="prijzen" className="container-shell section-wrap flex flex-col items-center text-center">
       <motion.h2
         className="heading-font text-3xl font-black md:text-5xl"
         variants={fadeInUp}
@@ -17,7 +17,7 @@ export function Pricing() {
       </motion.h2>
 
       <motion.div
-        className="mt-10 grid gap-5 md:grid-cols-3"
+        className="mt-10 grid w-full max-w-5xl gap-5 md:grid-cols-3"
         variants={staggerContainer}
         initial="hidden"
         whileInView="visible"

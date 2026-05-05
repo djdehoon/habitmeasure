@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { fadeInUp, viewportIn } from "./motion";
 
@@ -41,6 +42,55 @@ const tickData = Array.from({ length: tickCount }).map((_, i) => {
 });
 
 export function PreviewShowcase() {
+  const timerBlockRef = useRef<HTMLDivElement>(null);
+  const pauseButtonRef = useRef<HTMLButtonElement>(null);
+  const timerPhoneRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const logSpacing = () => {
+      const timerRect = timerBlockRef.current?.getBoundingClientRect();
+      const buttonRect = pauseButtonRef.current?.getBoundingClientRect();
+      const phoneRect = timerPhoneRef.current?.getBoundingClientRect();
+      if (!timerRect || !buttonRect || !phoneRect) return;
+
+      const verticalGap = Number((buttonRect.top - timerRect.bottom).toFixed(2));
+      const timerToPhoneTop = Number((timerRect.top - phoneRect.top).toFixed(2));
+
+      // #region agent log
+      fetch("http://127.0.0.1:7590/ingest/c26c24ef-b105-424a-8eca-912c561200b9", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Debug-Session-Id": "61b61d",
+        },
+        body: JSON.stringify({
+          sessionId: "61b61d",
+          runId: "timer-spacing",
+          hypothesisId: "H-timer-gap",
+          location: "components/PreviewShowcase.tsx:timer-layout",
+          message: "Timer and pause button spacing snapshot",
+          data: {
+            viewportWidth: window.innerWidth,
+            isMobile: window.innerWidth < 768,
+            verticalGap,
+            timerToPhoneTop,
+            timerTextClass: "text-[44px]",
+            pauseButtonMarginTopClass: "mt-5",
+          },
+          timestamp: Date.now(),
+        }),
+      }).catch(() => {});
+      // #endregion
+    };
+
+    const raf = requestAnimationFrame(logSpacing);
+    window.addEventListener("resize", logSpacing);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", logSpacing);
+    };
+  }, []);
+
   return (
     <section className="container-shell section-wrap flex flex-col items-center">
       <motion.div
@@ -57,12 +107,13 @@ export function PreviewShowcase() {
         </p>
       </motion.div>
 
-      <div className="relative mt-10 flex w-full justify-center">
+      <div className="relative mt-10 flex w-full justify-center overflow-hidden">
         <div className="pointer-events-none absolute inset-0 m-auto h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(111,168,232,0.11)_0%,transparent_70%)]" />
 
-        <div className="relative z-10 mx-auto flex w-fit items-end justify-center gap-4 md:gap-3">
+        <div className="relative z-10 mx-auto flex w-full max-w-[280px] flex-col items-center justify-center gap-4 md:max-w-none md:flex-row md:items-end md:gap-3">
           <motion.figure
-            className="preview-phone rotate-0 md:-rotate-4"
+            ref={timerPhoneRef}
+            className="preview-phone preview-phone-premium mx-auto w-full max-w-[280px] rotate-0 md:mx-0 md:w-auto md:max-w-none md:-rotate-4"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={viewportIn}
@@ -75,7 +126,7 @@ export function PreviewShowcase() {
                 Morning Run 🏃
               </span>
 
-              <div className="mx-auto flex flex-col items-center">
+              <div ref={timerBlockRef} className="mx-auto flex flex-col items-center -translate-y-5">
                 <svg width="190" height="190" viewBox="0 0 190 190" className="overflow-visible">
                   {tickData.map(({ i, x1, y1, x2, y2, color }) => {
                     return (
@@ -114,21 +165,24 @@ export function PreviewShowcase() {
                   />
                 </svg>
                 <div className="-mt-32 w-full text-center">
-                  <p className="heading-font text-[52px] leading-none font-bold tracking-tight text-white/90">
+                  <p className="heading-font text-[44px] leading-none font-bold tracking-tight text-white/90">
                     18:32
                   </p>
                   <p className="mt-1 text-xs tracking-wide text-[#8892A4]">bezig...</p>
                 </div>
               </div>
 
-              <button className="rounded-full bg-[#4F8FD8] px-5 py-2.5 text-sm font-bold text-[#F7FBFF]">
+              <button
+                ref={pauseButtonRef}
+                className="mt-6 rounded-full bg-[#4F8FD8] px-5 py-2.5 text-sm font-bold text-[#F7FBFF]"
+              >
                 Pauzeer
               </button>
             </div>
           </motion.figure>
 
           <motion.figure
-            className="preview-phone hidden rotate-0 md:block md:rotate-4"
+            className="preview-phone preview-phone-premium mx-auto w-full max-w-[280px] rotate-0 md:mx-0 md:w-auto md:max-w-none md:rotate-4"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={viewportIn}

@@ -55,7 +55,7 @@ export function Waitlist() {
           </form>
         )}
 
-        <p className="mt-6 text-sm text-slate-500">Je bent nummer #313 op de wachtlijst</p>
+        <p className="mt-6 text-sm text-slate-500">Je bent nummer #200 op de wachtlijst</p>
       </div>
     </motion.section>
   );
