@@ -31,6 +31,23 @@ Audience: People (28–45) who want to build healthy habits and track progress.
 - Update `package.json` version at every task
 - Versie: Patch (Z) per taak · Minor (Y) per feature-groep · Major (X) bij redesign
 
+## VERSION MANAGEMENT (required at every task)
+
+At the end of EVERY task, always update BOTH:
+
+1. `package.json` → Change `"version"` to the new version number
+2. `lib/version.ts` → Change `APP_VERSION` to match
+
+These must ALWAYS be in sync. Never update one without the other.
+
+File: `lib/version.ts`
+```typescript
+export const APP_VERSION = 'X.Y.Z'
+```
+
+The footer reads from APP_VERSION. If you don't update lib/version.ts,
+the version shown on the website will NOT change.
+
 ## COMMIT FORMAAT
 vX.Y.Z type(scope): Imperatieve beschrijving (Engels, geen punt, ≤50 tekens)
 

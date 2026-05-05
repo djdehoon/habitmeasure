@@ -20,7 +20,7 @@ export function Footer() {
             Contact
           </a>
         </div>
-        <span className="pointer-events-none absolute right-0 bottom-0 select-none text-xs text-black/20 tabular-nums">
+        <span className="pointer-events-none absolute right-0 bottom-0 select-none text-xs text-black tabular-nums">
           v{APP_VERSION}
         </span>
       </div>
