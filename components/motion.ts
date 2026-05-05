@@ -30,4 +30,6 @@ export const glowPulse = {
   },
 };
 
-export const viewportIn = { once: true, margin: "-80px" } as const;
+export const viewportIn = { once: true, amount: 0 } as const;
+
+
