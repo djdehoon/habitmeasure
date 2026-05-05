@@ -43,26 +43,25 @@ Voorbeelden:
   v1.0.2 chore: Add cursor rules and fix gitignore
 
 ## DESIGN SYSTEM — "Morning Energy"
-Philosophy: Fresh, energetic, positive. Headspace × Linear — warmer and human.
-NOT a dark gym app. YES: sunny morning, fresh air.
+Philosophy: Fresh, light, energetic, positive. Clean and minimal.
+Scandinavian minimalist. White/light grey as base.
+NOT dark. NOT a gym app. YES: sunny morning, fresh air.
 
 Colors:
-  bg-primary:      #0C0F14   deep night blue (NOT pure black)
-  bg-surface:      #141820   cards
-  bg-elevated:     #1C2230   elevated cards
-  color-lime:      #A8FF3E   energy, growth, success
-  color-orange:    #FF8C42   sunrise orange — warmth, human
-  color-teal:      #4ECDC4   fresh, data, dashboard
-  color-purple:    #B794F4   AI insights (subtle)
-  text-primary:    #F0F4FF   warm white
-  text-secondary:  #8892A4   blue-gray
-  text-muted:      #4A5568   subtle
-  border:          rgba(168,255,62,0.08)
-  border-hover:    rgba(168,255,62,0.20)
+  bg-primary:      #FFFFFF    white — main background
+  bg-surface:      #F5F7FA    light grey — cards / sections
+  bg-elevated:     #ECEEF2    elevated cards
+  color-teal:      #00E5C0    mint/teal — primary accent (energy, growth)
+  color-teal-dark: #0C3D3A    dark teal — gradient depth
+  text-primary:    #1A1A2E    dark text on light background
+  text-secondary:  #6B7280    subtle text
+  text-muted:      #9CA3AF    placeholder / muted
+  border:          rgba(0,0,0,0.08)
 
 Typography:
   Headlines: Plus Jakarta Sans (700, 900)
   Body:      Inter (400, 500)
+
 
 Hero background:
   radial-gradient(ellipse 80% 50% at 20% 40%, rgba(168,255,62,0.06) 0%, transparent 60%),
@@ -98,3 +97,33 @@ Format:
   1. [Concrete action] → [Expected result]
   2. ...
   (max 5 points)
+
+## WORKFLOW (always follow — every session)
+
+1. Pull first
+   git pull origin main
+
+2. Snapshot (only if uncommitted work exists)
+   git add .
+   git commit -m "vX.Y.Z chore: Snapshot before [taskname]"
+   git push origin main
+
+3. Cursor builds (Plan Mode → review → Accept All)
+
+4. Test locally
+   npm run dev → open localhost:3000
+
+5. Commit + push
+   git add .
+   git commit -m "vX.Y.Z type(scope): Description"
+   git push origin main
+   Write-Host "✅ vX.Y.Z live!" -ForegroundColor Green
+
+## BRANCH RULE — CRITICAL
+- ALWAYS work on `main` — never create a dev branch
+- If you find yourself on a branch other than main, run:
+  git checkout main
+  git merge [branchname]
+  git push origin main
+- Do NOT create branches named: dev, feature/*, fix/*
+- HabitMeasure is a solo project — no branch workflow needed
