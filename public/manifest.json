@@ -1,0 +1,13 @@
+{
+  "name": "HabitMeasure",
+  "short_name": "HabitMeasure",
+  "description": "Kleine gewoontes. Grote verandering. Jij meet het.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0C0F14",
+  "theme_color": "#A8FF3E",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

@@ -1,26 +1,182 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-primary: #fbfbfd;
+  --bg-surface: #ffffff;
+  --bg-elevated: #f3f6fa;
+  --color-primary: #8fb5a8;
+  --color-secondary: #a7bfd2;
+  --color-accent: #9cb6c9;
+  --color-ai: #b8bfd8;
+  --text-primary: #1d1d1f;
+  --text-secondary: #4b5563;
+  --text-muted: #8b95a5;
+  --border: rgba(15, 23, 42, 0.08);
+  --border-hover: rgba(15, 23, 42, 0.16);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-plus-jakarta-sans);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-inter), sans-serif;
+  min-height: 100vh;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.container-shell {
+  width: min(1080px, calc(100% - 2rem));
+  margin-inline: auto;
+}
+
+.section-wrap {
+  padding: 6rem 0;
+}
+
+.heading-font {
+  font-family: var(--font-plus-jakarta-sans), sans-serif;
+}
+
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: rgba(255, 255, 255, 0.85);
+  color: #4b5563;
+  font-size: 12px;
+  padding: 6px 12px;
+}
+
+.card-shell {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.card-shell:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-1px);
+  box-shadow:
+    0 8px 24px rgba(100, 116, 139, 0.1),
+    0 1px 1px rgba(100, 116, 139, 0.05);
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #1f3340;
+  font-weight: 700;
+  border-radius: 12px;
+  padding: 12px 22px;
+  transition: all 0.25s ease;
+}
+
+.btn-primary:hover {
+  background: #98b8ac;
+  transform: none;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+}
+
+.btn-ghost {
+  border: 1px solid rgba(31, 41, 55, 0.14);
+  border-radius: 12px;
+  padding: 12px 20px;
+  color: var(--text-primary);
+  transition: all 0.25s ease;
+}
+
+.btn-ghost:hover {
+  border-color: rgba(31, 41, 55, 0.25);
+  background: rgba(31, 41, 55, 0.04);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #4b5563 0%, #6b7280 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.phone-frame {
+  position: relative;
+  width: 240px;
+  height: 480px;
+  border-radius: 34px;
+  background: var(--bg-primary);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+  overflow: hidden;
+}
+
+.phone-frame::before {
+  content: "";
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.35);
+}
+
+.timer-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.timer-circle {
+  width: 84px;
+  height: 84px;
+  border-radius: 999px;
+  background: rgba(243, 246, 250, 0.95);
+  border: 3px solid currentColor;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-size: 11px;
+}
+
+.heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.35rem;
+}
+
+.heat-cell {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+}
+
+.heat-0 {
+  background: rgba(139, 162, 181, 0.08);
+}
+.heat-1 {
+  background: rgba(139, 162, 181, 0.2);
+}
+.heat-2 {
+  background: rgba(139, 162, 181, 0.35);
+}
+.heat-3 {
+  background: rgba(139, 162, 181, 0.5);
+}
+.heat-4 {
+  background: rgba(139, 162, 181, 0.68);
+}
+
+@media (max-width: 768px) {
+  .section-wrap {
+    padding: 4rem 0;
+  }
 }
