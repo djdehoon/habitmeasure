@@ -44,5 +44,6 @@ next-env.d.ts
 .cursor/*.log
 .cursor/tmp/
 
-# Cursor logs
+## Cursor logs
 .cursor/*.log
+.cursor/tmp/
