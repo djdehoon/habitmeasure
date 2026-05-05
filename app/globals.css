@@ -264,5 +264,6 @@ html {
   .preview-phone {
     width: 100%;
     max-width: 280px;
+    height: 392px;
   }
 }

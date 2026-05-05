@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { fadeInUp, viewportIn } from "./motion";
 
@@ -42,55 +41,6 @@ const tickData = Array.from({ length: tickCount }).map((_, i) => {
 });
 
 export function PreviewShowcase() {
-  const timerBlockRef = useRef<HTMLDivElement>(null);
-  const pauseButtonRef = useRef<HTMLButtonElement>(null);
-  const timerPhoneRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const logSpacing = () => {
-      const timerRect = timerBlockRef.current?.getBoundingClientRect();
-      const buttonRect = pauseButtonRef.current?.getBoundingClientRect();
-      const phoneRect = timerPhoneRef.current?.getBoundingClientRect();
-      if (!timerRect || !buttonRect || !phoneRect) return;
-
-      const verticalGap = Number((buttonRect.top - timerRect.bottom).toFixed(2));
-      const timerToPhoneTop = Number((timerRect.top - phoneRect.top).toFixed(2));
-
-      // #region agent log
-      fetch("http://127.0.0.1:7590/ingest/c26c24ef-b105-424a-8eca-912c561200b9", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Debug-Session-Id": "61b61d",
-        },
-        body: JSON.stringify({
-          sessionId: "61b61d",
-          runId: "timer-spacing",
-          hypothesisId: "H-timer-gap",
-          location: "components/PreviewShowcase.tsx:timer-layout",
-          message: "Timer and pause button spacing snapshot",
-          data: {
-            viewportWidth: window.innerWidth,
-            isMobile: window.innerWidth < 768,
-            verticalGap,
-            timerToPhoneTop,
-            timerTextClass: "text-[44px]",
-            pauseButtonMarginTopClass: "mt-5",
-          },
-          timestamp: Date.now(),
-        }),
-      }).catch(() => {});
-      // #endregion
-    };
-
-    const raf = requestAnimationFrame(logSpacing);
-    window.addEventListener("resize", logSpacing);
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", logSpacing);
-    };
-  }, []);
-
   return (
     <section className="container-shell section-wrap flex flex-col items-center">
       <motion.div
@@ -112,7 +62,6 @@ export function PreviewShowcase() {
 
         <div className="relative z-10 mx-auto flex w-full max-w-[280px] flex-col items-center justify-center gap-4 md:max-w-none md:flex-row md:items-end md:gap-3">
           <motion.figure
-            ref={timerPhoneRef}
             className="preview-phone preview-phone-premium mx-auto w-full max-w-[280px] rotate-0 md:mx-0 md:w-auto md:max-w-none md:-rotate-4"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -126,7 +75,7 @@ export function PreviewShowcase() {
                 Morning Run 🏃
               </span>
 
-              <div ref={timerBlockRef} className="mx-auto flex flex-col items-center -translate-y-5">
+              <div className="mx-auto flex flex-col items-center -translate-y-5">
                 <svg width="190" height="190" viewBox="0 0 190 190" className="overflow-visible">
                   {tickData.map(({ i, x1, y1, x2, y2, color }) => {
                     return (
@@ -173,7 +122,6 @@ export function PreviewShowcase() {
               </div>
 
               <button
-                ref={pauseButtonRef}
                 className="mt-6 rounded-full bg-[#4F8FD8] px-5 py-2.5 text-sm font-bold text-[#F7FBFF]"
               >
                 Pauzeer
@@ -190,7 +138,7 @@ export function PreviewShowcase() {
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
           >
             <div className="preview-phone-notch" />
-            <div className="pt-5">
+            <div className="-translate-y-1 pt-4">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-semibold text-white">Deze week 🔥</p>
                 <span className="rounded-full border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-medium text-white/90">

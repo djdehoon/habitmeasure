@@ -20,12 +20,31 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "HabitMeasure — Kleine gewoontes. Grote verandering.",
-  description:
-    "HabitMeasure combineert slimme timers met automatische habit tracking en AI-inzichten. Bouw gezonde gewoontes en meet je groei dag na dag.",
+  description: "Start een timer. HabitMeasure logt de rest.",
+  icons: {
+    icon: "/images/icons/favicon.png",
+    apple: "/images/icons/apple-touch-icon.png",
+  },
   openGraph: {
-    title: "HabitMeasure",
-    description: "Kleine gewoontes. Grote verandering. Jij meet het.",
+    title: "HabitMeasure — Kleine gewoontes. Grote verandering.",
+    description: "Start een timer. HabitMeasure logt de rest.",
+    url: "https://habitmeasure.com",
+    siteName: "HabitMeasure",
+    images: [
+      {
+        url: "/images/icons/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "HabitMeasure",
+      },
+    ],
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "HabitMeasure",
+    description: "Start een timer. HabitMeasure logt de rest.",
+    images: ["/images/icons/og-image.png"],
   },
   manifest: "/manifest.json",
   appleWebApp: {
@@ -48,6 +67,8 @@ export default function RootLayout({
     <html lang="nl" suppressHydrationWarning className={`${plusJakartaSans.variable} ${inter.variable}`}>
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="format-detection" content="telephone=no,email=no,address=no,date=no,url=no" />
+        <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png" />
       </head>
       <body suppressHydrationWarning className="min-h-full flex flex-col antialiased">
         {children}

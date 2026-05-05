@@ -23,7 +23,7 @@ export function Pricing() {
         whileInView="visible"
         viewport={viewportIn}
       >
-        <motion.article className="card-shell p-6" variants={fadeInUp}>
+        <motion.article className="card-shell flex flex-col p-6" variants={fadeInUp}>
           <h3 className="heading-font text-xl font-bold">FREE</h3>
           <p className="mt-2 text-3xl font-black">€0/mnd</p>
           <ul className="mt-4 space-y-2 text-sm text-slate-500">
@@ -31,10 +31,10 @@ export function Pricing() {
             <li>7 dagen history</li>
             <li>Vandaag-overzicht</li>
           </ul>
-          <button className="btn-ghost mt-6 w-full">Gratis blijven</button>
+          <button className="btn-ghost mt-auto pt-5 w-full">Gratis blijven</button>
         </motion.article>
 
-        <motion.article className="card-shell relative bg-[#F8FAFC] p-6" variants={fadeInUp}>
+        <motion.article className="card-shell relative flex flex-col bg-[#F8FAFC] p-6" variants={fadeInUp}>
           <span className="badge-pill absolute right-5 top-5">Meest populair</span>
           <h3 className="heading-font text-xl font-bold">PRO</h3>
           <p className="mt-2 text-3xl font-black">€2,00/mnd</p>
@@ -45,12 +45,12 @@ export function Pricing() {
             <li>Slimme reminders</li>
             <li>Maandrapport</li>
           </ul>
-          <a href="#waitlist" className="btn-primary mt-6 block w-full text-center">
+          <a href="#waitlist" className="btn-primary mt-auto pt-5 block w-full text-center">
             Kom op de wachtlijst
           </a>
         </motion.article>
 
-        <motion.article className="card-shell p-6" variants={fadeInUp}>
+        <motion.article className="card-shell flex flex-col p-6" variants={fadeInUp}>
           <h3 className="heading-font text-xl font-bold">LIFETIME</h3>
           <p className="mt-2 text-3xl font-black">€20,00 eenmalig</p>
           <ul className="mt-4 space-y-2 text-sm text-slate-500">
@@ -58,7 +58,7 @@ export function Pricing() {
             <li>Voor altijd</li>
             <li>Early bird prijs</li>
           </ul>
-          <button className="btn-ghost mt-6 w-full">Early bird deal</button>
+          <button className="btn-ghost mt-auto pt-5 w-full">Early bird deal</button>
         </motion.article>
       </motion.div>
     </section>

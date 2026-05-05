@@ -7,7 +7,7 @@ export function Hero() {
   return (
     <section className="container-shell flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center gap-9 py-16 text-center">
       <motion.span
-        className="badge-pill w-full text-center whitespace-nowrap"
+        className="badge-pill mx-auto inline-flex max-w-[28rem] justify-center px-4 text-center whitespace-normal"
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -80,7 +80,7 @@ export function Hero() {
             ["#7E9AAF", "Routine", "12d"],
             ["#90A8BA", "Meditatie", "7d"],
             ["#7FA89D", "Wandeling", "4d"],
-            ["#A2A9C1", "Water", "9d"],
+            ["#A2A9C1", "Workout", "9d"],
           ].map(([color, label, streak]) => (
             <div key={label} className="timer-circle" style={{ color }}>
               <span>{label}</span>

@@ -64,7 +64,7 @@ export function PhoneMockups() {
               ["#7E9AAF", "Routine", "12 d"],
               ["#90A8BA", "Meditatie", "7 d"],
               ["#7FA89D", "Wandeling", "4 d"],
-              ["#A2A9C1", "Water", "9 d"],
+              ["#A2A9C1", "Workout", "9 d"],
             ].map(([color, label, streak]) => (
               <div key={label} className="timer-circle" style={{ color }}>
                 <span>{label}</span>
