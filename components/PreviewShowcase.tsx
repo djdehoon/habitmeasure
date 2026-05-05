@@ -111,13 +111,16 @@ export function PreviewShowcase() {
       <div className="mt-10 grid gap-5 lg:grid-cols-2">
         <motion.figure
           ref={timerCardRef}
-          className="card-shell p-4 md:p-5"
+          className="card-shell flex flex-col p-4 md:p-5"
           variants={fadeInUp}
           initial="hidden"
           whileInView="visible"
           viewport={viewportIn}
         >
-          <div ref={timerInnerRef} className="relative overflow-hidden rounded-2xl bg-[#0B0D12] p-4">
+          <div
+            ref={timerInnerRef}
+            className="relative flex-1 overflow-hidden rounded-2xl bg-[#0B0D12] p-4"
+          >
             <Image
               src="/preview-timer.png"
               alt="HabitMeasure timer preview"
@@ -132,9 +135,9 @@ export function PreviewShowcase() {
           </figcaption>
         </motion.figure>
 
-        <motion.article
+        <motion.figure
           ref={dashboardCardRef}
-          className="card-shell p-4 md:p-5"
+          className="card-shell flex flex-col p-4 md:p-5"
           variants={fadeInUp}
           initial="hidden"
           whileInView="visible"
@@ -142,7 +145,7 @@ export function PreviewShowcase() {
         >
           <div
             ref={dashboardInnerRef}
-            className="relative overflow-hidden rounded-2xl bg-[#0B0D12] p-4 text-white"
+            className="relative flex-1 overflow-hidden rounded-2xl bg-[#0B0D12] p-4 text-white"
           >
             <div className="flex items-center justify-between">
               <h3 className="heading-font flex items-center gap-2 text-xl font-black">
@@ -212,7 +215,10 @@ export function PreviewShowcase() {
               Je bent het meest consistent op maandag, woensdag en donderdag.
             </div>
           </div>
-        </motion.article>
+          <figcaption className="mt-4 text-center text-xs tracking-wide text-slate-400">
+            Dashboard preview
+          </figcaption>
+        </motion.figure>
       </div>
 
       <motion.article
