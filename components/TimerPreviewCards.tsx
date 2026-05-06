@@ -83,21 +83,21 @@ export function TimerPreviewCards() {
               onClick={() => setSelectedIndex(index)}
               whileTap={{ scale: 0.99 }}
               variants={fadeInUp}
-              className={`flex w-full flex-col items-center rounded-2xl bg-[#141820] p-5 text-center transition-[border-color] duration-200 ${
+              className={`flex w-full flex-col items-center rounded-xl border-2 bg-[#F5F7FA] px-6 py-5 text-center transition-[border-color,box-shadow] duration-200 hover:border-[#00B89A] hover:shadow-md ${
                 selected
-                  ? "border-2 border-[#00E5C0]"
-                  : "border-2 border-[rgba(168,255,62,0.08)]"
+                  ? "border-[#00B89A] shadow-md"
+                  : "border-[#00E5C0] shadow-sm"
               }`}
             >
               <span className="text-4xl" aria-hidden>
                 {timer.icon}
               </span>
-              <span className="mt-3 text-lg font-bold text-white">{timer.title}</span>
-              <span className="mt-2 rounded-full bg-white/10 px-2.5 py-1 text-xs font-medium text-slate-200">
+              <span className="mt-3 text-lg font-bold text-[#0C0F14]">{timer.title}</span>
+              <span className="mt-2 rounded-full bg-[#E8EAEF] px-3 py-1 text-sm font-medium text-[#6B7280]">
                 {timer.duration}
               </span>
-              <span className="mt-3 text-sm text-slate-400">{timer.description}</span>
-              <span className="mt-4 inline-flex items-center justify-center rounded-xl border border-[#A8FF3E] px-4 py-2 text-sm font-semibold text-[#A8FF3E]">
+              <span className="mt-3 text-sm text-[#6B7280]">{timer.description}</span>
+              <span className="mt-4 inline-flex items-center justify-center rounded-lg border-2 border-[#A8FF3E] bg-transparent px-4 py-2 text-sm font-semibold text-[#A8FF3E] hover:bg-[#A8FF3E]/10">
                 Try it →
               </span>
             </motion.button>
