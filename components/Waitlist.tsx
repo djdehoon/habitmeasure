@@ -24,8 +24,8 @@ export function Waitlist() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const id = requestAnimationFrame(() => setMounted(true));
-    return () => cancelAnimationFrame(id);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional client-only gate after SSR
+    setMounted(true);
   }, []);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
