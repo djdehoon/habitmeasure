@@ -8,6 +8,7 @@ import { Pricing } from "@/components/Pricing";
 import { PreviewShowcase } from "@/components/PreviewShowcase";
 import { Problem } from "@/components/Problem";
 import { Stats } from "@/components/Stats";
+import { TimerPreviewCards } from "@/components/TimerPreviewCards";
 import { Waitlist } from "@/components/Waitlist";
 
 export default function Home() {
@@ -20,6 +21,7 @@ export default function Home() {
         <HowItWorks />
         <PreviewShowcase />
         <Features />
+        <TimerPreviewCards />
         <PhoneMockups />
         <Stats />
         <Pricing />

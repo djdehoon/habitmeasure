@@ -1,0 +1,109 @@
+"use client";
+
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { fadeInUp, staggerContainer, viewportIn } from "./motion";
+
+const TIMERS = [
+  {
+    icon: "⏱️",
+    title: "Focus Timer",
+    duration: "25 min",
+    description: "Pomodoro — deep work without distractions",
+  },
+  {
+    icon: "🌅",
+    title: "Morning Routine",
+    duration: "30 min",
+    description: "Start your day with intention",
+  },
+  {
+    icon: "🌙",
+    title: "Wind-down",
+    duration: "30 min",
+    description: "Unwind and prepare for sleep",
+  },
+  {
+    icon: "🏃",
+    title: "Workout",
+    duration: "45 min",
+    description: "Sport & energy",
+  },
+  {
+    icon: "🧘",
+    title: "Mindfulness",
+    duration: "10 min",
+    description: "Stress relief & focus",
+  },
+  {
+    icon: "📖",
+    title: "Reading",
+    duration: "20 min",
+    description: "Learn & rest",
+  },
+] as const;
+
+export function TimerPreviewCards() {
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  return (
+    <section className="container-shell section-wrap">
+      <motion.h2
+        className="heading-font text-center text-3xl font-black md:text-5xl"
+        variants={fadeInUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportIn}
+      >
+        Pick your first habit timer
+      </motion.h2>
+      <motion.p
+        className="mt-4 text-center text-slate-500"
+        variants={fadeInUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportIn}
+      >
+        Tap a timer to see what fits your routine.
+      </motion.p>
+
+      <motion.div
+        className="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-3"
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportIn}
+      >
+        {TIMERS.map((timer, index) => {
+          const selected = selectedIndex === index;
+          return (
+            <motion.button
+              key={timer.title}
+              type="button"
+              onClick={() => setSelectedIndex(index)}
+              whileTap={{ scale: 0.99 }}
+              variants={fadeInUp}
+              className={`flex w-full flex-col items-center rounded-2xl bg-[#141820] p-5 text-center transition-[border-color] duration-200 ${
+                selected
+                  ? "border-2 border-[#00E5C0]"
+                  : "border-2 border-[rgba(168,255,62,0.08)]"
+              }`}
+            >
+              <span className="text-4xl" aria-hidden>
+                {timer.icon}
+              </span>
+              <span className="mt-3 text-lg font-bold text-white">{timer.title}</span>
+              <span className="mt-2 rounded-full bg-white/10 px-2.5 py-1 text-xs font-medium text-slate-200">
+                {timer.duration}
+              </span>
+              <span className="mt-3 text-sm text-slate-400">{timer.description}</span>
+              <span className="mt-4 inline-flex items-center justify-center rounded-xl border border-[#A8FF3E] px-4 py-2 text-sm font-semibold text-[#A8FF3E]">
+                Try it →
+              </span>
+            </motion.button>
+          );
+        })}
+      </motion.div>
+    </section>
+  );
+}
