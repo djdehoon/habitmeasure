@@ -97,7 +97,7 @@ export function TimerPreviewCards() {
                 {timer.duration}
               </span>
               <span className="mt-3 text-sm text-[#6B7280]">{timer.description}</span>
-              <span className="mt-4 inline-flex items-center justify-center rounded-lg border-2 border-[#A8FF3E] bg-transparent px-4 py-2 text-sm font-semibold text-[#A8FF3E] hover:bg-[#A8FF3E]/10">
+              <span className="btn-ghost mt-4 inline-flex items-center justify-center text-sm font-semibold">
                 Try it →
               </span>
             </motion.button>
