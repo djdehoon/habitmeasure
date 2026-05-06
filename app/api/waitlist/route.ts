@@ -55,6 +55,6 @@ export async function POST(request: Request): Promise<NextResponse<WaitlistJson>
 
   return NextResponse.json({
     success: true,
-    message: "You're on the list! 🎉",
+    message: "You're on the list! We'll be in touch soon. 🎉",
   });
 }

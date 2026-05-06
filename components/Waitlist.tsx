@@ -81,9 +81,14 @@ export function Waitlist() {
       viewport={viewportIn}
     >
       <div className="rounded-3xl border border-[#A7BFD2]/35 bg-gradient-to-r from-[#A7BFD2]/16 to-[#B8BFD8]/14 p-8 text-center">
-        <h2 className="heading-font text-3xl font-black md:text-5xl">Get in first</h2>
+        <p className="heading-font text-sm font-bold uppercase tracking-[0.35em] text-slate-500">
+          EARLY ACCESS
+        </p>
+        <h2 className="mt-2 heading-font text-3xl font-black md:text-5xl">
+          Be the first to build better habits.
+        </h2>
         <p className="mx-auto mt-4 max-w-2xl text-slate-500">
-          HabitMeasure is launching soon. Join the waitlist for early access + a launch discount.
+          Join the waitlist and get early access when we launch. Free forever for early members.
         </p>
 
         {submitted && successMessage ? (
@@ -96,7 +101,7 @@ export function Waitlist() {
           >
             <div className="h-12 flex-1 rounded-full border border-slate-300 bg-white/95" />
             <div className="btn-primary flex h-12 shrink-0 items-center justify-center px-7 sm:w-auto">
-              <span className="invisible">Join the waitlist →</span>
+              <span className="invisible">Get early access →</span>
             </div>
           </div>
         ) : (
@@ -109,7 +114,7 @@ export function Waitlist() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@email.com"
+                placeholder="Enter your email address"
                 disabled={submitting}
                 className="h-12 w-full rounded-full border border-slate-300 bg-white/95 px-5 outline-none focus:border-[#8BA2B5] disabled:opacity-60"
                 required
@@ -125,7 +130,7 @@ export function Waitlist() {
               disabled={submitting}
               className="btn-primary h-12 shrink-0 px-7 disabled:opacity-60 sm:w-auto"
             >
-              {submitting ? "Joining..." : "Join the waitlist →"}
+              {submitting ? "Joining..." : "Get early access →"}
             </button>
           </form>
         )}
