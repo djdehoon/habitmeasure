@@ -71,8 +71,10 @@ export function Hero() {
         </a>
       </motion.div>
 
-      <p className="text-xs tracking-wide text-slate-400">
-        Join 200+ people already on the list
+      <p className="max-w-md text-xs leading-relaxed tracking-wide text-slate-400">
+        Get early access. Build better habits, starting today.
+        <br />
+        Be among the first when we launch.
       </p>
 
       <motion.div

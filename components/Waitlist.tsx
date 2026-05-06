@@ -88,7 +88,7 @@ export function Waitlist() {
           Be the first to build better habits.
         </h2>
         <p className="mx-auto mt-4 max-w-2xl text-slate-500">
-          Join the waitlist and get early access when we launch. Free forever for early members.
+          Join the waitlist. Get free access for 3 months when we launch, then cancel anytime — no credit card required.
         </p>
 
         {submitted && successMessage ? (

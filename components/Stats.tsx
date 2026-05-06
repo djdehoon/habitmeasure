@@ -36,7 +36,6 @@ export function Stats() {
     return () => observer.disconnect();
   }, []);
 
-  const waitlist = useCountUp(312, active);
   const days = useCountUp(21, active);
   const euros = useCountUp(200, active);
   const formattedEuros = (euros / 100).toLocaleString("nl-NL", {
@@ -54,9 +53,13 @@ export function Stats() {
       viewport={viewportIn}
     >
       <div className="mt-2 grid w-full max-w-3xl gap-5 md:grid-cols-3">
-        <div className="card-shell p-6">
-          <div className="heading-font text-4xl font-black text-[#6D8294]">{waitlist}+</div>
-          <p className="mt-2 text-sm text-slate-500">People on the waitlist</p>
+        <div className="card-shell flex flex-col justify-center p-6">
+          <p className="heading-font text-xl font-black text-[#6D8294] md:text-2xl">
+            Be among the first
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-slate-500">
+            No inflated numbers — just early access when we launch.
+          </p>
         </div>
         <div className="card-shell p-6">
           <div className="heading-font text-4xl font-black text-[#6D8294]">{days} days</div>
