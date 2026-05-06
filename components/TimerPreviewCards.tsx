@@ -83,9 +83,9 @@ export function TimerPreviewCards() {
               onClick={() => setSelectedIndex(index)}
               whileTap={{ scale: 0.99 }}
               variants={fadeInUp}
-              className={`card-shell flex w-full flex-col items-center p-6 text-center ${
+              className={`card-shell flex w-full flex-col items-center p-6 text-center outline-none focus-visible:ring-2 focus-visible:ring-[#8fb5a8]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
                 selected
-                  ? "ring-2 ring-[#00E5C0] ring-offset-2 ring-offset-white"
+                  ? "!border-2 !border-[var(--color-primary)] !bg-[#f7faf8]"
                   : ""
               }`}
             >

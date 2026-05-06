@@ -71,9 +71,11 @@ export function PreviewShowcase() {
           >
             <div className="preview-phone-notch" />
             <div className="flex h-full flex-col justify-between pt-5">
-              <span className="inline-flex w-fit rounded-full border border-[#4ECDC4]/35 bg-[#4ECDC4]/15 px-3 py-1 text-[11px] font-medium text-[#4ECDC4]">
-                Morning Run 🏃
-              </span>
+              <div className="flex w-full shrink-0 justify-center">
+                <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-medium text-white/90">
+                  Morning run
+                </span>
+              </div>
 
               <div className="mx-auto flex flex-col items-center -translate-y-5">
                 <svg width="190" height="190" viewBox="0 0 190 190" className="overflow-visible">

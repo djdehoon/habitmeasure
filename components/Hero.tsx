@@ -1,21 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { LocaleBanner } from "@/components/LocaleBanner";
 import { float, glowPulse, viewportIn } from "./motion";
 
 export function Hero() {
   return (
-    <section className="container-shell flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center gap-9 py-16 text-center">
-      <motion.span
-        className="badge-pill mx-auto inline-flex max-w-[28rem] justify-center px-4 text-center whitespace-normal"
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        ✨ Coming soon — habit timer app
-      </motion.span>
-
+    <section className="container-shell flex min-h-[calc(100svh-4rem)] flex-col items-center justify-start gap-9 pt-6 pb-16 text-center md:pt-10 md:pb-20">
       <motion.p
         className="heading-font text-sm font-bold uppercase tracking-[0.35em] text-slate-500 md:text-base"
         initial={{ opacity: 0, y: 16 }}
@@ -45,10 +35,8 @@ export function Hero() {
         HabitMeasure helps you track, time, and measure your daily habits — so you can see real progress.
       </motion.p>
 
-      <LocaleBanner />
-
       <motion.div
-        className="flex w-full flex-col items-center gap-4 sm:flex-row sm:justify-center"
+        className="flex w-full flex-col items-center gap-4 sm:flex-row sm:items-start sm:justify-center"
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
@@ -66,9 +54,17 @@ export function Hero() {
             Free · No credit card · Be first
           </p>
         </div>
-        <a href="#how" className="btn-ghost w-full sm:w-auto">
-          See how it works
-        </a>
+        <div className="flex w-full flex-col items-center gap-2 sm:w-auto">
+          <a href="#how" className="btn-ghost w-full sm:w-auto">
+            See how it works
+          </a>
+          <p
+            className="invisible text-xs tracking-wide text-slate-500"
+            aria-hidden
+          >
+            Free · No credit card · Be first
+          </p>
+        </div>
       </motion.div>
 
       <p className="max-w-md text-xs leading-relaxed tracking-wide text-slate-400">
@@ -89,12 +85,14 @@ export function Hero() {
         <div className="mt-2 heading-font text-xl font-bold">Morning routine</div>
         <div className="mt-6 timer-grid">
           {[
-            ["#7E9AAF", "Routine", "12d"],
-            ["#90A8BA", "Meditation", "7d"],
-            ["#7FA89D", "Walk", "4d"],
-            ["#A2A9C1", "Workout", "9d"],
-          ].map(([color, label, streak]) => (
-            <div key={label} className="timer-circle" style={{ color }}>
+            ["Focus Timer", "25m"],
+            ["Morning routine", "30m"],
+            ["Wind down", "30m"],
+            ["Workout", "45m"],
+            ["Mindfulness", "10m"],
+            ["Reading", "20m"],
+          ].map(([label, streak]) => (
+            <div key={label} className="timer-circle" style={{ color: "#7E9AAF" }}>
               <span>{label}</span>
               <strong>{streak}</strong>
             </div>

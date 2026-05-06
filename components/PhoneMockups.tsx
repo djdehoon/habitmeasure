@@ -61,12 +61,14 @@ export function PhoneMockups() {
           <div className="mt-9 text-sm text-slate-500">Timers</div>
           <div className="mt-3 timer-grid">
             {[
-              ["#7E9AAF", "Routine", "12 d"],
-              ["#90A8BA", "Meditation", "7 d"],
-              ["#7FA89D", "Walk", "4 d"],
-              ["#A2A9C1", "Workout", "9 d"],
-            ].map(([color, label, streak]) => (
-              <div key={label} className="timer-circle" style={{ color }}>
+              ["Focus Timer", "25m"],
+              ["Morning routine", "30m"],
+              ["Wind down", "30m"],
+              ["Workout", "45m"],
+              ["Mindfulness", "10m"],
+              ["Reading", "20m"],
+            ].map(([label, streak]) => (
+              <div key={label} className="timer-circle" style={{ color: "#7E9AAF" }}>
                 <span>{label}</span>
                 <strong>{streak}</strong>
               </div>
