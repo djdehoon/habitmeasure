@@ -83,16 +83,16 @@ export function TimerPreviewCards() {
               onClick={() => setSelectedIndex(index)}
               whileTap={{ scale: 0.99 }}
               variants={fadeInUp}
-              className={`flex w-full flex-col items-center rounded-xl border-2 bg-[#F5F7FA] px-6 py-5 text-center transition-[border-color,box-shadow] duration-200 hover:border-[#00B89A] hover:shadow-md ${
+              className={`card-shell flex w-full flex-col items-center p-6 text-center ${
                 selected
-                  ? "border-[#00B89A] shadow-md"
-                  : "border-[#00E5C0] shadow-sm"
+                  ? "ring-2 ring-[#8fb5a8]/55 ring-offset-2 ring-offset-white"
+                  : ""
               }`}
             >
               <span className="text-4xl" aria-hidden>
                 {timer.icon}
               </span>
-              <span className="mt-3 text-lg font-bold text-[#0C0F14]">{timer.title}</span>
+              <span className="mt-3 heading-font text-xl font-bold">{timer.title}</span>
               <span className="mt-2 rounded-full bg-[#E8EAEF] px-3 py-1 text-sm font-medium text-[#6B7280]">
                 {timer.duration}
               </span>
