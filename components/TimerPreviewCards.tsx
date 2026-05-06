@@ -7,38 +7,38 @@ import { fadeInUp, staggerContainer, viewportIn } from "./motion";
 const TIMERS = [
   {
     icon: "⏱️",
-    title: "Focus Timer",
-    duration: "25 min",
+    title: "Focus timer",
+    duration: "25 minuten",
     description: "Pomodoro — deep work without distractions",
   },
   {
     icon: "🌅",
-    title: "Morning Routine",
-    duration: "30 min",
+    title: "Morning routine",
+    duration: "30 minuten",
     description: "Start your day with intention",
   },
   {
     icon: "🌙",
-    title: "Wind-down",
-    duration: "30 min",
+    title: "Wind down",
+    duration: "30 minuten",
     description: "Unwind and prepare for sleep",
   },
   {
     icon: "🏃",
     title: "Workout",
-    duration: "45 min",
+    duration: "45 minuten",
     description: "Sport & energy",
   },
   {
     icon: "🧘",
     title: "Mindfulness",
-    duration: "10 min",
+    duration: "10 minuten",
     description: "Stress relief & focus",
   },
   {
     icon: "📖",
     title: "Reading",
-    duration: "20 min",
+    duration: "20 minuten",
     description: "Learn & rest",
   },
 ] as const;
