@@ -85,7 +85,7 @@ export function TimerPreviewCards() {
               variants={fadeInUp}
               className={`card-shell flex w-full flex-col items-center p-6 text-center ${
                 selected
-                  ? "ring-2 ring-[#8fb5a8]/55 ring-offset-2 ring-offset-white"
+                  ? "ring-2 ring-[#00E5C0] ring-offset-2 ring-offset-white"
                   : ""
               }`}
             >
