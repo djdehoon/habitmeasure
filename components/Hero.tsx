@@ -13,7 +13,7 @@ export function Hero() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        Launching soon — join the waitlist for early access
+        ✨ Coming soon — habit timer app
       </motion.span>
 
       <motion.p
@@ -53,20 +53,27 @@ export function Hero() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        <motion.a
-          href="#waitlist"
-          className="btn-primary w-full sm:w-auto"
-          variants={glowPulse}
-          animate="animate"
-        >
-          Join the waitlist →
-        </motion.a>
+        <div className="flex w-full flex-col items-center gap-2 sm:w-auto">
+          <motion.a
+            href="#waitlist"
+            className="btn-primary w-full sm:w-auto"
+            variants={glowPulse}
+            animate="animate"
+          >
+            Join the waitlist →
+          </motion.a>
+          <p className="text-xs tracking-wide text-slate-500">
+            Free · No credit card · Be first
+          </p>
+        </div>
         <a href="#how" className="btn-ghost w-full sm:w-auto">
           See how it works
         </a>
       </motion.div>
 
-      <p className="text-xs tracking-wide text-slate-400">312 people already on the HabitMeasure waitlist</p>
+      <p className="text-xs tracking-wide text-slate-400">
+        Join 200+ people already on the list
+      </p>
 
       <motion.div
         className="phone-frame p-6 text-left"
