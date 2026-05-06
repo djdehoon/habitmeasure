@@ -13,7 +13,7 @@ export function Pricing() {
         whileInView="visible"
         viewport={viewportIn}
       >
-        Eerlijk geprijsd. Altijd.
+        Fair pricing. Always.
       </motion.h2>
 
       <motion.div
@@ -25,43 +25,43 @@ export function Pricing() {
       >
         <motion.article className="card-shell flex min-h-[360px] flex-col p-6" variants={fadeInUp}>
           <h3 className="heading-font text-xl font-bold">FREE</h3>
-          <p className="mt-2 text-3xl font-black">€0/mnd</p>
+          <p className="mt-2 text-3xl font-black">€0/mo</p>
           <ul className="mt-4 space-y-2 text-sm text-slate-500">
             <li>3 timers</li>
-            <li>7 dagen history</li>
-            <li>Vandaag-overzicht</li>
+            <li>7-day history</li>
+            <li>Today overview</li>
           </ul>
-          <button className="btn-ghost mt-auto w-full pt-[60px]">Gratis blijven</button>
+          <button className="btn-ghost mt-auto w-full pt-[60px]">Stay on Free</button>
         </motion.article>
 
         <motion.article
           className="card-shell relative flex min-h-[360px] flex-col bg-[#F8FAFC] p-6"
           variants={fadeInUp}
         >
-          <span className="badge-pill absolute right-5 top-5">Meest populair</span>
+          <span className="badge-pill absolute right-5 top-5">Most popular</span>
           <h3 className="heading-font text-xl font-bold">PRO</h3>
-          <p className="mt-2 text-3xl font-black">€2,00/mnd</p>
+          <p className="mt-2 text-3xl font-black">€2,00/mo</p>
           <ul className="mt-4 space-y-2 text-sm text-slate-500">
-            <li>Onbeperkte timers</li>
-            <li>Volledig dashboard + heatmap</li>
-            <li>AI Coach</li>
-            <li>Slimme reminders</li>
-            <li>Maandrapport</li>
+            <li>Unlimited timers</li>
+            <li>Full dashboard + heatmap</li>
+            <li>AI coach</li>
+            <li>Smart reminders</li>
+            <li>Monthly report</li>
           </ul>
           <a href="#waitlist" className="btn-primary mt-auto block w-full pt-[60px] text-center">
-            Sign up for waiting list
+            Join the waitlist →
           </a>
         </motion.article>
 
         <motion.article className="card-shell flex min-h-[360px] flex-col p-6" variants={fadeInUp}>
           <h3 className="heading-font text-xl font-bold">LIFETIME</h3>
-          <p className="mt-2 text-3xl font-black">€20,00 eenmalig</p>
+          <p className="mt-2 text-3xl font-black">€20,00 one-time</p>
           <ul className="mt-4 space-y-2 text-sm text-slate-500">
-            <li>Alles van Pro</li>
-            <li>Voor altijd</li>
-            <li>Early bird prijs</li>
+            <li>Everything in Pro</li>
+            <li>Yours forever</li>
+            <li>Early-bird price</li>
           </ul>
-          <button className="btn-ghost mt-auto w-full pt-[60px]">Early bird deal</button>
+          <button className="btn-ghost mt-auto w-full pt-[60px]">Early-bird deal</button>
         </motion.article>
       </motion.div>
     </section>

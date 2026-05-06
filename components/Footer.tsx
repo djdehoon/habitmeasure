@@ -6,11 +6,11 @@ export function Footer() {
       <div className="container-shell relative flex flex-col gap-4 pb-6 text-sm text-slate-500 md:flex-row md:items-center md:justify-between">
         <div>
           <div className="heading-font text-base font-bold text-slate-800">HabitMeasure</div>
-          <p>Kleine gewoontes. Grote verandering. Jij meet het.</p>
+          <p>Small habits. Big change. You measure it.</p>
         </div>
         <div>
-          <p>📱 Werkt als app op je telefoon</p>
-          <p>Gebouwd met ❤️ in Nederland · 2026</p>
+          <p>📱 Works like an app on your phone</p>
+          <p>Built with ❤️ in the Netherlands · 2026</p>
         </div>
         <div className="flex gap-4">
           <a href="#" className="hover:text-slate-800">

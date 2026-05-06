@@ -30,14 +30,14 @@ export function Nav() {
             Features
           </a>
           <a href="#how" className="hover:text-slate-800">
-            Hoe het werkt
+            How it works
           </a>
           <a href="#prijzen" className="hover:text-slate-800">
-            Prijzen
+            Pricing
           </a>
         </div>
         <a href="#waitlist" className="btn-primary shrink-0 px-5 py-2 text-sm">
-          Ik wil early access →
+          Join the waitlist →
         </a>
       </nav>
     </header>

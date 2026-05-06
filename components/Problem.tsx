@@ -6,18 +6,18 @@ import { fadeInUp, staggerContainer, viewportIn } from "./motion";
 const pains = [
   {
     icon: "😤",
-    title: "Je vergeet het",
-    text: "Je neemt je voor om dagelijks te stretchen. Maar na dag 3 vergeet je het gewoon.",
+    title: "You keep forgetting",
+    text: "You swear you'll stretch every day. By day three, it's gone.",
   },
   {
     icon: "📊",
-    title: "Je ziet geen vooruitgang",
-    text: "Zonder data weet je niet of je beter wordt. Goed gevoel ≠ echte vooruitgang.",
+    title: "You can't see progress",
+    text: "Without data, you don't know if you're improving. A good feeling isn't real progress.",
   },
   {
     icon: "📱",
-    title: "Teveel apps",
-    text: "Een timer-app. Een habit-app. Een notitie-app. Het moet simpeler.",
+    title: "Too many apps",
+    text: "A timer app. A habit app. A notes app. It should be simpler.",
   },
 ];
 
@@ -32,10 +32,10 @@ export function Problem() {
       viewport={viewportIn}
     >
       <h2 className="heading-font text-center text-3xl font-black md:text-5xl">
-        Je weet wat je moet doen.
+        You know what to do.
       </h2>
       <p className="mt-4 max-w-2xl text-center text-slate-500">
-        Maar bijhouden of je het ook echt doet? Dat is het probleem.
+        Tracking whether you actually do it? That is the hard part.
       </p>
       <motion.div
         className="mt-10 grid w-full gap-5 md:grid-cols-3"
@@ -44,7 +44,7 @@ export function Problem() {
         whileInView="visible"
         viewport={viewportIn}
       >
-        {pains.map((pain, index) => (
+        {pains.map((pain) => (
           <motion.article
             key={pain.title}
             className="card-shell p-6 text-center"

@@ -56,17 +56,17 @@ export function Stats() {
       <div className="mt-2 grid w-full max-w-3xl gap-5 md:grid-cols-3">
         <div className="card-shell p-6">
           <div className="heading-font text-4xl font-black text-[#6D8294]">{waitlist}+</div>
-          <p className="mt-2 text-sm text-slate-500">Mensen op de wachtlijst</p>
+          <p className="mt-2 text-sm text-slate-500">People on the waitlist</p>
         </div>
         <div className="card-shell p-6">
-          <div className="heading-font text-4xl font-black text-[#6D8294]">{days} dagen</div>
-          <p className="mt-2 text-sm text-slate-500">Gemiddeld voor een nieuwe gewoonte</p>
+          <div className="heading-font text-4xl font-black text-[#6D8294]">{days} days</div>
+          <p className="mt-2 text-sm text-slate-500">Avg. to build a new habit</p>
         </div>
         <div className="card-shell p-6">
           <div className="heading-font text-4xl font-black text-[#6D8294]">
             €{formattedEuros}
           </div>
-          <p className="mt-2 text-sm text-slate-500">Per maand voor Pro</p>
+          <p className="mt-2 text-sm text-slate-500">Per month for Pro</p>
         </div>
       </div>
     </motion.section>

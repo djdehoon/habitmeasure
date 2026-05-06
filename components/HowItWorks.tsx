@@ -4,13 +4,13 @@ import { motion } from "framer-motion";
 import { fadeInUp, staggerContainer, viewportIn } from "./motion";
 
 const steps = [
-  ["1", "⏱️ Start een timer", "Tap op je gewoonte. Geen invoer, geen gedoe. Gewoon beginnen."],
+  ["1", "⏱️ Start a timer", "Tap your habit. No typing, no fuss. Just go."],
   [
     "2",
-    "✅ Automatisch bijgehouden",
-    "Timer klaar? HabitMeasure logt het automatisch. Jij hoeft niets te doen.",
+    "✅ Logged automatically",
+    "Timer done? HabitMeasure logs it for you. Zero extra steps.",
   ],
-  ["3", "📈 Zie je groei", "Je dashboard toont streaks, patronen en AI-inzichten. Elke dag beter."],
+  ["3", "📈 Watch it grow", "Your dashboard shows streaks, patterns, and AI insights. Better every day."],
 ];
 
 export function HowItWorks() {
@@ -23,7 +23,7 @@ export function HowItWorks() {
       viewport={viewportIn}
     >
       <h2 className="heading-font text-center text-3xl font-black md:text-5xl">
-        Zo simpel werkt HabitMeasure
+        How HabitMeasure works
       </h2>
       <motion.div
         className="mt-10 grid w-full gap-5 md:grid-cols-3"

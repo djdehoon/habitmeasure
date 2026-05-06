@@ -13,7 +13,7 @@ export function Hero() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        Binnenkort live — schrijf je in voor early access
+        Launching soon — join the waitlist for early access
       </motion.span>
 
       <motion.p
@@ -31,9 +31,9 @@ export function Hero() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        Kleine gewoontes.
+        Build habits that
         <br />
-        <span className="gradient-text">Grote verandering.</span>
+        <span className="gradient-text">actually stick.</span>
       </motion.h1>
 
       <motion.p
@@ -42,7 +42,7 @@ export function Hero() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7 }}
       >
-        Start een timer. HabitMeasure onthoudt de rest. Zie je groei dag na dag.
+        HabitMeasure helps you track, time, and measure your daily habits — so you can see real progress.
       </motion.p>
 
       <LocaleBanner />
@@ -59,14 +59,14 @@ export function Hero() {
           variants={glowPulse}
           animate="animate"
         >
-          Sign up for waiting list
+          Join the waitlist →
         </motion.a>
         <a href="#how" className="btn-ghost w-full sm:w-auto">
-          Bekijk hoe het werkt
+          See how it works
         </a>
       </motion.div>
 
-      <p className="text-xs tracking-wide text-slate-400">312 mensen wachten al op HabitMeasure</p>
+      <p className="text-xs tracking-wide text-slate-400">312 people already on the HabitMeasure waitlist</p>
 
       <motion.div
         className="phone-frame p-6 text-left"
@@ -76,13 +76,13 @@ export function Hero() {
         whileInView="visible"
         viewport={viewportIn}
       >
-        <div className="mt-8 text-xs text-slate-500">Vandaag</div>
-        <div className="mt-2 heading-font text-xl font-bold">Ochtend routine</div>
+        <div className="mt-8 text-xs text-slate-500">Today</div>
+        <div className="mt-2 heading-font text-xl font-bold">Morning routine</div>
         <div className="mt-6 timer-grid">
           {[
             ["#7E9AAF", "Routine", "12d"],
-            ["#90A8BA", "Meditatie", "7d"],
-            ["#7FA89D", "Wandeling", "4d"],
+            ["#90A8BA", "Meditation", "7d"],
+            ["#7FA89D", "Walk", "4d"],
             ["#A2A9C1", "Workout", "9d"],
           ].map(([color, label, streak]) => (
             <div key={label} className="timer-circle" style={{ color }}>

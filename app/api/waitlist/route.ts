@@ -25,7 +25,7 @@ export async function POST(request: Request): Promise<NextResponse<WaitlistJson>
     body = await request.json();
   } catch {
     return NextResponse.json(
-      { success: false, message: "Ongeldig e-mailadres." },
+      { success: false, message: "Invalid email address." },
       { status: 400 },
     );
   }
@@ -33,7 +33,7 @@ export async function POST(request: Request): Promise<NextResponse<WaitlistJson>
   const email = parseEmailFromBody(body);
   if (!email) {
     return NextResponse.json(
-      { success: false, message: "Ongeldig e-mailadres." },
+      { success: false, message: "Invalid email address." },
       { status: 400 },
     );
   }
@@ -43,18 +43,18 @@ export async function POST(request: Request): Promise<NextResponse<WaitlistJson>
   if (error) {
     if (error.code === "23505") {
       return NextResponse.json(
-        { success: false, message: "Dit e-mailadres staat al op de lijst." },
+        { success: false, message: "This email is already on the list." },
         { status: 409 },
       );
     }
     return NextResponse.json(
-      { success: false, message: "Probeer het later opnieuw." },
+      { success: false, message: "Please try again later." },
       { status: 500 },
     );
   }
 
   return NextResponse.json({
     success: true,
-    message: "Je staat op de lijst! 🎉",
+    message: "You're on the list! 🎉",
   });
 }

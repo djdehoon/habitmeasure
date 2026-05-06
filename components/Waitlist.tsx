@@ -24,7 +24,8 @@ export function Waitlist() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    const id = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(id);
   }, []);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -46,13 +47,13 @@ export function Waitlist() {
       try {
         payload = await res.json();
       } catch {
-        setErrorMessage("Probeer het later opnieuw.");
+        setErrorMessage("Please try again later.");
         setSubmitting(false);
         return;
       }
 
       if (!isWaitlistResponse(payload)) {
-        setErrorMessage("Probeer het later opnieuw.");
+        setErrorMessage("Please try again later.");
         setSubmitting(false);
         return;
       }
@@ -64,7 +65,7 @@ export function Waitlist() {
         setErrorMessage(payload.message);
       }
     } catch {
-      setErrorMessage("Probeer het later opnieuw.");
+      setErrorMessage("Please try again later.");
     }
 
     setSubmitting(false);
@@ -80,9 +81,9 @@ export function Waitlist() {
       viewport={viewportIn}
     >
       <div className="rounded-3xl border border-[#A7BFD2]/35 bg-gradient-to-r from-[#A7BFD2]/16 to-[#B8BFD8]/14 p-8 text-center">
-        <h2 className="heading-font text-3xl font-black md:text-5xl">Wees er als eerste bij</h2>
+        <h2 className="heading-font text-3xl font-black md:text-5xl">Get in first</h2>
         <p className="mx-auto mt-4 max-w-2xl text-slate-500">
-          HabitMeasure lanceert binnenkort. Schrijf je in en ontvang early access + korting.
+          HabitMeasure is launching soon. Join the waitlist for early access + a launch discount.
         </p>
 
         {submitted && successMessage ? (
@@ -91,11 +92,11 @@ export function Waitlist() {
           <div
             className="mx-auto mt-8 flex max-w-xl flex-col gap-3 sm:flex-row"
             aria-busy="true"
-            aria-label="Wachtlijstformulier wordt geladen"
+            aria-label="Loading waitlist form"
           >
             <div className="h-12 flex-1 rounded-full border border-slate-300 bg-white/95" />
             <div className="btn-primary flex h-12 shrink-0 items-center justify-center px-7 sm:w-auto">
-              <span className="invisible">Ik wil early access →</span>
+              <span className="invisible">Join the waitlist →</span>
             </div>
           </div>
         ) : (
@@ -108,7 +109,7 @@ export function Waitlist() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="jouw@email.nl"
+                placeholder="you@email.com"
                 disabled={submitting}
                 className="h-12 w-full rounded-full border border-slate-300 bg-white/95 px-5 outline-none focus:border-[#8BA2B5] disabled:opacity-60"
                 required
@@ -124,7 +125,7 @@ export function Waitlist() {
               disabled={submitting}
               className="btn-primary h-12 shrink-0 px-7 disabled:opacity-60 sm:w-auto"
             >
-              {submitting ? "Aanmelden..." : "Ik wil early access →"}
+              {submitting ? "Joining..." : "Join the waitlist →"}
             </button>
           </form>
         )}

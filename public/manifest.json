@@ -1,7 +1,7 @@
 {
   "name": "HabitMeasure",
   "short_name": "HabitMeasure",
-  "description": "Kleine gewoontes. Grote verandering. Jij meet het.",
+  "description": "Small habits. Big change. You measure it.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#FFFFFF",

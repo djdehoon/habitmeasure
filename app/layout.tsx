@@ -19,15 +19,15 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "HabitMeasure — Kleine gewoontes. Grote verandering.",
-  description: "Start een timer. HabitMeasure logt de rest.",
+  title: "HabitMeasure — Small habits. Big change.",
+  description: "Track, time, and measure daily habits — and see real progress.",
   icons: {
     icon: "/images/icons/favicon.png",
     apple: "/images/icons/apple-touch-icon.png",
   },
   openGraph: {
-    title: "HabitMeasure — Kleine gewoontes. Grote verandering.",
-    description: "Start een timer. HabitMeasure logt de rest.",
+    title: "HabitMeasure — Small habits. Big change.",
+    description: "Track, time, and measure daily habits — and see real progress.",
     url: "https://habitmeasure.com",
     siteName: "HabitMeasure",
     images: [
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "HabitMeasure",
-    description: "Start een timer. HabitMeasure logt de rest.",
+    description: "Track, time, and measure daily habits — and see real progress.",
     images: ["/images/icons/og-image.png"],
   },
   manifest: "/manifest.json",
@@ -64,7 +64,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="nl" suppressHydrationWarning className={`${plusJakartaSans.variable} ${inter.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${plusJakartaSans.variable} ${inter.variable}`}>
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="format-detection" content="telephone=no,email=no,address=no,date=no,url=no" />

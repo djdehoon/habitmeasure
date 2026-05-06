@@ -9,7 +9,7 @@ export function LocaleBanner() {
         role="status"
       >
         <div className="container-shell flex w-full flex-row items-center justify-center gap-2 py-2">
-          <span>Soon available in English</span>
+          <span>Early access is open — join the global waitlist</span>
           <UkFlag className="h-3.5 w-7 shrink-0 overflow-hidden rounded-[2px] border border-slate-300/60 shadow-sm" />
         </div>
       </div>

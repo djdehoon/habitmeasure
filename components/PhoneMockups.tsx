@@ -44,7 +44,7 @@ export function PhoneMockups() {
         whileInView="visible"
         viewport={viewportIn}
       >
-        Ontworpen voor jouw dag
+        Built for your day
       </motion.h2>
       <motion.p
         className="mx-auto mt-4 max-w-xl text-center text-slate-500"
@@ -53,7 +53,7 @@ export function PhoneMockups() {
         whileInView="visible"
         viewport={viewportIn}
       >
-        Helder design. Geen afleiding. Alleen jouw gewoontes.
+        Clean design. No clutter. Just your habits.
       </motion.p>
 
       <div className="mt-10 flex flex-col items-center gap-8 lg:flex-row lg:justify-center">
@@ -62,8 +62,8 @@ export function PhoneMockups() {
           <div className="mt-3 timer-grid">
             {[
               ["#7E9AAF", "Routine", "12 d"],
-              ["#90A8BA", "Meditatie", "7 d"],
-              ["#7FA89D", "Wandeling", "4 d"],
+              ["#90A8BA", "Meditation", "7 d"],
+              ["#7FA89D", "Walk", "4 d"],
               ["#A2A9C1", "Workout", "9 d"],
             ].map(([color, label, streak]) => (
               <div key={label} className="timer-circle" style={{ color }}>
@@ -81,13 +81,13 @@ export function PhoneMockups() {
           transition={{ delay: 0.2 }}
         >
           <div className="mt-9 flex items-center justify-between">
-            <span className="text-sm text-slate-500">Vandaag</span>
+            <span className="text-sm text-slate-500">Today</span>
             <span className="badge-pill text-[11px]">Dashboard</span>
           </div>
           <div className="mt-5 mx-auto flex h-28 w-28 items-center justify-center rounded-full border-4 border-[#8BA2B5] text-center text-xs">
             <div>
-              <strong>5 van 6</strong>
-              <div className="text-slate-500">gedaan</div>
+              <strong>5 of 6</strong>
+              <div className="text-slate-500">done</div>
             </div>
           </div>
           <div className="mt-5 heatmap-grid">
@@ -96,18 +96,18 @@ export function PhoneMockups() {
             ))}
           </div>
           <div className="mt-4 rounded-xl border border-[#B8BFD8]/40 bg-[#B8BFD8]/18 p-3 text-xs text-[#5C6788]">
-            Je bent consistenter op dinsdag en donderdag.
+            You are most consistent on Tuesdays and Thursdays.
           </div>
         </motion.div>
 
         <motion.div className="phone-frame p-5" variants={float} animate="animate">
           <div className="mt-12 text-5xl text-[#8BA2B5]">✦</div>
-          <h3 className="mt-4 heading-font text-lg font-bold">Jouw inzicht van vandaag</h3>
+          <h3 className="mt-4 heading-font text-lg font-bold">Insight for today</h3>
           <div className="mt-4 rounded-xl border border-[#A7BFD2]/35 bg-[#F3F6FA] p-3 text-sm text-slate-500">
-            Je doet meditatie altijd na je koffie ☕ — goed patroon!
+            You always meditate after coffee ☕ — solid pattern!
           </div>
           <div className="mt-4 inline-flex rounded-full border border-[#A7BFD2]/40 px-3 py-1 text-sm text-[#526C82]">
-            7 dagen streak
+            7-day streak
           </div>
         </motion.div>
       </div>

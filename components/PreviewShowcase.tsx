@@ -50,10 +50,10 @@ export function PreviewShowcase() {
         whileInView="visible"
         viewport={viewportIn}
       >
-        <span className="badge-pill">Binnenkort live — schrijf je in voor early access</span>
+        <span className="badge-pill">Launching soon — join the waitlist for early access</span>
         <h2 className="heading-font mt-5 text-3xl font-black md:text-5xl">Product preview</h2>
         <p className="mt-4 text-slate-500">
-          Timer en dashboard in een overzichtelijke preview van je dagelijkse voortgang.
+          Timer and dashboard in a clean preview of your daily progress.
         </p>
       </motion.div>
 
@@ -117,14 +117,14 @@ export function PreviewShowcase() {
                   <p className="heading-font text-[44px] leading-none font-bold tracking-tight text-white/90">
                     18:32
                   </p>
-                  <p className="mt-1 text-xs tracking-wide text-[#8892A4]">bezig...</p>
+                  <p className="mt-1 text-xs tracking-wide text-[#8892A4]">in progress...</p>
                 </div>
               </div>
 
               <button
                 className="mt-6 rounded-full bg-[#4F8FD8] px-5 py-2.5 text-sm font-bold text-[#F7FBFF]"
               >
-                Pauzeer
+                Pause
               </button>
             </div>
           </motion.figure>
@@ -140,21 +140,21 @@ export function PreviewShowcase() {
             <div className="preview-phone-notch" />
             <div className="-translate-y-1 pt-4">
               <div className="flex items-center justify-between">
-                <p className="text-sm font-semibold text-white">Deze week 🔥</p>
+                <p className="text-sm font-semibold text-white">This week 🔥</p>
                 <span className="rounded-full border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-medium text-white/90">
-                  Vandaag
+                  Today
                 </span>
               </div>
 
               <div className="mt-4 rounded-2xl border border-white/15 bg-white/[0.03] p-3">
                 <div className="mb-2 grid grid-cols-7 gap-1 text-center text-[10px] font-medium text-white/60">
-                  <span>Ma</span>
-                  <span>Di</span>
-                  <span>Wo</span>
-                  <span>Do</span>
-                  <span>Vr</span>
-                  <span>Za</span>
-                  <span>Zo</span>
+                  <span>Mo</span>
+                  <span>Tu</span>
+                  <span>We</span>
+                  <span>Th</span>
+                  <span>Fr</span>
+                  <span>Sa</span>
+                  <span>Su</span>
                 </div>
                 <div className="grid grid-cols-7 gap-1">
                 {heatmap.flatMap((row, rowIndex) =>
@@ -171,11 +171,11 @@ export function PreviewShowcase() {
               <div className="mt-3 grid grid-cols-3 gap-2">
                 <div className="rounded-[10px] border border-white/10 bg-white/[0.05] p-2">
                   <p className="heading-font text-[22px] leading-none font-bold text-[#FF8C42]">14</p>
-                  <p className="mt-1 text-[10px] font-medium text-white/75">dagen streak</p>
+                  <p className="mt-1 text-[10px] font-medium text-white/75">day streak</p>
                 </div>
                 <div className="rounded-[10px] border border-white/10 bg-white/[0.05] p-2">
                   <p className="heading-font text-[22px] leading-none font-bold text-[#4ECDC4]">52 min</p>
-                  <p className="mt-1 text-[10px] font-medium text-white/75">vandaag</p>
+                  <p className="mt-1 text-[10px] font-medium text-white/75">today</p>
                 </div>
                 <div className="rounded-[10px] border border-white/10 bg-white/[0.05] p-2">
                   <p className="heading-font text-[22px] leading-none font-bold text-[#6FA8E8]">91%</p>
@@ -184,7 +184,7 @@ export function PreviewShowcase() {
               </div>
 
               <div className="mt-3 rounded-xl border border-white/15 bg-white/[0.05] px-3 py-2.5 text-sm font-medium text-white/85">
-                Je bent het sterkst op maandag en donderdag.
+                You are strongest on Mondays and Thursdays.
               </div>
             </div>
           </motion.figure>

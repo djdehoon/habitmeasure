@@ -5,19 +5,19 @@ import { fadeInUp, staggerContainer, viewportIn } from "./motion";
 
 const featureCards = [
   {
-    title: "⏱️ Slimme Timers",
-    text: "Kleurrijke timers voor elke gewoonte. Ochtend routine, meditatie, wandeling — allemaal in één overzicht.",
-    tags: ["Kleurcodering", "Interval timers", "Routines"],
+    title: "⏱️ Smart timers",
+    text: "Color-coded timers for every habit. Morning routine, meditation, walks — all in one view.",
+    tags: ["Color coding", "Interval timers", "Routines"],
   },
   {
-    title: "📊 Voortgang Dashboard",
-    text: "Heatmap, streaks en weekvergelijking. Zie in één oogopslag hoe consistent je bent.",
-    tags: ["Heatmap", "Streaks", "Weekoverzicht"],
+    title: "📊 Progress dashboard",
+    text: "Heatmap, streaks, and week-over-week comparison. See your consistency at a glance.",
+    tags: ["Heatmap", "Streaks", "Week view"],
   },
   {
-    title: "🤖 AI Coach",
-    text: "HabitMeasure herkent jouw patronen. Wanneer je het doet, hoe vaak, en wat je kunt verbeteren.",
-    tags: ["Patroonherkenning", "Slimme reminders", "Maandrapport"],
+    title: "🤖 AI coach",
+    text: "HabitMeasure spots your patterns — when you show up, how often, and what to tighten up.",
+    tags: ["Pattern detection", "Smart nudges", "Monthly recap"],
   },
 ];
 
@@ -31,7 +31,7 @@ export function Features() {
         whileInView="visible"
         viewport={viewportIn}
       >
-        Alles wat je nodig hebt. Niets wat je niet nodig hebt.
+        Everything you need. Nothing extra.
       </motion.h2>
 
       <motion.div
