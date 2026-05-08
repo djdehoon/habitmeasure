@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { getSupabaseServerClient } from "@/lib/supabase/server";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -20,6 +20,8 @@ function parseEmailFromBody(body: unknown): string | null {
 }
 
 export async function POST(request: Request): Promise<NextResponse<WaitlistJson>> {
+  const supabase = await getSupabaseServerClient();
+
   let body: unknown;
   try {
     body = await request.json();
