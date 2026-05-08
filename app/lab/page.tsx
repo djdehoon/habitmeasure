@@ -62,51 +62,55 @@ export default function LabPage() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-6xl p-4 sm:p-6">
-      <header className="mb-6 flex items-center justify-between gap-4">
-        <h1 className="text-3xl font-bold">Lab</h1>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setIsModalOpen(true)}
-            className="rounded-md bg-[#00E5C0] px-4 py-2 font-semibold text-black hover:bg-[#00D0AF]"
-          >
-            + Add Timer
-          </button>
-          <button
-            type="button"
-            onClick={handleLogout}
-            disabled={isLoggingOut}
-            className="rounded-md border border-white/25 px-4 py-2 text-sm font-medium text-white hover:bg-white/10 disabled:opacity-60"
-          >
-            {isLoggingOut ? "Uitloggen..." : "Logout"}
-          </button>
+    <main className="min-h-screen bg-white text-[#1A1A2E]">
+      <header className="border-b border-[rgba(0,0,0,0.08)] bg-white px-6 py-4">
+        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3">
+          <h1 className="text-2xl font-bold text-[#1A1A2E]">Lab</h1>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(true)}
+              className="rounded-lg bg-[#00E5C0] px-4 py-2 font-semibold text-white transition-opacity hover:opacity-90"
+            >
+              + Add Timer
+            </button>
+            <button
+              type="button"
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              className="rounded-lg bg-gray-200 px-4 py-2 text-sm font-semibold text-[#1A1A2E] hover:bg-gray-300 disabled:opacity-60"
+            >
+              {isLoggingOut ? "Uitloggen..." : "Logout"}
+            </button>
+          </div>
         </div>
       </header>
 
-      {error ? <p className="mb-4 rounded-md bg-[#E74C3C]/15 p-3 text-sm text-[#ffb5ad]">{error}</p> : null}
+      <div className="mx-auto w-full max-w-6xl p-4 sm:p-6">
+        {error ? <p className="mb-4 rounded-md bg-[#E74C3C]/15 p-3 text-sm text-[#b2372b]">{error}</p> : null}
 
-      {isLoading ? <p className="text-white/70">Templates laden...</p> : null}
+        {isLoading ? <p className="text-[#6B7280]">Templates laden...</p> : null}
 
-      {!isLoading && templates.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-white/20 p-8 text-center text-white/75">
-          Nog geen timers. Maak er een!
-        </div>
-      ) : null}
+        {!isLoading && templates.length === 0 ? (
+          <div className="rounded-xl border border-[rgba(0,0,0,0.08)] bg-[#F5F7FA] py-12 text-center text-lg text-[#6B7280]">
+            Nog geen timers. Maak er een!
+          </div>
+        ) : null}
 
-      {!isLoading && templates.length > 0 ? (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {templates.map((template) => (
-            <TimerCard
-              key={template.id}
-              template={template}
-              isDeleting={deletingId === template.id}
-              onEdit={(templateId) => router.push(`/lab/countdown/setup?id=${templateId}`)}
-              onDelete={handleDelete}
-            />
-          ))}
-        </div>
-      ) : null}
+        {!isLoading && templates.length > 0 ? (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {templates.map((template) => (
+              <TimerCard
+                key={template.id}
+                template={template}
+                isDeleting={deletingId === template.id}
+                onEdit={(templateId) => router.push(`/lab/countdown/setup?id=${templateId}`)}
+                onDelete={handleDelete}
+              />
+            ))}
+          </div>
+        ) : null}
+      </div>
 
       <AddTimerModal
         open={isModalOpen}

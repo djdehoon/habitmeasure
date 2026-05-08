@@ -17,7 +17,7 @@ export function ColorPicker({ value, onChange }: ColorPickerProps) {
             aria-label={`Selecteer kleur ${color}`}
             onClick={() => onChange(color)}
             className={`flex h-9 w-9 items-center justify-center rounded-full border-2 ${
-              selected ? "border-white" : "border-white/20"
+              selected ? "border-[#1A1A2E]" : "border-[rgba(0,0,0,0.15)]"
             }`}
             style={{ backgroundColor: color }}
           >

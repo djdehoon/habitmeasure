@@ -8,5 +8,5 @@ export default async function LabLayout({ children }: { children: React.ReactNod
     redirect("/auth/login");
   }
 
-  return <div className="min-h-screen bg-[#0f0f0f] text-white">{children}</div>;
+  return <div className="min-h-screen bg-white text-[#1A1A2E]">{children}</div>;
 }

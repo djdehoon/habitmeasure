@@ -98,14 +98,14 @@ export function SetupPageClient({ templateId }: SetupPageClientProps) {
   if (isLoading) {
     return (
       <main className="mx-auto w-full max-w-3xl p-4 sm:p-6">
-        <p className="text-white/70">Template laden...</p>
+        <p className="text-[#6B7280]">Template laden...</p>
       </main>
     );
   }
 
   return (
     <main className="mx-auto w-full max-w-3xl p-4 sm:p-6">
-      {fetchError ? <p className="mb-4 rounded-md bg-[#E74C3C]/15 p-3 text-sm text-[#ffb5ad]">{fetchError}</p> : null}
+      {fetchError ? <p className="mb-4 rounded-md bg-[#E74C3C]/12 p-3 text-sm text-[#b2372b]">{fetchError}</p> : null}
 
       <CountdownSetupModal
         formData={formData}

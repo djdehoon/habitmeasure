@@ -16,7 +16,9 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
             type="button"
             onClick={() => onChange(icon)}
             className={`h-10 w-10 rounded-md border text-lg ${
-              selected ? "border-[#00E5C0] bg-[#00E5C0]/20" : "border-white/20 bg-white/5"
+              selected
+                ? "border-[#00E5C0] bg-[#00E5C0]/20 text-[#1A1A2E]"
+                : "border-[rgba(0,0,0,0.12)] bg-white text-[#1A1A2E]"
             }`}
             aria-label={`Selecteer icon ${icon}`}
           >

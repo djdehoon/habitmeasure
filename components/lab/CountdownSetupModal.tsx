@@ -32,25 +32,25 @@ export function CountdownSetupModal({
   onDelete,
 }: CountdownSetupModalProps) {
   return (
-    <div className="mx-auto w-full max-w-2xl rounded-xl border border-white/10 bg-[#121212] p-5 text-white">
-      <h1 className="mb-5 text-2xl font-bold">Countdown Timer Setup</h1>
+    <div className="mx-auto w-full max-w-2xl rounded-xl border border-[rgba(0,0,0,0.08)] bg-[#F5F7FA] p-5 text-[#1A1A2E]">
+      <h1 className="mb-5 text-2xl font-bold text-[#1A1A2E]">Countdown Timer Setup</h1>
 
       <div className="space-y-4">
         <label className="block">
-          <span className="mb-1 block text-sm text-white/80">Template Name *</span>
+          <span className="mb-1 block text-sm text-[#6B7280]">Template Name *</span>
           <input
             type="text"
             value={formData.templateName}
             maxLength={50}
             onChange={(event) => onChange({ templateName: event.target.value })}
             placeholder="Geef je timer een naam"
-            className="w-full rounded-md border border-white/15 bg-[#1e1e1e] px-3 py-2 text-white"
+            className="w-full rounded-md border border-[rgba(0,0,0,0.12)] bg-white px-3 py-2 text-[#1A1A2E]"
           />
           {errors.templateName ? <p className="mt-1 text-xs text-[#E74C3C]">{errors.templateName}</p> : null}
         </label>
 
         <div>
-          <span className="mb-1 block text-sm text-white/80">Duration *</span>
+          <span className="mb-1 block text-sm text-[#6B7280]">Duration *</span>
           <DurationPicker
             minutes={formData.durationMinutes}
             seconds={formData.durationSeconds}
@@ -61,17 +61,17 @@ export function CountdownSetupModal({
         </div>
 
         <div>
-          <span className="mb-1 block text-sm text-white/80">Color *</span>
+          <span className="mb-1 block text-sm text-[#6B7280]">Color *</span>
           <ColorPicker value={formData.color} onChange={(color) => onChange({ color })} />
         </div>
 
         <div>
-          <span className="mb-1 block text-sm text-white/80">Icon</span>
+          <span className="mb-1 block text-sm text-[#6B7280]">Icon</span>
           <IconPicker value={formData.icon} onChange={(icon) => onChange({ icon })} />
         </div>
 
         <div>
-          <div className="mb-1 text-sm text-white/80">Automatisch bijhouden</div>
+          <div className="mb-1 text-sm text-[#6B7280]">Automatisch bijhouden</div>
           <label className="inline-flex cursor-pointer items-center gap-3">
             <input
               type="checkbox"
@@ -79,12 +79,12 @@ export function CountdownSetupModal({
               onChange={(event) => onChange({ autocompletion: event.target.checked })}
               className="h-5 w-5 accent-[#00E5C0]"
             />
-            <span className="text-sm text-white/90">Timer logt automatisch als hij klaar is</span>
+            <span className="text-sm text-[#1A1A2E]">Timer logt automatisch als hij klaar is</span>
           </label>
         </div>
 
         <div>
-          <div className="mb-1 text-sm text-white/80">Minimale wachttijd voordat timer start</div>
+          <div className="mb-1 text-sm text-[#6B7280]">Minimale wachttijd voordat timer start</div>
           <div className="flex items-center gap-3">
             <input
               type="range"
@@ -101,7 +101,7 @@ export function CountdownSetupModal({
         </div>
 
         <div>
-          <div className="mb-1 text-sm text-white/80">Snelle knoppen</div>
+          <div className="mb-1 text-sm text-[#6B7280]">Snelle knoppen</div>
           <div className="flex flex-wrap gap-4">
             {QUICK_ADD_BUTTONS.map((option) => (
               <label key={option.value} className="inline-flex items-center gap-2 text-sm">
@@ -119,15 +119,15 @@ export function CountdownSetupModal({
         </div>
 
         <label className="block">
-          <span className="mb-1 block text-sm text-white/80">Notes</span>
+          <span className="mb-1 block text-sm text-[#6B7280]">Notes</span>
           <textarea
             value={formData.notes}
             maxLength={200}
             onChange={(event) => onChange({ notes: event.target.value })}
             placeholder="Bijzonderheden over deze timer..."
-            className="min-h-24 w-full rounded-md border border-white/15 bg-[#1e1e1e] px-3 py-2 text-white"
+            className="min-h-24 w-full rounded-md border border-[rgba(0,0,0,0.12)] bg-white px-3 py-2 text-[#1A1A2E]"
           />
-          <div className="mt-1 text-right text-xs text-white/60">{formData.notes.length}/200</div>
+          <div className="mt-1 text-right text-xs text-[#6B7280]">{formData.notes.length}/200</div>
           {errors.notes ? <p className="mt-1 text-xs text-[#E74C3C]">{errors.notes}</p> : null}
         </label>
       </div>
@@ -151,7 +151,7 @@ export function CountdownSetupModal({
             type="button"
             onClick={onCancel}
             disabled={isSubmitting}
-            className="rounded-md border border-white/20 px-4 py-2 hover:bg-white/10 disabled:opacity-50"
+            className="btn-ghost rounded-md px-4 py-2 disabled:opacity-50"
           >
             Cancel
           </button>
@@ -159,7 +159,7 @@ export function CountdownSetupModal({
             type="button"
             onClick={onDone}
             disabled={isSubmitting}
-            className="rounded-md bg-[#00E5C0] px-4 py-2 font-medium text-black hover:bg-[#00D0AF] disabled:opacity-50"
+            className="rounded-md bg-[#00E5C0] px-4 py-2 font-medium text-white hover:opacity-90 disabled:opacity-50"
           >
             {isSubmitting ? "Saving..." : "Done"}
           </button>
