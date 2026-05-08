@@ -25,7 +25,7 @@ export function TimerGridWrapper({ children }: TimerGridWrapperProps) {
     setSelectedTimerType(null);
 
     if (editId) {
-      window.history.replaceState({}, "", "/lab");
+      router.replace("/lab");
     }
   };
 
@@ -45,13 +45,12 @@ export function TimerGridWrapper({ children }: TimerGridWrapperProps) {
     <>
       <header className="border-b border-[rgba(0,0,0,0.08)] bg-white px-6 py-4">
         <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3">
-          <h1 className="flex items-center gap-3 text-2xl font-bold text-[#1A1A2E]">
+          <h1 className="flex items-center gap-2 text-2xl font-bold text-[#1A1A2E]">
             <span className="flex items-center gap-2 heading-font text-lg font-bold text-slate-800 sm:text-xl">
               <span className="h-2 w-2 rounded-full bg-[#8BA2B5]" />
               HabitMeasure
             </span>
-            <span className="text-[#9CA3AF]">/</span>
-            <span>Lab</span>
+            <span className="heading-font text-lg font-bold text-slate-800 sm:text-xl">Lab</span>
           </h1>
           <div className="flex items-center gap-2">
             <button

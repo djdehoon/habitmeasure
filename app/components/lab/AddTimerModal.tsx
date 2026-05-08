@@ -135,8 +135,8 @@ export function AddTimerModal({ open, onClose, timerType, editingTemplateId = nu
       }
 
       resetForm();
-      router.refresh();
       onClose();
+      router.refresh();
     } catch {
       setError(isEditMode ? "Network error while updating timer." : "Network error while creating timer.");
     } finally {
