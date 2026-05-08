@@ -144,3 +144,19 @@ Format:
   git push origin main
 - Do NOT create branches named: dev, feature/*, fix/*
 - HabitMeasure is a solo project — no branch workflow needed
+
+## 🚀 PROMPT BEST PRACTICES (ALTIJD VOLGEN)
+
+Wanneer je een prompt geeft aan Cursor:
+
+### 1. SCOPE Duidelijk
+### 2. TARGET FILES Gelistet
+### 3. IMPLEMENTATION STEPS
+### 4. DATA FLOW Diagram
+### 5. VALIDATION CHECKLIST
+
+WAAROM?
+- ✅ Agent weet exact wat te doen
+- ✅ Geen "Planning next moves" hang
+- ✅ 3-6x sneller
+- ✅ 95% succes-rate
