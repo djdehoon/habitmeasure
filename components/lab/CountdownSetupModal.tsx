@@ -134,7 +134,7 @@ export function CountdownSetupModal({
         </label>
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+      <div className="sticky bottom-0 mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-[rgba(0,0,0,0.08)] bg-[#F5F7FA] pt-4">
         {isEditMode && onDelete ? (
           <button
             type="button"

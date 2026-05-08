@@ -145,8 +145,9 @@ export function AddTimerModal({ open, onClose, timerType, editingTemplateId = nu
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 p-4">
-      <div className="w-full max-w-3xl rounded-xl border border-[rgba(0,0,0,0.1)] bg-[#F5F7FA] p-5 text-[#1A1A2E]">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/35 p-4">
+      <div className="flex min-h-full items-start justify-center sm:items-center">
+        <div className="my-4 w-full max-w-3xl max-h-[calc(100dvh-2rem)] overflow-y-auto rounded-xl border border-[rgba(0,0,0,0.1)] bg-[#F5F7FA] p-5 text-[#1A1A2E]">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-xl font-bold">{title}</h2>
           <button
@@ -188,6 +189,7 @@ export function AddTimerModal({ open, onClose, timerType, editingTemplateId = nu
           onCancel={handleClose}
           onDone={handleDone}
         />
+      </div>
       </div>
     </div>
   );
