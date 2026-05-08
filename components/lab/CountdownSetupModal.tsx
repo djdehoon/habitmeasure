@@ -13,6 +13,7 @@ type CountdownSetupModalProps = {
   errors: CountdownTemplateFormErrors;
   isSubmitting: boolean;
   isEditMode: boolean;
+  doneLabel?: string;
   onChange: (patch: Partial<CountdownTemplateFormData>) => void;
   onToggleQuickButton: (value: AddTimeButtonValue) => void;
   onCancel: () => void;
@@ -25,6 +26,7 @@ export function CountdownSetupModal({
   errors,
   isSubmitting,
   isEditMode,
+  doneLabel,
   onChange,
   onToggleQuickButton,
   onCancel,
@@ -161,7 +163,7 @@ export function CountdownSetupModal({
             disabled={isSubmitting}
             className="rounded-md bg-[#00E5C0] px-4 py-2 font-medium text-white hover:opacity-90 disabled:opacity-50"
           >
-            {isSubmitting ? "Saving..." : "Done"}
+            {isSubmitting ? "Saving..." : (doneLabel ?? "Done")}
           </button>
         </div>
       </div>
