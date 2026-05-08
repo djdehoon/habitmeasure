@@ -10,12 +10,17 @@ import { Problem } from "@/components/Problem";
 import { Stats } from "@/components/Stats";
 import { TimerPreviewCards } from "@/components/TimerPreviewCards";
 import { Waitlist } from "@/components/Waitlist";
+import { FooterIdentity } from "@/app/components/FooterIdentity";
+import { VersionFooter } from "@/app/components/VersionFooter";
+import { getServerUser } from "@/lib/supabase/server";
 
-export default function Home() {
+export default async function Home() {
+  const { user } = await getServerUser();
+
   return (
-    <div className="min-h-screen">
+    <div className="flex min-h-screen flex-col">
       <Nav />
-      <main>
+      <main className="flex-1">
         <Hero />
         <Problem />
         <HowItWorks />
@@ -28,6 +33,10 @@ export default function Home() {
         <Waitlist />
       </main>
       <Footer />
+      <div className="-mt-5 flex items-center justify-center gap-3 pb-3 text-xs text-[#9CA3AF]">
+        <FooterIdentity email={user?.email} className="text-xs text-[#9CA3AF]" />
+        <VersionFooter compact className="text-xs text-[#9CA3AF]" />
+      </div>
     </div>
   );
 }

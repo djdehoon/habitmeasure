@@ -1,5 +1,3 @@
-import { APP_VERSION } from "@/lib/version";
-
 export function Footer() {
   return (
     <footer className="border-t border-slate-200 py-10">
@@ -20,9 +18,6 @@ export function Footer() {
             Contact
           </a>
         </div>
-        <span className="pointer-events-none absolute right-0 bottom-0 select-none text-xs text-black tabular-nums">
-          v{APP_VERSION}
-        </span>
       </div>
     </footer>
   );
