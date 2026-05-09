@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useCountdown } from "@/lib/hooks/useCountdown";
+import { playFinishSound, playStartSound } from "@/app/lib/sounds";
 
 type TimerDisplayProps = {
   durationSeconds: number;
@@ -19,7 +20,10 @@ export function TimerDisplay({ durationSeconds, timerName, onComplete }: TimerDi
   const { state, timeRemaining, progress, start, pause, resume, reset } = useCountdown(durationSeconds);
 
   useEffect(() => {
-    if (state === "finished") onComplete?.();
+    if (state === "finished") {
+      playFinishSound();
+      onComplete?.();
+    }
   }, [state, onComplete]);
 
   const radius = 80;
@@ -60,7 +64,10 @@ export function TimerDisplay({ durationSeconds, timerName, onComplete }: TimerDi
         {state === "idle" ? (
           <button
             type="button"
-            onClick={() => start(durationSeconds)}
+            onClick={() => {
+              playStartSound();
+              start(durationSeconds);
+            }}
             className="rounded-full bg-[#00E5C0] px-8 py-3 text-base font-semibold text-[#0C3D3A] transition hover:bg-[#00d4b2]"
           >
             ▶ Start
