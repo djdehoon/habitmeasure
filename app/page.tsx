@@ -4,6 +4,7 @@ import { Hero } from "@/components/Hero";
 import { HowItWorks } from "@/components/HowItWorks";
 import { Nav } from "@/components/Nav";
 import { PhoneMockups } from "@/components/PhoneMockups";
+import { PreviewShowcase } from "@/components/PreviewShowcase";
 import { Pricing } from "@/components/Pricing";
 import { Problem } from "@/components/Problem";
 import { Stats } from "@/components/Stats";
@@ -23,6 +24,7 @@ export default async function Home() {
         <Hero />
         <Problem />
         <HowItWorks />
+        <PreviewShowcase />
         <Features />
         <TimerPreviewCards />
         <PhoneMockups />
