@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useCountdown } from "@/lib/hooks/useCountdown";
-import { playFinishSound, playStartSound } from "@/app/lib/sounds";
+import { playFinishSound, playPauseSound, playStartSound } from "@/app/lib/sounds";
 
 type TimerDisplayProps = {
   durationSeconds: number;
@@ -31,10 +31,10 @@ export function TimerDisplay({ durationSeconds, timerName, onComplete }: TimerDi
   const strokeOffset = circumference * (1 - progress);
 
   return (
-    <section className="flex min-h-screen flex-col items-center justify-center bg-white px-4 py-8 text-[#1A1A2E]">
+    <section className="flex min-h-screen flex-col items-center justify-center bg-white px-4 py-4 text-[#1A1A2E] md:py-6">
       <h1 className="heading-font text-center text-2xl font-bold md:text-3xl">{timerName}</h1>
 
-      <div className="relative mt-10 h-64 w-64 md:h-72 md:w-72">
+      <div className="relative mt-2 h-64 w-64 md:mt-3 md:h-72 md:w-72">
         <svg className="h-full w-full -rotate-90" viewBox="0 0 200 200" aria-hidden>
           <circle cx="100" cy="100" r={radius} fill="none" stroke="#F5F7FA" strokeWidth="4" />
           <circle
@@ -57,10 +57,10 @@ export function TimerDisplay({ durationSeconds, timerName, onComplete }: TimerDi
       </div>
 
       {state === "finished" ? (
-        <p className="mt-8 text-lg font-semibold text-[#0C3D3A]">Habit complete! 🎉</p>
+        <p className="mt-6 text-lg font-semibold text-[#0C3D3A]">Habit complete! 🎉</p>
       ) : null}
 
-      <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
         {state === "idle" ? (
           <button
             type="button"
@@ -77,7 +77,10 @@ export function TimerDisplay({ durationSeconds, timerName, onComplete }: TimerDi
         {state === "running" ? (
           <button
             type="button"
-            onClick={pause}
+            onClick={() => {
+              playPauseSound();
+              pause();
+            }}
             className="rounded-full bg-[#00E5C0] px-8 py-3 text-base font-semibold text-[#0C3D3A] transition hover:bg-[#00d4b2]"
           >
             ⏸ Pause
@@ -87,7 +90,10 @@ export function TimerDisplay({ durationSeconds, timerName, onComplete }: TimerDi
         {state === "paused" ? (
           <button
             type="button"
-            onClick={resume}
+            onClick={() => {
+              playStartSound();
+              resume();
+            }}
             className="rounded-full bg-[#00E5C0] px-8 py-3 text-base font-semibold text-[#0C3D3A] transition hover:bg-[#00d4b2]"
           >
             ▶ Resume

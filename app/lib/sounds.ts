@@ -33,6 +33,10 @@ export const playStartSound = () => {
   playBeep(600, 300);
 };
 
+export const playPauseSound = () => {
+  playBeep(420, 220);
+};
+
 export const playFinishSound = () => {
   playBeep(800, 200);
   setTimeout(() => playBeep(1000, 200), 250);
