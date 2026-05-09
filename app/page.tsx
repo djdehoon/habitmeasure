@@ -5,7 +5,6 @@ import { HowItWorks } from "@/components/HowItWorks";
 import { Nav } from "@/components/Nav";
 import { PhoneMockups } from "@/components/PhoneMockups";
 import { Pricing } from "@/components/Pricing";
-import { PreviewShowcase } from "@/components/PreviewShowcase";
 import { Problem } from "@/components/Problem";
 import { Stats } from "@/components/Stats";
 import { TimerPreviewCards } from "@/components/TimerPreviewCards";
@@ -24,7 +23,6 @@ export default async function Home() {
         <Hero />
         <Problem />
         <HowItWorks />
-        <PreviewShowcase />
         <Features />
         <TimerPreviewCards />
         <PhoneMockups />
