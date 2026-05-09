@@ -8,6 +8,12 @@ type WaitlistJson = {
   message: string;
 };
 
+type UTMFields = {
+  utm_source: string | null;
+  utm_medium: string | null;
+  utm_campaign: string | null;
+};
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
@@ -17,6 +23,28 @@ function parseEmailFromBody(body: unknown): string | null {
   const trimmed = body.email.trim();
   if (!trimmed || !EMAIL_RE.test(trimmed)) return null;
   return trimmed;
+}
+
+function parseOptionalText(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim();
+  return trimmed ? trimmed : null;
+}
+
+function parseUTMFromBody(body: unknown): UTMFields {
+  if (!isRecord(body)) {
+    return {
+      utm_source: null,
+      utm_medium: null,
+      utm_campaign: null,
+    };
+  }
+
+  return {
+    utm_source: parseOptionalText(body.utm_source),
+    utm_medium: parseOptionalText(body.utm_medium),
+    utm_campaign: parseOptionalText(body.utm_campaign),
+  };
 }
 
 export async function POST(request: Request): Promise<NextResponse<WaitlistJson>> {
@@ -40,7 +68,14 @@ export async function POST(request: Request): Promise<NextResponse<WaitlistJson>
     );
   }
 
-  const { error } = await supabase.from("waitlist").insert({ email });
+  const utm = parseUTMFromBody(body);
+
+  const { error } = await supabase.from("waitlist").insert({
+    email,
+    utm_source: utm.utm_source,
+    utm_medium: utm.utm_medium,
+    utm_campaign: utm.utm_campaign,
+  });
 
   if (error) {
     if (error.code === "23505") {

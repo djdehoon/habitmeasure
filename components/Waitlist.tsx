@@ -20,12 +20,28 @@ export function Waitlist() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [utmData, setUtmData] = useState<{
+    utm_source: string | null;
+    utm_medium: string | null;
+    utm_campaign: string | null;
+  }>({
+    utm_source: null,
+    utm_medium: null,
+    utm_campaign: null,
+  });
   /** Avoid hydrating real <input>: some browser extensions inject attributes (e.g. __gcruniqueid) and break SSR/CSR match. */
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional client-only gate after SSR
     setMounted(true);
+
+    const params = new URLSearchParams(window.location.search);
+    setUtmData({
+      utm_source: params.get("utm_source"),
+      utm_medium: params.get("utm_medium"),
+      utm_campaign: params.get("utm_campaign"),
+    });
   }, []);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -40,7 +56,12 @@ export function Waitlist() {
       const res = await fetch("/api/waitlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: trimmed }),
+        body: JSON.stringify({
+          email: trimmed,
+          utm_source: utmData.utm_source,
+          utm_medium: utmData.utm_medium,
+          utm_campaign: utmData.utm_campaign,
+        }),
       });
 
       let payload: unknown;
