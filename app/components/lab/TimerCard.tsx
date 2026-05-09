@@ -10,9 +10,24 @@ type TimerCardProps = {
 
 export function TimerCard({ template }: TimerCardProps) {
   const router = useRouter();
+  const openCountdown = () => {
+    router.push(`/lab/countdown/${template.id}`);
+  };
 
   return (
-    <article className="rounded-xl border border-[rgba(0,0,0,0.08)] bg-[#F5F7FA] p-4 text-[#1A1A2E]">
+    <article
+      className="cursor-pointer rounded-xl border border-[rgba(0,0,0,0.08)] bg-[#F5F7FA] p-4 text-[#1A1A2E] transition hover:border-[#00E5C0]/60"
+      onClick={openCountdown}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openCountdown();
+        }
+      }}
+      role="button"
+      tabIndex={0}
+      aria-label={`Open timer ${template.template_name}`}
+    >
       <div className="mb-3 flex items-center justify-between gap-3">
         <h3 className="truncate text-lg font-semibold">{template.template_name}</h3>
         <span className="text-2xl leading-none">{template.icon}</span>
@@ -35,12 +50,17 @@ export function TimerCard({ template }: TimerCardProps) {
       <div className="flex items-start gap-2">
         <button
           type="button"
-          onClick={() => router.push(`/lab?edit=${template.id}`)}
+          onClick={(event) => {
+            event.stopPropagation();
+            router.push(`/lab?edit=${template.id}`);
+          }}
           className="rounded-md border border-[#E74C3C]/50 bg-white px-3 py-1.5 text-sm text-[#E74C3C] transition hover:bg-[#E74C3C]/10"
         >
           Edit
         </button>
-        <TimerDeleteButton templateId={template.id} onDeleted={() => router.refresh()} />
+        <div onClick={(event) => event.stopPropagation()}>
+          <TimerDeleteButton templateId={template.id} onDeleted={() => router.refresh()} />
+        </div>
       </div>
     </article>
   );
