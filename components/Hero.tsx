@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { float, glowPulse, viewportIn } from "./motion";
+import { glowPulse } from "./motion";
 
 export function Hero() {
   return (
@@ -50,20 +50,11 @@ export function Hero() {
           >
             Join the waitlist →
           </motion.a>
-          <p className="text-xs tracking-wide text-slate-500">
-            Free · No credit card · Be first
-          </p>
         </div>
         <div className="flex w-full flex-col items-center gap-2 sm:w-auto">
           <a href="#how" className="btn-ghost w-full sm:w-auto">
             See how it works
           </a>
-          <p
-            className="invisible text-xs tracking-wide text-slate-500"
-            aria-hidden
-          >
-            Free · No credit card · Be first
-          </p>
         </div>
       </motion.div>
 
@@ -73,32 +64,6 @@ export function Hero() {
         Be among the first when we launch.
       </p>
 
-      <motion.div
-        className="phone-frame p-6 text-left"
-        variants={float}
-        animate="animate"
-        initial="hidden"
-        whileInView="visible"
-        viewport={viewportIn}
-      >
-        <div className="mt-8 text-xs text-slate-500">Today</div>
-        <div className="mt-2 heading-font text-xl font-bold">Morning routine</div>
-        <div className="mt-6 timer-grid">
-          {[
-            ["Focus Timer", "25m"],
-            ["Morning routine", "30m"],
-            ["Wind down", "30m"],
-            ["Workout", "45m"],
-            ["Mindfulness", "10m"],
-            ["Reading", "20m"],
-          ].map(([label, streak]) => (
-            <div key={label} className="timer-circle" style={{ color: "#7E9AAF" }}>
-              <span>{label}</span>
-              <strong>{streak}</strong>
-            </div>
-          ))}
-        </div>
-      </motion.div>
     </section>
   );
 }
