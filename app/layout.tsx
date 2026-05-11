@@ -69,6 +69,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="format-detection" content="telephone=no,email=no,address=no,date=no,url=no" />
         <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png" />
+        <script src="https://t.contentsquare.net/uxa/d8d9368b75f03.js" async />
       </head>
       <body suppressHydrationWarning className="min-h-full flex flex-col antialiased">
         {children}
