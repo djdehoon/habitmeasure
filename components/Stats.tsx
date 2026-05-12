@@ -46,30 +46,30 @@ export function Stats() {
   return (
     <motion.section
       ref={ref}
-      className="container-shell section-wrap flex flex-col items-center text-center"
+      className="container-shell section-wrap flex flex-col items-center text-center text-slate-100"
       variants={fadeInUp}
       initial="hidden"
       whileInView="visible"
       viewport={viewportIn}
     >
       <div className="mt-2 grid w-full max-w-3xl gap-5 md:grid-cols-3">
-        <div className="card-shell flex flex-col justify-center p-6">
-          <p className="heading-font text-xl font-black text-[#6D8294] md:text-2xl">
+        <div className="glass-panel flex flex-col justify-center p-6 transition duration-200 hover:border-white/20">
+          <p className="heading-font text-xl font-black text-white md:text-2xl">
             Be among the first
           </p>
-          <p className="mt-2 text-sm leading-relaxed text-slate-500">
+          <p className="mt-2 text-sm leading-relaxed text-slate-400">
             No inflated numbers — just early access when we launch.
           </p>
         </div>
-        <div className="card-shell p-6">
-          <div className="heading-font text-4xl font-black text-[#6D8294]">{days} days</div>
-          <p className="mt-2 text-sm text-slate-500">Avg. to build a new habit</p>
+        <div className="glass-panel p-6 transition duration-200 hover:border-white/20">
+          <div className="heading-font text-4xl font-black text-white">{days} days</div>
+          <p className="mt-2 text-sm text-slate-400">Avg. to build a new habit</p>
         </div>
-        <div className="card-shell p-6">
-          <div className="heading-font text-4xl font-black text-[#6D8294]">
+        <div className="glass-panel p-6 transition duration-200 hover:border-white/20">
+          <div className="heading-font text-4xl font-black text-white">
             €{formattedEuros}
           </div>
-          <p className="mt-2 text-sm text-slate-500">Per month for Pro</p>
+          <p className="mt-2 text-sm text-slate-400">Per month for Pro</p>
         </div>
       </div>
     </motion.section>

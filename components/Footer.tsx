@@ -1,9 +1,9 @@
 export function Footer() {
   return (
-    <footer className="border-t border-slate-200 py-10">
-      <div className="container-shell relative flex flex-col gap-4 pb-6 text-sm text-slate-500 md:flex-row md:items-center md:justify-between">
+    <footer className="border-t border-white/10 bg-slate-950 py-10 text-slate-400">
+      <div className="container-shell relative flex flex-col gap-4 pb-6 text-sm md:flex-row md:items-center md:justify-between">
         <div>
-          <div className="heading-font text-base font-bold text-slate-800">HabitMeasure</div>
+          <div className="heading-font text-base font-bold text-white">HabitMeasure</div>
           <p>Small habits. Big change. You measure it.</p>
         </div>
         <div>
@@ -11,10 +11,10 @@ export function Footer() {
           <p>Built with ❤️ in the Netherlands · 2026</p>
         </div>
         <div className="flex gap-4">
-          <a href="#" className="hover:text-slate-800">
+          <a href="#" className="transition hover:text-emerald-400">
             Privacy
           </a>
-          <a href="#" className="hover:text-slate-800">
+          <a href="#" className="transition hover:text-emerald-400">
             Contact
           </a>
         </div>

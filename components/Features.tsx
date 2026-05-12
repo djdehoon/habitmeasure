@@ -23,9 +23,9 @@ const featureCards = [
 
 export function Features() {
   return (
-    <section id="features" className="container-shell section-wrap flex flex-col items-center">
+    <section id="features" className="container-shell section-wrap flex flex-col items-center text-slate-100">
       <motion.h2
-        className="heading-font text-center text-3xl font-black md:text-5xl"
+        className="heading-font text-center text-3xl font-black text-white md:text-5xl"
         variants={fadeInUp}
         initial="hidden"
         whileInView="visible"
@@ -42,12 +42,19 @@ export function Features() {
         viewport={viewportIn}
       >
         {featureCards.map((card) => (
-          <motion.article key={card.title} className="card-shell p-6 text-center" variants={fadeInUp}>
-            <h3 className="heading-font text-xl font-bold">{card.title}</h3>
-            <p className="mt-3 text-sm leading-relaxed text-slate-500">{card.text}</p>
+          <motion.article
+            key={card.title}
+            className="glass-panel p-6 text-center transition duration-200 hover:border-white/20"
+            variants={fadeInUp}
+          >
+            <h3 className="heading-font text-xl font-bold text-white">{card.title}</h3>
+            <p className="mt-3 text-sm leading-relaxed text-slate-400">{card.text}</p>
             <div className="mt-5 flex flex-wrap justify-center gap-2">
               {card.tags.map((tag) => (
-                <span key={tag} className="badge-pill text-xs">
+                <span
+                  key={tag}
+                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-300"
+                >
                   {tag}
                 </span>
               ))}

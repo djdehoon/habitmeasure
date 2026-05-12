@@ -95,34 +95,34 @@ export function Waitlist() {
   return (
     <motion.section
       id="waitlist"
-      className="container-shell section-wrap"
+      className="container-shell section-wrap text-slate-100"
       variants={fadeInUp}
       initial="hidden"
       whileInView="visible"
       viewport={viewportIn}
     >
-      <div className="rounded-3xl border border-[#A7BFD2]/35 bg-gradient-to-r from-[#A7BFD2]/16 to-[#B8BFD8]/14 p-8 text-center">
-        <p className="heading-font text-sm font-bold uppercase tracking-[0.35em] text-slate-500">
+      <div className="glass-panel p-8 text-center md:p-10">
+        <p className="heading-font text-sm font-bold uppercase tracking-[0.35em] text-emerald-400/90">
           EARLY ACCESS
         </p>
-        <h2 className="mt-2 heading-font text-3xl font-black md:text-5xl">
+        <h2 className="mt-2 heading-font text-3xl font-black text-white md:text-5xl">
           Be the first to build better habits.
         </h2>
-        <p className="mx-auto mt-4 max-w-2xl text-slate-500">
+        <p className="mx-auto mt-4 max-w-2xl text-slate-400">
           Join the waitlist. Get free access for 3 months when we launch, then cancel anytime — no credit card required.
         </p>
 
         {submitted && successMessage ? (
-          <p className="mt-8 text-lg text-[#4B5D75]">{successMessage}</p>
+          <p className="mt-8 text-lg text-slate-300">{successMessage}</p>
         ) : !mounted ? (
           <div
             className="mx-auto mt-8 flex max-w-xl flex-col gap-3 sm:flex-row"
             aria-busy="true"
             aria-label="Loading waitlist form"
           >
-            <div className="h-12 flex-1 rounded-full border border-slate-300 bg-white/95" />
-            <div className="btn-primary flex h-12 shrink-0 items-center justify-center px-7 sm:w-auto">
-              <span className="invisible">Get early access →</span>
+            <div className="h-12 flex-1 rounded-full border border-white/10 bg-white/5" />
+            <div className="flex h-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500 px-7 sm:w-auto">
+              <span className="invisible font-bold text-slate-950">Get early access →</span>
             </div>
           </div>
         ) : (
@@ -137,11 +137,11 @@ export function Waitlist() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email address"
                 disabled={submitting}
-                className="h-12 w-full rounded-full border border-slate-300 bg-white/95 px-5 outline-none focus:border-[#8BA2B5] disabled:opacity-60"
+                className="h-12 w-full rounded-full border border-white/10 bg-white/5 px-5 text-slate-100 outline-none placeholder:text-slate-500 focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/40 disabled:opacity-60"
                 required
               />
               {errorMessage ? (
-                <p className="text-left text-sm text-red-600" role="alert">
+                <p className="text-left text-sm text-red-400" role="alert">
                   {errorMessage}
                 </p>
               ) : null}
@@ -149,7 +149,7 @@ export function Waitlist() {
             <button
               type="submit"
               disabled={submitting}
-              className="btn-primary h-12 shrink-0 px-7 disabled:opacity-60 sm:w-auto"
+              className="h-12 shrink-0 rounded-xl bg-emerald-500 px-7 font-bold text-slate-950 transition hover:bg-emerald-400 disabled:opacity-60 sm:w-auto"
             >
               {submitting ? "Joining..." : "Get early access →"}
             </button>

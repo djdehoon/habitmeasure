@@ -16,13 +16,14 @@ const steps = [
 export function HowItWorks() {
   return (
     <motion.section
-      className="container-shell section-wrap flex flex-col items-center"
+      id="how"
+      className="container-shell section-wrap flex flex-col items-center text-slate-100"
       variants={fadeInUp}
       initial="hidden"
       whileInView="visible"
       viewport={viewportIn}
     >
-      <h2 className="heading-font text-center text-3xl font-black md:text-5xl">
+      <h2 className="heading-font text-center text-3xl font-black text-white md:text-5xl">
         How HabitMeasure works
       </h2>
       <motion.div
@@ -35,12 +36,12 @@ export function HowItWorks() {
         {steps.map(([num, title, text]) => (
           <motion.article
             key={num}
-            className="card-shell p-6 text-center"
+            className="glass-panel p-6 text-center transition duration-200 hover:border-white/20"
             variants={fadeInUp}
           >
-            <div className="heading-font text-4xl font-black text-[#6D8294]">{num}</div>
-            <h3 className="mt-4 heading-font text-xl font-bold">{title}</h3>
-            <p className="mt-3 text-sm text-slate-500">{text}</p>
+            <div className="heading-font text-4xl font-black text-emerald-400/90">{num}</div>
+            <h3 className="mt-4 heading-font text-xl font-bold text-white">{title}</h3>
+            <p className="mt-3 text-sm text-slate-400">{text}</p>
           </motion.article>
         ))}
       </motion.div>

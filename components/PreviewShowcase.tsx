@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { fadeInUp, viewportIn } from "./motion";
 
 const heatmap = [
@@ -41,8 +41,10 @@ const tickData = Array.from({ length: tickCount }).map((_, i) => {
 });
 
 export function PreviewShowcase() {
+  const reduceMotion = useReducedMotion();
+
   return (
-    <section className="container-shell section-wrap flex flex-col items-center">
+    <section className="container-shell section-wrap flex flex-col items-center text-slate-100">
       <motion.div
         className="mx-auto max-w-3xl text-center"
         variants={fadeInUp}
@@ -50,9 +52,11 @@ export function PreviewShowcase() {
         whileInView="visible"
         viewport={viewportIn}
       >
-        <span className="badge-pill">Launching soon — join the waitlist for early access</span>
-        <h2 className="heading-font mt-5 text-3xl font-black md:text-5xl">Product preview</h2>
-        <p className="mt-4 text-slate-500">
+        <span className="inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-300">
+          Launching soon — join the waitlist for early access
+        </span>
+        <h2 className="heading-font mt-5 text-3xl font-black text-white md:text-5xl">Product preview</h2>
+        <p className="mt-4 text-slate-400">
           Timer and dashboard in a clean preview of your daily progress.
         </p>
       </motion.div>
@@ -66,8 +70,8 @@ export function PreviewShowcase() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={viewportIn}
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0 }}
+            animate={reduceMotion ? undefined : { y: [0, -10, 0] }}
+            transition={{ duration: 3, repeat: reduceMotion ? 0 : Infinity, ease: "easeInOut", delay: 0 }}
           >
             <div className="preview-phone-notch" />
             <div className="flex h-full flex-col justify-between pt-5">
@@ -136,8 +140,8 @@ export function PreviewShowcase() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={viewportIn}
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+            animate={reduceMotion ? undefined : { y: [0, -10, 0] }}
+            transition={{ duration: 3, repeat: reduceMotion ? 0 : Infinity, ease: "easeInOut", delay: 1.5 }}
           >
             <div className="preview-phone-notch" />
             <div className="-translate-y-1 pt-4">
