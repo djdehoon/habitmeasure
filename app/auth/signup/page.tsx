@@ -29,7 +29,7 @@ export default function SignupPage() {
     void (async () => {
       const { user } = await getBrowserUser();
       if (user) {
-        router.replace("/lab");
+        router.replace("/");
       }
     })();
   }, [router]);
@@ -52,7 +52,7 @@ export default function SignupPage() {
       return;
     }
 
-    router.push("/lab");
+    router.push("/");
   };
 
   return (

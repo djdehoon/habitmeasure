@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { FooterIdentity } from "@/app/components/FooterIdentity";
-import { getServerUser } from "@/lib/supabase/server";
+import { getServerUser, getSupabaseServerClient } from "@/lib/supabase/server";
 import { VersionFooter } from "@/app/components/VersionFooter";
 
 export default async function LabLayout({ children }: { children: React.ReactNode }) {
@@ -8,6 +8,17 @@ export default async function LabLayout({ children }: { children: React.ReactNod
 
   if (!user) {
     redirect("/auth/login");
+  }
+
+  const supabase = await getSupabaseServerClient();
+  const { data: profile } = await supabase
+    .from("user_profiles")
+    .select("is_beta_tester")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (!profile || profile.is_beta_tester !== true) {
+    redirect("/beta?notice=invite_required");
   }
 
   return (

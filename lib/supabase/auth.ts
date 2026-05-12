@@ -1,4 +1,5 @@
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+import { redeemInviteCode } from "@/lib/beta/redeemInviteCode";
 
 export async function getBrowserUser() {
   const supabase = getSupabaseBrowserClient();
@@ -26,6 +27,7 @@ export async function signUp(
   firstName: string,
   lastName: string,
   middleName?: string,
+  inviteCode?: string,
 ): Promise<SignUpResult> {
   const supabase = getSupabaseBrowserClient();
   const { data, error } = await supabase.auth.signUp({
@@ -55,6 +57,7 @@ export async function signUp(
       last_name: lastName.trim(),
       middle_name: middleName?.trim() ? middleName.trim() : null,
       email: email.trim(),
+      is_beta_tester: false,
     },
   ]);
 
@@ -62,6 +65,16 @@ export async function signUp(
     return {
       error: `Failed to create profile: ${profileError.message}`,
     };
+  }
+
+  // If invite code provided, redeem it
+  if (inviteCode) {
+    const redeemResult = await redeemInviteCode(data.user.id, inviteCode);
+    if (!redeemResult.ok) {
+      return {
+        error: `Account created but beta activation failed: ${redeemResult.error}`,
+      };
+    }
   }
 
   return { data };
