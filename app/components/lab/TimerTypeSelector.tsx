@@ -20,7 +20,7 @@ const TIMER_TYPES: TimerTypeOption[] = [
   { id: "quick", name: "Quick Timer", emoji: "⏳", enabled: false },
   { id: "countup", name: "CountUp Timer", emoji: "⏱️", enabled: false },
   { id: "pomodoro", name: "Pomodoro Timer", emoji: "🍅", enabled: false },
-  { id: "interval", name: "Interval Timer", emoji: "⏰", enabled: false },
+  { id: "interval", name: "Interval Timer", emoji: "⏰", enabled: true },
   { id: "stopwatch", name: "Stopwatch", emoji: "⏱️", enabled: false },
   { id: "counter", name: "Counter", emoji: "🔢", enabled: false },
   { id: "clock", name: "Clock", emoji: "🕐", enabled: false },

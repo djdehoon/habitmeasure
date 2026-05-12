@@ -41,3 +41,16 @@ export const playFinishSound = () => {
   playBeep(800, 200);
   setTimeout(() => playBeep(1000, 200), 250);
 };
+
+/** Interval: phase switch (work↔rest) — 800 Hz + 1000 Hz, 200 ms each. */
+export const playIntervalPhaseChange = () => {
+  playBeep(800, 200);
+  setTimeout(() => playBeep(1000, 200), 220);
+};
+
+/** Interval: session complete — triple beep (ascending). */
+export const playIntervalComplete = () => {
+  playBeep(600, 200);
+  setTimeout(() => playBeep(800, 200), 230);
+  setTimeout(() => playBeep(1000, 200), 460);
+};

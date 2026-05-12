@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { formatDuration, type TimerTemplate } from "@/lib/utils/timerHelpers";
+import { formatIntervalSummary, type TimerTemplate } from "@/lib/utils/timerHelpers";
 import { TimerDeleteButton } from "@/app/components/lab/TimerDeleteButton";
 
 type TimerCardProps = {
@@ -10,18 +10,18 @@ type TimerCardProps = {
 
 export function TimerCard({ template }: TimerCardProps) {
   const router = useRouter();
-  const openCountdown = () => {
-    router.push(`/lab/countdown/${template.id}`);
+  const openTimer = () => {
+    router.push(`/lab/${template.id}`);
   };
 
   return (
     <article
       className="cursor-pointer rounded-xl border border-[rgba(0,0,0,0.08)] bg-[#F5F7FA] p-4 text-[#1A1A2E] transition hover:border-[#00E5C0]/60"
-      onClick={openCountdown}
+      onClick={openTimer}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
           event.preventDefault();
-          openCountdown();
+          openTimer();
         }
       }}
       role="button"
@@ -34,8 +34,8 @@ export function TimerCard({ template }: TimerCardProps) {
       </div>
 
       <div className="mb-4 flex items-center justify-between text-sm text-[#6B7280]">
-        <span className="font-medium">Duration</span>
-        <span className="text-base font-bold text-[#1A1A2E]">{formatDuration(template.duration_seconds)}</span>
+        <span className="font-medium">{template.timer_type === "interval" ? "Session" : "Duration"}</span>
+        <span className="text-base font-bold text-[#1A1A2E]">{formatIntervalSummary(template)}</span>
       </div>
 
       <div className="mb-4 flex items-center gap-2">
