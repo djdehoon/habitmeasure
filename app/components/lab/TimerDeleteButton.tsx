@@ -5,9 +5,11 @@ import { useState } from "react";
 type TimerDeleteButtonProps = {
   templateId: string;
   onDeleted: () => void;
+  /** Wider filled style for management layouts (e.g. Edit tab). */
+  variant?: "default" | "prominent";
 };
 
-export function TimerDeleteButton({ templateId, onDeleted }: TimerDeleteButtonProps) {
+export function TimerDeleteButton({ templateId, onDeleted, variant = "default" }: TimerDeleteButtonProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,14 +41,18 @@ export function TimerDeleteButton({ templateId, onDeleted }: TimerDeleteButtonPr
     }
   };
 
+  const buttonClass =
+    variant === "prominent"
+      ? "w-full rounded-lg bg-red-600 px-3 py-3 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+      : "rounded-md border border-red-400/40 bg-slate-950/80 px-3 py-1.5 text-sm text-red-300 transition hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-60";
+
   return (
-    <div className="flex flex-col items-start gap-1">
-      <button
-        type="button"
-        onClick={handleDelete}
-        disabled={isDeleting}
-        className="rounded-md border border-red-400/40 bg-slate-950/80 px-3 py-1.5 text-sm text-red-300 transition hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-60"
-      >
+    <div
+      className={
+        variant === "prominent" ? "flex w-full flex-col items-stretch gap-1" : "flex flex-col items-start gap-1"
+      }
+    >
+      <button type="button" onClick={handleDelete} disabled={isDeleting} className={buttonClass}>
         {isDeleting ? "Deleting..." : "Delete"}
       </button>
       {error ? <p className="text-xs text-red-300">{error}</p> : null}
