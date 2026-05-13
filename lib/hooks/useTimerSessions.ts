@@ -1,6 +1,9 @@
 "use client";
 
 import type { TimerSessionRow, TimerSessionStatus } from "@/app/lib/types";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+
+const TERMINAL_STATUSES = new Set(["completed", "cancelled"]);
 
 type StartResult =
   | { data: { session_id: string; started_at: string }; error: null }
@@ -9,28 +12,53 @@ type StartResult =
 type UpdateResult = { data: TimerSessionRow | null; error: string | null };
 
 export async function createTimerSession(templateId: string): Promise<StartResult> {
+  const trimmed = templateId.trim();
+  if (!trimmed) {
+    return { data: null, error: "template_id is required." };
+  }
+
   try {
-    const response = await fetch("/api/timer-sessions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ template_id: templateId }),
-    });
+    const supabase = getSupabaseBrowserClient();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
 
-    const payload = (await response.json().catch(() => null)) as
-      | { session_id?: string; started_at?: string; error?: string }
-      | null;
-
-    if (!response.ok) {
-      return { data: null, error: payload?.error ?? "Failed to start session." };
+    if (authError || !user) {
+      return { data: null, error: "Unauthorized." };
     }
 
-    const sessionId = payload?.session_id;
-    const startedAt = payload?.started_at;
-    if (!sessionId || !startedAt) {
+    const { data: template, error: templateError } = await supabase
+      .from("timer_templates")
+      .select("id")
+      .eq("id", trimmed)
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (templateError || !template) {
+      return { data: null, error: "Template not found." };
+    }
+
+    const { data, error } = await supabase
+      .from("timer_sessions")
+      .insert({
+        user_id: user.id,
+        template_id: trimmed,
+        status: "running",
+        started_at: new Date().toISOString(),
+      })
+      .select("id, started_at")
+      .single();
+
+    if (error) {
+      return { data: null, error: error.message };
+    }
+
+    if (!data?.id || !data.started_at) {
       return { data: null, error: "Invalid session response." };
     }
 
-    return { data: { session_id: sessionId, started_at: startedAt }, error: null };
+    return { data: { session_id: data.id, started_at: data.started_at }, error: null };
   } catch {
     return { data: null, error: "Network error while starting session." };
   }
@@ -40,22 +68,64 @@ export async function updateTimerSession(
   sessionId: string,
   status: TimerSessionStatus,
 ): Promise<UpdateResult> {
+  const trimmedId = sessionId.trim();
+  if (!trimmedId) {
+    return { data: null, error: "session_id is required." };
+  }
+
+  const allowed = new Set<TimerSessionStatus>(["running", "paused", "completed", "cancelled"]);
+  if (!allowed.has(status)) {
+    return { data: null, error: "Invalid status." };
+  }
+
   try {
-    const response = await fetch("/api/timer-sessions", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ session_id: sessionId, status }),
-    });
+    const supabase = getSupabaseBrowserClient();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
 
-    const payload = (await response.json().catch(() => null)) as
-      | { session?: TimerSessionRow; error?: string }
-      | null;
-
-    if (!response.ok) {
-      return { data: null, error: payload?.error ?? "Failed to update session." };
+    if (authError || !user) {
+      return { data: null, error: "Unauthorized." };
     }
 
-    return { data: payload?.session ?? null, error: null };
+    const { data: existing, error: fetchError } = await supabase
+      .from("timer_sessions")
+      .select("id, started_at, status")
+      .eq("id", trimmedId)
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (fetchError || !existing) {
+      return { data: null, error: "Session not found." };
+    }
+
+    if (TERMINAL_STATUSES.has(existing.status as TimerSessionStatus)) {
+      return { data: null, error: "Session is already closed." };
+    }
+
+    const patch: Record<string, unknown> = { status };
+
+    if (TERMINAL_STATUSES.has(status)) {
+      const started = new Date(existing.started_at as string).getTime();
+      const durationSeconds = Math.max(0, Math.floor((Date.now() - started) / 1000));
+      patch.completed_at = new Date().toISOString();
+      patch.duration_seconds = durationSeconds;
+    }
+
+    const { data, error } = await supabase
+      .from("timer_sessions")
+      .update(patch)
+      .eq("id", trimmedId)
+      .eq("user_id", user.id)
+      .select("*")
+      .single();
+
+    if (error) {
+      return { data: null, error: error.message };
+    }
+
+    return { data: data as TimerSessionRow, error: null };
   } catch {
     return { data: null, error: "Network error while updating session." };
   }
