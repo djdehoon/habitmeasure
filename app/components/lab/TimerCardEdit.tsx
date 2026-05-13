@@ -18,18 +18,21 @@ export function TimerCardEdit({ template }: TimerCardEditProps) {
   const router = useRouter();
 
   return (
-    <article className="glass-panel min-w-0 rounded-xl border border-white/10 p-5 text-slate-100">
-      <div className="mb-3 text-center text-4xl leading-none" aria-hidden>
-        {template.icon}
-      </div>
-      <h3 className="mb-1 min-w-0 break-words text-balance text-center text-lg font-semibold text-slate-100 [overflow-wrap:anywhere]">
+    <article className="glass-panel flex min-w-0 flex-col rounded-xl border border-white/10 p-5 text-slate-100">
+      <h3 className="order-1 mb-1 min-w-0 break-words text-balance text-center text-lg font-semibold text-slate-100 [overflow-wrap:anywhere] sm:order-2 sm:mb-1">
         {template.template_name}
       </h3>
-      <p className="mb-2 break-all text-center font-mono text-[10px] leading-snug text-slate-500 [overflow-wrap:anywhere]">
+      <p className="order-2 mb-0 break-all text-center font-mono text-[10px] leading-tight text-slate-500 [overflow-wrap:anywhere] sm:order-3 sm:mb-2 sm:leading-snug">
         {template.id}
       </p>
-      <p className="mb-2 text-center text-xs text-slate-400">{TYPE_LABEL[template.timer_type]}</p>
-      <div className="mb-3 flex items-center justify-center gap-2">
+      <div
+        className="order-3 mb-2 mt-0 text-center text-4xl leading-none sm:order-1 sm:mb-3 sm:mt-0"
+        aria-hidden
+      >
+        {template.icon}
+      </div>
+      <p className="order-4 mb-2 text-center text-xs text-slate-400 sm:order-4">{TYPE_LABEL[template.timer_type]}</p>
+      <div className="order-5 mb-3 flex items-center justify-center gap-2 sm:order-5">
         <span className="text-sm text-slate-400">Color</span>
         <span
           className="inline-block h-4 w-4 shrink-0 rounded-full border border-white/20"
@@ -37,9 +40,11 @@ export function TimerCardEdit({ template }: TimerCardEditProps) {
           aria-label={`Routine color ${template.color ?? ""}`}
         />
       </div>
-      <p className="mb-4 text-center text-sm font-semibold text-emerald-400">{formatIntervalSummary(template)}</p>
+      <p className="order-6 mb-4 text-center text-sm font-semibold text-emerald-400 sm:order-6">
+        {formatIntervalSummary(template)}
+      </p>
 
-      <div className="flex flex-wrap items-start justify-center gap-2">
+      <div className="order-7 flex flex-wrap items-start justify-center gap-2 sm:order-7">
         <button
           type="button"
           onClick={() => router.push(`/lab?edit=${template.id}`)}
