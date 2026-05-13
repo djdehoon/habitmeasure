@@ -151,7 +151,7 @@ function View2UltraLeanFace({
       )}
       <div className="flex min-h-0 min-w-0 w-full flex-1 flex-col items-stretch justify-between pt-0.5 pb-0 sm:pt-2 sm:pb-1">
         <div className="flex min-w-0 shrink-0 flex-col items-stretch">
-          <p className="w-full min-w-0 max-w-full self-stretch text-balance text-center text-xs font-normal leading-snug break-words text-slate-300 [overflow-wrap:anywhere] sm:text-sm">
+          <p className="text-center text-xs font-normal text-slate-300 sm:text-sm max-w-[170px]  mx-auto">
             {template.template_name}
             
           </p>
