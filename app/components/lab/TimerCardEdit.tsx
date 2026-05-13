@@ -24,6 +24,14 @@ export function TimerCardEdit({ template }: TimerCardEditProps) {
       </div>
       <h3 className="mb-1 truncate text-center text-lg font-semibold text-slate-100">{template.template_name}</h3>
       <p className="mb-2 text-center text-xs text-slate-400">{TYPE_LABEL[template.timer_type]}</p>
+      <div className="mb-3 flex items-center justify-center gap-2">
+        <span className="text-sm text-slate-400">Color</span>
+        <span
+          className="inline-block h-4 w-4 shrink-0 rounded-full border border-white/20"
+          style={{ backgroundColor: template.color?.trim() || "#00E5C0" }}
+          aria-label={`Routine color ${template.color ?? ""}`}
+        />
+      </div>
       <p className="mb-4 text-center text-sm font-semibold text-emerald-400">{formatIntervalSummary(template)}</p>
 
       <div className="flex flex-wrap items-start justify-center gap-2">
