@@ -149,21 +149,22 @@ function View2UltraLeanFace({
       ) : (
         <div className="h-px w-16 shrink-0 self-center" style={{ backgroundColor: lineColor, opacity: 0.55 }} />
       )}
-      <div className="flex min-h-0 min-w-0 w-full flex-1 flex-col items-stretch justify-between pt-0.5 pb-0 sm:pt-2 sm:pb-1">
+      <div className="flex min-h-0 min-w-0 w-full flex-1 flex-col-reverse sm:flex-col items-stretch justify-between pt-0.5 pb-0 sm:pt-2 sm:pb-1">
         <div className="flex min-w-0 shrink-0 flex-col items-stretch">
-          <p className="text-center text-xs font-normal text-slate-300 sm:text-sm max-w-[170px]  mx-auto">
+          <p className="text-center text-xs font-normal text-slate-300 sm:text-sm max-w-[170px] mx-auto">
             {template.template_name}
-            
           </p>
           {lowerExtra}
         </div>
+
         <div className="w-full text-center">
-  <span className="shrink-0 text-2xl leading-none">{template.icon}</span>
-    </div>
+          <span className="shrink-0 text-2xl leading-none">{template.icon}</span>
+        </div>
+
         <span
           className="mt-0 shrink-0 self-center select-none text-xl leading-none sm:mt-20 sm:text-2xl md:text-2xl lg:text-3xl"
-          aria-hidden>
-        </span>
+          aria-hidden
+        />
       </div>
     </div>
   );
