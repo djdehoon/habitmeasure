@@ -3,7 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 
 /**
  * Redeem a normalized invite for a user using a service-role Supabase client.
- * Same rules as POST /api/beta/redeem.
+ * Transactional Server Action for invite redemption.
  */
 export async function redeemInviteForUserWithServiceClient(
   service: SupabaseClient,
