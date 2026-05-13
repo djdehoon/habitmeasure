@@ -37,7 +37,7 @@ const PROGRESS_STROKE = 4;
 const RING_FRAME_CLASS =
   "relative mx-auto aspect-square w-full min-w-0 max-w-40 overflow-hidden rounded-full sm:max-w-48 md:max-w-56 lg:max-w-64";
 
-const VIEW2_CARD_PY = "py-4 sm:py-6 md:py-8 lg:py-10";
+const VIEW2_CARD_PY = "py-2 sm:py-4 md:py-6 lg:py-8";
 
 const VIEW2_TIME_TEXT =
   "font-mono font-light tabular-nums text-xl sm:text-2xl md:text-3xl lg:text-4xl";
