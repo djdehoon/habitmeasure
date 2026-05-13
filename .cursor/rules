@@ -1,29 +1,36 @@
-# HabitMeasure — Cursor Rules v1.0
+# HabitMeasure — Cursor Rules v4.0
 
 ## PROJECT
-Marketing landing page for HabitMeasure — a habit timer app.
+Marketing landing page + Lab for HabitMeasure — a habit timer app.
 Tagline: "Kleine gewoontes. Grote verandering. Jij meet het."
-Goal: Capture waitlist emails. No working app features yet.
+Goal: Capture waitlist emails + Beta tester lab access.
 Audience: People (28–45) who want to build healthy habits and track progress.
+Live: habitmeasure.com
+Local: C:\Users\djdeh\Development\HabitMeasure
 
 ## TECH STACK
-- Next.js 14 (App Router)
+- Next.js 16 (App Router)
 - TypeScript (strict — no `any`)
 - Tailwind CSS
 - Framer Motion (animations)
-- Supabase (waitlist: `app/api/waitlist` + anon key only)
+- Supabase (auth + database + waitlist)
 - Vercel (deployment — auto-deploy on push to main)
 
 ## ROUTING
-/ → Marketing landing page (only page for now)
+/ → Marketing landing page
+/lab → Lab environment (beta testers only)
+/beta → Beta signup page (invite code required)
 
 ## CODE RULES
 - Read the codebase first — only change what is asked
+- NEVER rewrite existing code — always copy and extend
+- NEVER remove anything from existing files without explicit permission
 - Add "use client" when using: useState, useEffect, onClick, Framer Motion, localStorage, window
 - Use next/image for images, next/link for internal navigation
 - Mobile-first. Every section must work on iPhone.
 - No external images — CSS/SVG/Tailwind only for mockups
 - Animations: smooth, not flashy
+- Code and comments in English
 
 ## BRANCH & VERSIE
 - Work directly on `main` — no dev branch
@@ -54,10 +61,12 @@ vX.Y.Z type(scope): Imperatieve beschrijving (Engels, geen punt, ≤50 tekens)
 Types: feat ✨ | fix 🐛 | refactor ♻️ | chore 🔧 | style 🎨 | docs 📝 | perf ⚡
 
 Voorbeelden:
+  v1.6.5 feat(beta): Add invite-only lab access
+  v1.6.4 feat(landing): Modernize landing + AI focus
+  v1.6.3 feat(interval-timer): Add work/rest cycles
   v1.1.0 feat(mockups): Replace product preview mockups
   v1.1.1 feat(waitlist): Add Beehiiv email capture
   v1.1.2 fix(mobile): Fix overflow on small screens
-  v1.0.2 chore: Add cursor rules and fix gitignore
 
 ## DESIGN SYSTEM — "Morning Energy"
 Philosophy: Fresh, light, energetic, positive. Clean and minimal.
@@ -70,6 +79,8 @@ Colors:
   bg-elevated:     #ECEEF2    elevated cards
   color-teal:      #00E5C0    mint/teal — primary accent (energy, growth)
   color-teal-dark: #0C3D3A    dark teal — gradient depth
+  color-green:     #27AE60    success, completed
+  color-red:       #E74C3C    error, warning
   text-primary:    #1A1A2E    dark text on light background
   text-secondary:  #6B7280    subtle text
   text-muted:      #9CA3AF    placeholder / muted
@@ -78,7 +89,6 @@ Colors:
 Typography:
   Headlines: Plus Jakarta Sans (700, 900)
   Body:      Inter (400, 500)
-
 
 Hero background:
   radial-gradient(ellipse 80% 50% at 20% 40%, rgba(168,255,62,0.06) 0%, transparent 60%),
@@ -94,6 +104,16 @@ Primary button:
   background: #A8FF3E; color: #0C0F14; font-weight: 700;
   border-radius: 100px; padding: 14px 32px;
 
+## FOLDER STRUCTURE
+```
+app/          → Next.js App Router pages and layouts
+components/   → Reusable React components
+lib/          → Utilities, helpers
+types/        → TypeScript type definitions
+public/       → Static files
+.cursor/      → Cursor rules (gitignore: *.log, not rules itself)
+```
+
 ## FORBIDDEN
 - No `pages/` directory — only `app/`
 - No `any` types in TypeScript
@@ -101,6 +121,197 @@ Primary button:
 - No service_role / server-only Supabase secrets in the app
 - No external images for mockups
 - Never delete code without explicit approval
+
+---
+
+## DEVELOPMENT PROTOCOL (Lessons from Beta System — May 12, 2026)
+
+### THE 3 GOLDEN RULES
+
+#### RULE 1: CONSISTENCY FIRST ⚡
+*Before writing code: is everything consistent?*
+
+**Checklist (5 min):**
+- [ ] All function names consistent? (camelCase, SCREAMING_SNAKE_CASE, etc.)
+- [ ] All parameter names consistent?
+- [ ] All variable names consistent?
+- [ ] All clients (Supabase, Service Role) used the same way?
+- [ ] Naming conventions aligned?
+
+**How to check:**
+```bash
+# Cursor command:
+"Audit code for naming consistency before deployment"
+```
+
+**Why?** Inconsistency = bugs that cost hours to debug.
+
+---
+
+#### RULE 2: PERMISSIONS SECOND 🔐
+*Before deploying: are permissions correct?*
+
+**Checklist (10 min):**
+- [ ] RLS policies correctly set?
+- [ ] Role permissions (SELECT, UPDATE, INSERT, DELETE)?
+- [ ] Service role has correct privileges?
+- [ ] Policies aligned with code logic?
+
+**How to check:**
+```sql
+-- In Supabase SQL Editor:
+-- 1. Check RLS policies
+SELECT * FROM information_schema.role_table_grants 
+WHERE table_name = 'your_table';
+
+-- 2. Check service_role privileges
+GRANT ALL ON public.your_table TO service_role;
+
+-- 3. Test query with service_role
+SELECT * FROM your_table;  -- Must work
+UPDATE your_table SET ... WHERE ...;  -- Must work
+```
+
+**Why?** Permission errors (code 42501) are silent killers — validation works, but update fails.
+
+---
+
+#### RULE 3: SQL VALIDATION THIRD ✅
+*Before running code: does SQL work?*
+
+**Checklist (10 min):**
+- [ ] Test the EXACT query the code will run
+- [ ] Manually test in Supabase SQL Editor
+- [ ] Check permissions with role-specific queries
+- [ ] Test edge cases (empty results, null values, etc.)
+
+**How to check:**
+```sql
+-- In Supabase SQL Editor:
+
+-- 1. Test SELECT
+SELECT * FROM beta_testers WHERE invite_code = 'TEST_CODE';
+
+-- 2. Test UPDATE
+UPDATE beta_testers 
+SET use_count = use_count + 1 
+WHERE invite_code = 'TEST_CODE';
+
+-- 3. Verify result
+SELECT * FROM beta_testers WHERE invite_code = 'TEST_CODE';
+```
+
+**Why?** SQL errors are the most preventable bugs. Testing in SQL Editor = 10x faster debugging.
+
+---
+
+### DEVELOPMENT WORKFLOW (Step by Step)
+
+**STEP 1: PLANNING (5 min)**
+```
+1. What do you want to build? (feature/fix)
+2. Which tables/functions needed?
+3. Which permissions needed?
+```
+
+**STEP 2: CONSISTENCY AUDIT (5 min)**
+```
+Cursor: "Audit code for naming consistency"
+→ Search for inconsistencies
+→ Fix before continuing
+```
+
+**STEP 3: SQL VALIDATION (10 min)**
+```
+Supabase SQL Editor:
+1. Test SELECT query
+2. Test UPDATE/INSERT/DELETE query
+3. Verify permissions
+4. Test edge cases
+```
+
+**STEP 4: PERMISSION AUDIT (10 min)**
+```
+Supabase Dashboard:
+1. Check RLS policies
+2. Check role privileges
+3. Run permission check SQL
+4. Verify service_role has access
+```
+
+**STEP 5: CODE IMPLEMENTATION (30-60 min)**
+```
+Cursor:
+1. Write code
+2. Use exact SQL from step 3
+3. Handle errors properly
+4. Add logging for debugging
+```
+
+**STEP 6: LOCAL TESTING (10 min)**
+```
+npm run dev
+→ Test feature locally
+→ Check console for errors
+→ Verify Supabase logs
+```
+
+**STEP 7: DEPLOY (5 min)**
+```
+git add .
+git commit -m "..."
+git push
+→ Vercel deploys automatically
+→ Monitor logs
+```
+
+---
+
+### DEBUG PROTOCOL
+
+**Scenario 1: Code works locally, but not on Vercel**
+```
+1. Check Vercel logs (not console logs!)
+2. Check Supabase logs (SQL Editor → Logs)
+3. Check permissions (service_role)
+4. Check environment variables
+```
+
+**Scenario 2: Query works in SQL Editor, but not in code**
+```
+1. Print exact query in console
+2. Copy-paste in SQL Editor
+3. Check if result is same
+4. Check permissions context
+```
+
+**Scenario 3: Permission denied (code 42501)**
+```
+1. STOP debugging code
+2. Go to Supabase SQL Editor
+3. Run: GRANT ALL ON public.table_name TO service_role;
+4. Test query again
+5. Then test code
+```
+
+**Why this order?** 90% of bugs are permission/SQL issues, not code issues.
+
+---
+
+### CURSOR COMMANDS (Development Protocol)
+
+When starting a session:
+- "Audit code for naming consistency before deployment"
+- "Check for inconsistent function names"
+- "Review permission logic"
+- "Find all Supabase queries"
+
+When debugging:
+- "Check Supabase logs, not console logs"
+- "Test query in SQL Editor first"
+- "Verify service_role permissions"
+
+---
 
 ## WERKWIJZE (always follow)
 1. Read .cursor/rules + scan existing codebase
@@ -160,3 +371,7 @@ WAAROM?
 - ✅ Geen "Planning next moves" hang
 - ✅ 3-6x sneller
 - ✅ 95% succes-rate
+
+---
+
+*Last updated: May 13, 2026 — v4.0 (Development Protocol added)*
