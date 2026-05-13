@@ -54,19 +54,6 @@ export function TimerGridClient({ templates }: { templates: TimerTemplate[] }) {
           <button
             type="button"
             role="tab"
-            aria-selected={viewMode === "view1"}
-            onClick={() => handleViewChange("view1")}
-            className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
-              viewMode === "view1"
-                ? "bg-emerald-500 text-slate-950"
-                : "bg-slate-800 text-slate-300 hover:bg-slate-700"
-            }`}
-          >
-            View 1
-          </button>
-          <button
-            type="button"
-            role="tab"
             aria-selected={viewMode === "view2"}
             onClick={() => handleViewChange("view2")}
             className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
@@ -76,6 +63,19 @@ export function TimerGridClient({ templates }: { templates: TimerTemplate[] }) {
             }`}
           >
             View 2
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={viewMode === "view1"}
+            onClick={() => handleViewChange("view1")}
+            className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
+              viewMode === "view1"
+                ? "bg-emerald-500 text-slate-950"
+                : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+            }`}
+          >
+            View 1
           </button>
           <button
             type="button"
