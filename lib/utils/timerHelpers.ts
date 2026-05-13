@@ -71,6 +71,35 @@ export const TIMER_COLORS = [
   "#34495E",
 ] as const;
 
+const TIMER_COLOR_LABELS = [
+  "Teal",
+  "Yellow",
+  "Orange",
+  "Red",
+  "Green",
+  "Deep teal",
+  "Purple",
+  "Slate",
+] as const;
+
+function normalizeHexForMatch(hex: string): string {
+  const t = hex.trim();
+  if (!t) return "";
+  const body = t.startsWith("#") ? t.slice(1) : t;
+  return body.toUpperCase();
+}
+
+/** Short label for a palette swatch, or `"Custom"` when the hex is not in `TIMER_COLORS`. */
+export function labelForTimerColor(hex: string): string {
+  const key = normalizeHexForMatch(hex);
+  for (let i = 0; i < TIMER_COLORS.length; i++) {
+    if (normalizeHexForMatch(TIMER_COLORS[i]) === key) {
+      return TIMER_COLOR_LABELS[i];
+    }
+  }
+  return "Custom";
+}
+
 export const TIMER_ICONS = ["⏱️", "🏋️", "🧘", "📚", "🎯", "🏃", "💪", "🧠", "⚡", "🌅"] as const;
 
 export const QUICK_ADD_BUTTONS: ReadonlyArray<{ label: string; value: AddTimeButtonValue }> = [

@@ -51,18 +51,20 @@ export function TimerCardView2({ template }: TimerCardView2Props) {
   return <TimerCardView2Fallback template={template} />;
 }
 
+type RingProgressMode = "none" | "full" | "partial";
+
 function TimerRing({
   strokeOffset,
   circumference,
+  routineColor,
   progressStroke,
-  showProgress,
-  fullComplete,
+  progressMode,
 }: {
   strokeOffset: number;
   circumference: number;
+  routineColor: string;
   progressStroke: string;
-  showProgress: boolean;
-  fullComplete: boolean;
+  progressMode: RingProgressMode;
 }) {
   return (
     <svg className="h-full w-full -rotate-90" viewBox={`0 0 ${VIEWBOX} ${VIEWBOX}`} aria-hidden>
@@ -71,22 +73,23 @@ function TimerRing({
         cy={CENTER}
         r={RING_RADIUS}
         fill="none"
-        className="stroke-slate-600"
+        stroke={routineColor}
+        strokeOpacity={0.3}
         strokeWidth={TRACK_STROKE}
       />
-      {fullComplete ? (
+      {progressMode === "full" ? (
         <circle
           cx={CENTER}
           cy={CENTER}
           r={RING_RADIUS}
           fill="none"
-          stroke="#10b981"
+          stroke={routineColor}
           strokeWidth={PROGRESS_STROKE}
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={0}
         />
-      ) : showProgress ? (
+      ) : progressMode === "partial" ? (
         <circle
           cx={CENTER}
           cy={CENTER}
@@ -140,6 +143,7 @@ function View2UltraLeanFace({
 }
 
 function TimerCardView2Countdown({ template }: { template: TimerTemplate }) {
+  const routineColor = template.color?.trim() || "#00E5C0";
   const durationSeconds = Math.max(1, Math.floor(Number(template.duration_seconds)));
   const { state, timeRemaining, progress, start, pause, resume } = useCountdown(durationSeconds);
   const circumference = useMemo(() => 2 * Math.PI * RING_RADIUS, []);
@@ -186,16 +190,8 @@ function TimerCardView2Countdown({ template }: { template: TimerTemplate }) {
   const progressStroke =
     state === "paused" ? "#fbbf24" : state === "finished" ? "#10b981" : "#34d399";
 
-  const hint =
-    state === "idle"
-      ? "Tap to start"
-      : state === "running"
-        ? "Tap to pause"
-        : state === "paused"
-          ? "Tap to resume"
-          : "Tap to restart";
-
-  const showArc = state === "running" || state === "paused" || state === "finished";
+  const ringProgressMode: RingProgressMode =
+    state === "idle" ? "full" : state === "finished" ? "none" : "partial";
 
   const upperSlot =
     state === "paused" ? (
@@ -235,9 +231,9 @@ function TimerCardView2Countdown({ template }: { template: TimerTemplate }) {
         <TimerRing
           circumference={circumference}
           strokeOffset={strokeOffset}
+          routineColor={routineColor}
           progressStroke={progressStroke}
-          showProgress={showArc && state !== "finished"}
-          fullComplete={state === "finished"}
+          progressMode={ringProgressMode}
         />
         <View2UltraLeanFace
           template={template}
@@ -247,15 +243,12 @@ function TimerCardView2Countdown({ template }: { template: TimerTemplate }) {
           lowerExtra={lowerExtra}
         />
       </div>
-
-      <p className={`mt-6 text-xs ${state === "idle" ? "font-light text-slate-600" : "font-normal text-slate-500"}`}>
-        {hint}
-      </p>
     </div>
   );
 }
 
 function TimerCardView2Interval({ template }: { template: TimerTemplate }) {
+  const routineColor = template.color?.trim() || "#00E5C0";
   const work = Math.max(1, Math.floor(Number(template.work_seconds)));
   const rest = Math.max(1, Math.floor(Number(template.rest_seconds)));
   const rounds = Math.max(1, Math.floor(Number(template.rounds)));
@@ -307,16 +300,9 @@ function TimerCardView2Interval({ template }: { template: TimerTemplate }) {
           ? "#ef4444"
           : "#22c55e";
 
-  const hint =
-    runState === "idle"
-      ? "Tap to start"
-      : runState === "running"
-        ? "Tap to pause"
-        : runState === "paused"
-          ? "Tap to resume"
-          : "Tap to restart";
+  const ringProgressMode: RingProgressMode =
+    runState === "idle" ? "full" : runState === "finished" ? "none" : "partial";
 
-  const showArc = runState === "running" || runState === "paused" || runState === "finished";
   const roundLabel = `${Math.min(displayRound, rounds)}/${rounds}`;
 
   const upperSlot =
@@ -369,9 +355,9 @@ function TimerCardView2Interval({ template }: { template: TimerTemplate }) {
         <TimerRing
           circumference={circumference}
           strokeOffset={strokeOffset}
+          routineColor={routineColor}
           progressStroke={progressStroke}
-          showProgress={showArc && runState !== "finished"}
-          fullComplete={runState === "finished"}
+          progressMode={ringProgressMode}
         />
         <View2UltraLeanFace
           template={template}
@@ -381,10 +367,6 @@ function TimerCardView2Interval({ template }: { template: TimerTemplate }) {
           lowerExtra={lowerExtra}
         />
       </div>
-
-      <p className={`mt-6 text-xs ${runState === "idle" ? "font-light text-slate-600" : "font-normal text-slate-500"}`}>
-        {hint}
-      </p>
     </div>
   );
 }

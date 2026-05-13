@@ -14,6 +14,7 @@ import {
   normalizeAddTimeButtons,
   validateCountdownTemplateForm,
   validateIntervalTemplateForm,
+  labelForTimerColor,
   type AddTimeButtonValue,
   type CountdownTemplateFormData,
   type CountdownTemplateFormErrors,
@@ -128,6 +129,8 @@ export function AddTimerModal({ open, onClose, timerType, editingTemplateId = nu
 
   if (!open) return null;
 
+  const previewColor = activeKind === "interval" ? intervalFormData.color : formData.color;
+
   const handleDone = async () => {
     if (activeKind === "interval") {
       const validationErrors = validateIntervalTemplateForm(intervalFormData);
@@ -238,6 +241,17 @@ export function AddTimerModal({ open, onClose, timerType, editingTemplateId = nu
           ) : null}
           {error ? (
             <p className="mb-4 rounded-md border border-red-500/20 bg-red-500/10 p-2 text-sm text-red-300">{error}</p>
+          ) : null}
+
+          {!isFetchingTemplate ? (
+            <div className="mb-4 flex items-center gap-3">
+              <div
+                className="h-8 w-8 shrink-0 rounded-full border-2 border-white/20"
+                style={{ backgroundColor: previewColor }}
+                aria-hidden
+              />
+              <span className="text-sm font-medium text-slate-200">{labelForTimerColor(previewColor)}</span>
+            </div>
           ) : null}
 
           {activeKind === "interval" ? (
