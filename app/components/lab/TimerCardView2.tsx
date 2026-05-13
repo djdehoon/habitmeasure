@@ -215,7 +215,7 @@ function TimerCardView2Countdown({ template }: { template: TimerTemplate }) {
           ? `Resume timer for ${template.template_name}`
           : `Restart timer for ${template.template_name}`;
 
-  const progressStroke = state === "finished" ? "#10b981" : "#34d399";
+  const progressStroke = state === "finished" ? "#10b981" : routineColor;
 
   const ringProgressMode: RingProgressMode =
     state === "idle" ? "full" : state === "finished" ? "none" : "partial";
@@ -318,12 +318,7 @@ function TimerCardView2Interval({ template }: { template: TimerTemplate }) {
           ? `Resume interval for ${template.template_name}`
           : `Restart interval for ${template.template_name}`;
 
-  const progressStroke =
-    runState === "finished"
-      ? "#10b981"
-      : phase === "work"
-        ? "#ef4444"
-        : "#22c55e";
+  const progressStroke = runState === "finished" ? "#10b981" : routineColor;
 
   const ringProgressMode: RingProgressMode =
     runState === "idle" ? "full" : runState === "finished" ? "none" : "partial";
