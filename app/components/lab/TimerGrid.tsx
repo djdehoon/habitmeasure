@@ -1,6 +1,6 @@
 import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { TimerGridClient } from "@/app/components/lab/TimerGridClient";
 import type { TimerTemplate } from "@/lib/utils/timerHelpers";
-import { TimerCard } from "@/app/components/lab/TimerCard";
 
 export default async function TimerGrid() {
   const supabase = await getSupabaseServerClient();
@@ -37,11 +37,5 @@ export default async function TimerGrid() {
     );
   }
 
-  return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {templates.map((template) => (
-        <TimerCard key={template.id} template={template} />
-      ))}
-    </div>
-  );
+  return <TimerGridClient templates={templates} />;
 }
