@@ -13,6 +13,7 @@ type TimerTypeOption = {
   name: string;
   emoji: string;
   enabled: boolean;
+  subtitle?: string;
 };
 
 const TIMER_TYPES: TimerTypeOption[] = [
@@ -20,7 +21,13 @@ const TIMER_TYPES: TimerTypeOption[] = [
   { id: "quick", name: "Quick Timer", emoji: "⏳", enabled: false },
   { id: "countup", name: "CountUp Timer", emoji: "⏱️", enabled: false },
   { id: "pomodoro", name: "Pomodoro Timer", emoji: "🍅", enabled: false },
-  { id: "interval", name: "Morning Session", emoji: "⏰", enabled: true },
+  {
+    id: "interval",
+    name: "Morning Session",
+    emoji: "⏰",
+    enabled: true,
+    subtitle: "Interval timer · work & rest",
+  },
   { id: "stopwatch", name: "Stopwatch", emoji: "⏱️", enabled: false },
   { id: "counter", name: "Counter", emoji: "🔢", enabled: false },
   { id: "clock", name: "Clock", emoji: "🕐", enabled: false },
@@ -75,14 +82,19 @@ export function TimerTypeSelector({ open, onClose, onSelect }: TimerTypeSelector
                   : "border-white/10 bg-slate-950/80 text-slate-500 hover:bg-slate-800/80"
               }`}
             >
-              <div className="flex items-center justify-between gap-3">
-                <span className="font-medium">
-                  {timerType.emoji} {timerType.name}
-                </span>
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <span className="font-medium">
+                    {timerType.emoji} {timerType.name}
+                  </span>
+                  {timerType.subtitle ? (
+                    <p className="mt-0.5 text-xs leading-snug text-slate-400">{timerType.subtitle}</p>
+                  ) : null}
+                </div>
                 {timerType.enabled ? (
-                  <span className="text-xs font-semibold text-emerald-300">Available</span>
+                  <span className="shrink-0 text-xs font-semibold text-emerald-300">Available</span>
                 ) : (
-                  <span className="rounded bg-slate-800 px-2 py-0.5 text-xs text-slate-400">Coming soon</span>
+                  <span className="shrink-0 rounded bg-slate-800 px-2 py-0.5 text-xs text-slate-400">Coming soon</span>
                 )}
               </div>
             </button>
