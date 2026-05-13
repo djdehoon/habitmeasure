@@ -58,7 +58,7 @@ export function TimerGridWrapper({ children }: TimerGridWrapperProps) {
               onClick={() => setIsTypeSelectorOpen(true)}
               className="rounded-lg bg-emerald-400 px-4 py-2 font-semibold text-slate-950 shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-300"
             >
-              + Add routine
+              + Add timer
             </button>
             <button
               type="button"

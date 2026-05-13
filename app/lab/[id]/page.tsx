@@ -40,7 +40,7 @@ export default async function LabTimerPage({ params }: LabTimerPageProps) {
   const isInterval =
     timer.timer_type === "interval" && Number.isFinite(work) && work > 0 && Number.isFinite(rest) && rest > 0 && Number.isFinite(rounds) && rounds > 0;
 
-  const heading = isInterval ? "Morning session" : "Countdown routine";
+  const heading = timer.timer_type;
 
   return (
     <div className="min-h-screen bg-transparent">

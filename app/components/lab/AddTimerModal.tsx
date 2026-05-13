@@ -47,8 +47,7 @@ export function AddTimerModal({ open, onClose, timerType, editingTemplateId = nu
   const submitLabel = useMemo(() => {
     if (isSubmitting) return "Saving...";
     if (isEditMode) return "Save Changes";
-    if (activeKind === "interval") return "Create morning session";
-    return "Done";
+        return "Done";
   }, [isEditMode, isSubmitting, activeKind]);
 
   const resetForm = () => {

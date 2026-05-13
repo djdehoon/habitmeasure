@@ -1,6 +1,10 @@
 {
   "name": "habitmeasure",
+<<<<<<< HEAD
   "version": "1.6.11",
+=======
+  "version": "1.6.9",
+>>>>>>> 645a816e606203c213ed3864f5b1dd8e5ee65892
   "private": true,
   "scripts": {
     "dev": "next dev",

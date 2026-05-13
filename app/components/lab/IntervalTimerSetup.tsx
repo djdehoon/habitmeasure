@@ -25,7 +25,7 @@ export function IntervalTimerSetup({
 }: IntervalTimerSetupProps) {
   return (
     <div className="mx-auto w-full max-w-2xl rounded-xl border border-white/10 bg-slate-900/70 p-5 text-slate-100">
-      <h1 className="mb-5 text-2xl font-bold text-slate-100">Morning session setup</h1>
+      <h1 className="mb-5 text-2xl font-bold text-slate-100">Interval timer setup</h1>
 
       <div className="space-y-4">
         <label className="block">

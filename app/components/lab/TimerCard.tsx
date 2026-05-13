@@ -34,7 +34,7 @@ export function TimerCard({ template }: TimerCardProps) {
       </div>
 
       <div className="mb-4 flex items-center justify-between text-sm text-slate-400">
-        <span className="font-medium">{template.timer_type === "interval" ? "Morning session" : "Duration"}</span>
+        <span className="font-medium">{"Duration"}</span>
         <span className="text-base font-bold text-slate-100">{formatIntervalSummary(template)}</span>
       </div>
 
