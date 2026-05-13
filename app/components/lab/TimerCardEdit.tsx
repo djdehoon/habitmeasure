@@ -26,16 +26,16 @@ export function TimerCardEdit({ template }: TimerCardEditProps) {
       <p className="mb-2 text-center text-xs text-slate-400">{TYPE_LABEL[template.timer_type]}</p>
       <p className="mb-4 text-center text-sm font-semibold text-emerald-400">{formatIntervalSummary(template)}</p>
 
-      <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
+      <div className="flex flex-wrap items-start justify-center gap-2">
         <button
           type="button"
           onClick={() => router.push(`/lab?edit=${template.id}`)}
-          className="flex-1 rounded-lg bg-emerald-500 px-3 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-400"
+          className="rounded-md border border-red-400/40 bg-slate-950/80 px-3 py-1.5 text-sm text-red-300 transition hover:bg-red-500/10"
         >
           Edit
         </button>
-        <div className="flex-1">
-          <TimerDeleteButton templateId={template.id} onDeleted={() => router.refresh()} variant="prominent" />
+        <div>
+          <TimerDeleteButton templateId={template.id} onDeleted={() => router.refresh()} />
         </div>
       </div>
     </article>
