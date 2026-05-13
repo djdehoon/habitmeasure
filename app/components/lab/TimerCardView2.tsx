@@ -125,7 +125,7 @@ function TimerRing({
   );
 }
 
-/** Icon + time / thin line / name + extras. Ultra-lean typography. */
+/** Time / thin line / name + extras / icon at bottom. Ultra-lean typography. */
 function View2UltraLeanFace({
   template,
   lineColor,
@@ -141,13 +141,7 @@ function View2UltraLeanFace({
 }) {
   return (
     <div className="absolute inset-0 flex min-h-0 min-w-0 flex-col p-1 sm:p-0.5">
-      <div className="flex min-h-0 min-w-0 w-full flex-1 flex-col items-center justify-end gap-0.5 pb-1.5 pt-0.5 sm:pt-0">
-        <span
-          className="select-none text-xl leading-none sm:text-2xl md:text-2xl lg:text-3xl"
-          aria-hidden
-        >
-          {template.icon}
-        </span>
+      <div className="flex min-h-0 min-w-0 w-full flex-1 flex-col items-center justify-end pb-1.5 pt-0.5 sm:pt-0">
         {upperSlot}
       </div>
       {useNeutralLine ? (
@@ -155,11 +149,19 @@ function View2UltraLeanFace({
       ) : (
         <div className="h-px w-16 shrink-0 self-center" style={{ backgroundColor: lineColor, opacity: 0.4 }} />
       )}
-      <div className="flex min-h-0 min-w-0 w-full flex-1 flex-col items-stretch justify-start pt-2">
-        <p className="w-full min-w-0 max-w-full self-stretch text-balance text-center text-xs font-normal leading-snug break-words text-slate-300 [overflow-wrap:anywhere] sm:text-sm">
-          {template.template_name}
-        </p>
-        {lowerExtra}
+      <div className="flex min-h-0 min-w-0 w-full flex-1 flex-col items-stretch justify-between pt-2">
+        <div className="flex min-w-0 shrink-0 flex-col items-stretch">
+          <p className="w-full min-w-0 max-w-full self-stretch text-balance text-center text-xs font-normal leading-snug break-words text-slate-300 [overflow-wrap:anywhere] sm:text-sm">
+            {template.template_name}
+          </p>
+          {lowerExtra}
+        </div>
+        <span
+          className="mt-1 shrink-0 self-center select-none text-xl leading-none sm:text-2xl md:text-2xl lg:text-3xl"
+          aria-hidden
+        >
+          {template.icon}
+        </span>
       </div>
     </div>
   );
