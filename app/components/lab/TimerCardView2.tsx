@@ -145,22 +145,24 @@ function View2UltraLeanFace({
         {upperSlot}
       </div>
       {useNeutralLine ? (
-        <div className="h-px w-16 shrink-0 self-center bg-slate-600/50" />
+        <div className="h-px w-16 shrink-0 self-center bg-white/30" />
       ) : (
-        <div className="h-px w-16 shrink-0 self-center" style={{ backgroundColor: lineColor, opacity: 0.4 }} />
+        <div className="h-px w-16 shrink-0 self-center" style={{ backgroundColor: lineColor, opacity: 0.55 }} />
       )}
       <div className="flex min-h-0 min-w-0 w-full flex-1 flex-col items-stretch justify-between pt-0.5 pb-0 sm:pt-2 sm:pb-1">
         <div className="flex min-w-0 shrink-0 flex-col items-stretch">
           <p className="w-full min-w-0 max-w-full self-stretch text-balance text-center text-xs font-normal leading-snug break-words text-slate-300 [overflow-wrap:anywhere] sm:text-sm">
             {template.template_name}
+            
           </p>
           {lowerExtra}
         </div>
+        <div className="w-full text-center">
+  <span className="shrink-0 text-2xl leading-none">{template.icon}</span>
+    </div>
         <span
-          className="mt-0 shrink-0 self-center select-none text-xl leading-none sm:mt-0.5 sm:text-2xl md:text-2xl lg:text-3xl"
-          aria-hidden
-        >
-          {template.icon}
+          className="mt-0 shrink-0 self-center select-none text-xl leading-none sm:mt-20 sm:text-2xl md:text-2xl lg:text-3xl"
+          aria-hidden>
         </span>
       </div>
     </div>
