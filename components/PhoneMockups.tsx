@@ -70,7 +70,7 @@ export function PhoneMockups() {
               ["Focus Timer", "25m"],
               ["Morning routine", "30m"],
               ["Wind down", "30m"],
-              ["Workout", "45m"],
+              ["Routine", "45m"],
               ["Mindfulness", "10m"],
               ["Reading", "20m"],
             ].map(([label, streak]) => (

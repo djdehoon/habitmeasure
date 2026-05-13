@@ -25,7 +25,7 @@ const TIMERS = [
   },
   {
     icon: "🏃",
-    title: "Workout",
+    title: "Routine",
     duration: "45 minuten",
     description: "Sport & energy",
   },

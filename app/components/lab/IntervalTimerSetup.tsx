@@ -35,7 +35,7 @@ export function IntervalTimerSetup({
             value={formData.templateName}
             maxLength={50}
             onChange={(event) => onChange({ templateName: event.target.value })}
-            placeholder="Name your workout"
+            placeholder="Name your routine"
             className="w-full rounded-md border border-[rgba(0,0,0,0.12)] bg-white px-3 py-2 text-[#1A1A2E]"
           />
           {errors.templateName ? <p className="mt-1 text-xs text-[#E74C3C]">{errors.templateName}</p> : null}

@@ -165,7 +165,7 @@ export function IntervalTimerCountdown({
         >
           <div className="max-w-sm rounded-2xl bg-white px-8 py-10 text-center shadow-lg">
             <h2 id="interval-complete-title" className="heading-font text-2xl font-bold text-[#0C3D3A]">
-              Workout Complete!
+              Routine Complete!
             </h2>
             <button
               type="button"

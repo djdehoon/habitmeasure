@@ -42,7 +42,7 @@ export function Hero() {
           variants={itemVariants}
         >
           <span className="bg-gradient-to-br from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
-            AI genereert jouw workout.
+            AI generates your routine.
           </span>
           <br />
           <span className="text-slate-100">Jij voert hem uit.</span>{" "}
@@ -53,7 +53,7 @@ export function Hero() {
           className="max-w-xl font-sans text-base leading-relaxed text-slate-400 md:text-lg"
           variants={itemVariants}
         >
-          Van Tabata tot focus-sessies: slimme timers, duidelijke fases en inzicht in wat je echt volhoudt.
+          From morning sessions to focus sessions: smart timers, clear phases, and insight into what you actually stick with.
         </motion.p>
 
         <motion.div

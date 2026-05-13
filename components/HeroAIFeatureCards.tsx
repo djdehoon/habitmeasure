@@ -5,7 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 const cards = [
   {
     title: "AI Genereert",
-    body: "Workouts en timers die passen bij jouw tempo, doelen en beschikbare tijd.",
+    body: "Routines and timers that fit your pace, goals, and available time.",
     icon: (
       <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" aria-hidden>
         <path

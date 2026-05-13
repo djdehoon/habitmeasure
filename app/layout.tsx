@@ -19,17 +19,17 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "HabitMeasure — AI workouts. Jouw ritme.",
+  title: "HabitMeasure — AI routines. Your rhythm.",
   description:
-    "AI genereert jouw workout; jij voert hem uit. Timers, fases en voortgang — alles in één app.",
+    "AI generates your routine; you follow through. Timers, phases, and progress — all in one app.",
   icons: {
     icon: "/images/icons/favicon.png",
     apple: "/images/icons/apple-touch-icon.png",
   },
   openGraph: {
-    title: "HabitMeasure — AI workouts. Jouw ritme.",
+    title: "HabitMeasure — AI routines. Your rhythm.",
     description:
-      "AI genereert jouw workout; jij voert hem uit. Timers, fases en voortgang — alles in één app.",
+      "AI generates your routine; you follow through. Timers, phases, and progress — all in one app.",
     url: "https://habitmeasure.com",
     siteName: "HabitMeasure",
     images: [
@@ -44,9 +44,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "HabitMeasure — AI workouts",
+    title: "HabitMeasure — AI routines",
     description:
-      "AI genereert jouw workout; jij voert hem uit. Wij volgen je voortgang.",
+      "AI generates your routine; you follow through. We track your progress.",
     images: ["/images/icons/og-image.png"],
   },
   manifest: "/manifest.json",
