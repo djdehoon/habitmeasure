@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { playFinishSound, playPauseSound, playStartSound } from "@/app/lib/sounds";
 import { useCountdown } from "@/lib/hooks/useCountdown";
@@ -31,7 +31,8 @@ function hasValidIntervalFields(t: TimerTemplate): boolean {
 const RING_RADIUS = 56;
 const VIEWBOX = 160;
 const CENTER = VIEWBOX / 2;
-const STROKE = 10;
+const TRACK_STROKE = 2;
+const PROGRESS_STROKE = 4;
 
 type TimerCardView2Props = {
   template: TimerTemplate;
@@ -67,8 +68,8 @@ function TimerRing({
         cy={CENTER}
         r={RING_RADIUS}
         fill="none"
-        className="stroke-slate-700"
-        strokeWidth={STROKE}
+        className="stroke-slate-600"
+        strokeWidth={TRACK_STROKE}
       />
       {fullComplete ? (
         <circle
@@ -77,7 +78,7 @@ function TimerRing({
           r={RING_RADIUS}
           fill="none"
           stroke="#10b981"
-          strokeWidth={STROKE}
+          strokeWidth={PROGRESS_STROKE}
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={0}
@@ -89,7 +90,7 @@ function TimerRing({
           r={RING_RADIUS}
           fill="none"
           stroke={progressStroke}
-          strokeWidth={STROKE}
+          strokeWidth={PROGRESS_STROKE}
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={strokeOffset}
@@ -97,6 +98,45 @@ function TimerRing({
         />
       ) : null}
     </svg>
+  );
+}
+
+/** Upper (time) / thin line / lower (name + extras). Ultra-lean typography. */
+function View2UltraLeanFace({
+  template,
+  showIdleIcon,
+  lineColor,
+  useNeutralLine,
+  upperSlot,
+  lowerExtra,
+}: {
+  template: TimerTemplate;
+  showIdleIcon: boolean;
+  lineColor: string;
+  useNeutralLine: boolean;
+  upperSlot: ReactNode;
+  lowerExtra?: ReactNode;
+}) {
+  return (
+    <div className="absolute inset-0 flex min-h-0 flex-col px-3">
+      <div className="flex min-h-0 flex-1 flex-col items-center justify-end pb-2">
+        {showIdleIcon ? (
+          <div className="mb-1 text-2xl leading-none opacity-60" aria-hidden>
+            {template.icon}
+          </div>
+        ) : null}
+        {upperSlot}
+      </div>
+      {useNeutralLine ? (
+        <div className="h-px w-12 shrink-0 self-center bg-slate-600/50" />
+      ) : (
+        <div className="h-px w-12 shrink-0 self-center" style={{ backgroundColor: lineColor, opacity: 0.4 }} />
+      )}
+      <div className="flex min-h-0 flex-1 flex-col items-center justify-start pt-2">
+        <p className="max-w-[11rem] truncate text-center text-sm font-normal text-slate-300">{template.template_name}</p>
+        {lowerExtra}
+      </div>
+    </div>
   );
 }
 
@@ -156,16 +196,32 @@ function TimerCardView2Countdown({ template }: { template: TimerTemplate }) {
           ? "Tap to resume"
           : "Tap to restart";
 
-  const timeColor =
-    state === "running"
-      ? "text-emerald-400 motion-safe:animate-pulse"
-      : state === "paused"
-        ? "text-amber-300"
-        : state === "finished"
-          ? "text-emerald-400"
-          : "text-slate-100";
-
   const showArc = state === "running" || state === "paused" || state === "finished";
+
+  const upperSlot =
+    state === "paused" ? (
+      <div className="flex items-center justify-center gap-2">
+        <span className="font-mono text-xl font-light tabular-nums text-amber-300">{formatClock(timeRemaining)}</span>
+        <span className="text-xs font-normal uppercase tracking-wide text-amber-400">Paused</span>
+      </div>
+    ) : state === "finished" ? (
+      <span className="font-mono text-4xl font-light tabular-nums text-emerald-400">DONE</span>
+    ) : (
+      <span
+        className={`font-mono text-5xl font-light tabular-nums ${
+          state === "running"
+            ? "text-emerald-400 motion-safe:animate-pulse"
+            : "text-slate-100"
+        }`}
+      >
+        {formatClock(timeRemaining)}
+      </span>
+    );
+
+  const lowerExtra =
+    state === "finished" ? (
+      <p className="mt-2 text-center text-xs font-normal text-emerald-400/90">Complete</p>
+    ) : null;
 
   return (
     <div
@@ -176,11 +232,6 @@ function TimerCardView2Countdown({ template }: { template: TimerTemplate }) {
       onKeyDown={handleKeyToggle}
       className="cursor-pointer py-8 text-center outline-none transition motion-safe:hover:scale-[1.02] focus-visible:ring-2 focus-visible:ring-emerald-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
     >
-      <div className="mb-2 text-4xl leading-none opacity-80" aria-hidden>
-        {template.icon}
-      </div>
-      <p className="mb-6 truncate px-1 text-sm font-medium text-slate-400">{template.template_name}</p>
-
       <div className="relative mx-auto h-56 w-56">
         <TimerRing
           circumference={circumference}
@@ -189,18 +240,19 @@ function TimerCardView2Countdown({ template }: { template: TimerTemplate }) {
           showProgress={showArc && state !== "finished"}
           fullComplete={state === "finished"}
         />
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 px-2">
-          {state === "finished" ? (
-            <span className={`text-5xl font-bold tabular-nums ${timeColor}`}>DONE</span>
-          ) : (
-            <span className={`font-mono text-5xl font-bold tabular-nums ${timeColor}`}>
-              {formatClock(timeRemaining)}
-            </span>
-          )}
-        </div>
+        <View2UltraLeanFace
+          template={template}
+          showIdleIcon={state === "idle"}
+          lineColor={progressStroke}
+          useNeutralLine={state === "idle"}
+          upperSlot={upperSlot}
+          lowerExtra={lowerExtra}
+        />
       </div>
 
-      <p className="mt-6 text-xs text-slate-500">{hint}</p>
+      <p className={`mt-6 text-xs ${state === "idle" ? "font-light text-slate-600" : "font-normal text-slate-500"}`}>
+        {hint}
+      </p>
     </div>
   );
 }
@@ -266,19 +318,45 @@ function TimerCardView2Interval({ template }: { template: TimerTemplate }) {
           ? "Tap to resume"
           : "Tap to restart";
 
-  const timeColor =
-    runState === "running" && phase === "work"
-      ? "text-red-400 motion-safe:animate-pulse"
-      : runState === "running" && phase === "rest"
-        ? "text-emerald-400 motion-safe:animate-pulse"
-        : runState === "paused"
-          ? "text-amber-200"
-          : runState === "finished"
-            ? "text-emerald-400"
-            : "text-slate-100";
-
-  const roundLabel = `Round ${Math.min(displayRound, rounds)} / ${rounds}`;
   const showArc = runState === "running" || runState === "paused" || runState === "finished";
+  const roundLabel = `${Math.min(displayRound, rounds)}/${rounds}`;
+
+  const upperSlot =
+    runState === "paused" ? (
+      <div className="flex items-center justify-center gap-2">
+        <span className="font-mono text-xl font-light tabular-nums text-amber-300">{formatClock(timeRemaining)}</span>
+        <span className="text-xs font-normal uppercase tracking-wide text-amber-400">Paused</span>
+      </div>
+    ) : runState === "finished" ? (
+      <span className="font-mono text-4xl font-light tabular-nums text-emerald-400">DONE</span>
+    ) : (
+      <span
+        className={`font-mono text-5xl font-light tabular-nums ${
+          runState === "running" && phase === "work"
+            ? "text-red-400 motion-safe:animate-pulse"
+            : runState === "running" && phase === "rest"
+              ? "text-emerald-400 motion-safe:animate-pulse"
+              : "text-slate-100"
+        }`}
+      >
+        {formatClock(timeRemaining)}
+      </span>
+    );
+
+  const lowerExtra = (
+    <>
+      {runState === "running" ? (
+        <p
+          className={`mt-2 text-center text-xs font-normal opacity-70 ${phase === "work" ? "text-red-400" : "text-emerald-400"}`}
+        >
+          {phase === "work" ? "Work" : "Rest"} · {roundLabel}
+        </p>
+      ) : null}
+      {runState === "finished" ? (
+        <p className="mt-2 text-center text-xs font-normal text-emerald-400/90">{rounds} rounds complete</p>
+      ) : null}
+    </>
+  );
 
   return (
     <div
@@ -289,11 +367,6 @@ function TimerCardView2Interval({ template }: { template: TimerTemplate }) {
       onKeyDown={handleKeyToggle}
       className="cursor-pointer py-8 text-center outline-none transition motion-safe:hover:scale-[1.02] focus-visible:ring-2 focus-visible:ring-emerald-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
     >
-      <div className="mb-2 text-4xl leading-none opacity-80" aria-hidden>
-        {template.icon}
-      </div>
-      <p className="mb-6 truncate px-1 text-sm font-medium text-slate-400">{template.template_name}</p>
-
       <div className="relative mx-auto h-56 w-56">
         <TimerRing
           circumference={circumference}
@@ -302,23 +375,19 @@ function TimerCardView2Interval({ template }: { template: TimerTemplate }) {
           showProgress={showArc && runState !== "finished"}
           fullComplete={runState === "finished"}
         />
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 px-2">
-          {runState === "finished" ? (
-            <span className={`text-5xl font-bold tabular-nums ${timeColor}`}>DONE</span>
-          ) : (
-            <span className={`font-mono text-5xl font-bold tabular-nums ${timeColor}`}>
-              {formatClock(timeRemaining)}
-            </span>
-          )}
-          {runState !== "finished" && runState !== "idle" ? (
-            <p className={`text-[11px] font-bold uppercase tracking-wide ${phase === "work" ? "text-red-400" : "text-emerald-400"}`}>
-              {phase === "work" ? "Work" : "Rest"} · {roundLabel}
-            </p>
-          ) : null}
-        </div>
+        <View2UltraLeanFace
+          template={template}
+          showIdleIcon={runState === "idle"}
+          lineColor={progressStroke}
+          useNeutralLine={runState === "idle"}
+          upperSlot={upperSlot}
+          lowerExtra={lowerExtra}
+        />
       </div>
 
-      <p className="mt-6 text-xs text-slate-500">{hint}</p>
+      <p className={`mt-6 text-xs ${runState === "idle" ? "font-light text-slate-600" : "font-normal text-slate-500"}`}>
+        {hint}
+      </p>
     </div>
   );
 }
@@ -345,7 +414,7 @@ function TimerCardView2Fallback({ template }: { template: TimerTemplate }) {
         {template.icon}
       </div>
       <p className="mb-2 truncate px-1 text-sm font-medium text-slate-400">{template.template_name}</p>
-      <p className="text-xs text-slate-500">Tap to open this routine in the lab</p>
+      <p className="text-xs font-light text-slate-500">Tap to open this routine in the lab</p>
     </div>
   );
 }
