@@ -34,6 +34,9 @@ const CENTER = VIEWBOX / 2;
 const TRACK_STROKE = 2;
 const PROGRESS_STROKE = 4;
 
+const RING_FRAME_CLASS =
+  "relative mx-auto aspect-square w-[min(100%,18rem)] max-w-[18rem] min-w-0";
+
 type TimerCardView2Props = {
   template: TimerTemplate;
 };
@@ -101,39 +104,35 @@ function TimerRing({
   );
 }
 
-/** Upper (time) / thin line / lower (name + extras). Ultra-lean typography. */
+/** Upper (time) / thin line / lower (icon + name + extras). Ultra-lean typography. */
 function View2UltraLeanFace({
   template,
-  showIdleIcon,
   lineColor,
   useNeutralLine,
   upperSlot,
   lowerExtra,
 }: {
   template: TimerTemplate;
-  showIdleIcon: boolean;
   lineColor: string;
   useNeutralLine: boolean;
   upperSlot: ReactNode;
   lowerExtra?: ReactNode;
 }) {
   return (
-    <div className="absolute inset-0 flex min-h-0 flex-col px-3">
-      <div className="flex min-h-0 flex-1 flex-col items-center justify-end pb-2">
-        {showIdleIcon ? (
-          <div className="mb-1 text-2xl leading-none opacity-60" aria-hidden>
-            {template.icon}
-          </div>
-        ) : null}
-        {upperSlot}
-      </div>
+    <div className="absolute inset-0 flex min-h-0 flex-col px-2 pt-0.5">
+      <div className="flex min-h-0 flex-1 flex-col items-center justify-end pb-1.5">{upperSlot}</div>
       {useNeutralLine ? (
-        <div className="h-px w-12 shrink-0 self-center bg-slate-600/50" />
+        <div className="h-px w-16 shrink-0 self-center bg-slate-600/50" />
       ) : (
-        <div className="h-px w-12 shrink-0 self-center" style={{ backgroundColor: lineColor, opacity: 0.4 }} />
+        <div className="h-px w-16 shrink-0 self-center" style={{ backgroundColor: lineColor, opacity: 0.4 }} />
       )}
-      <div className="flex min-h-0 flex-1 flex-col items-center justify-start pt-2">
-        <p className="max-w-[11rem] truncate text-center text-sm font-normal text-slate-300">{template.template_name}</p>
+      <div className="flex min-h-0 flex-1 flex-col items-center justify-start px-1.5 pt-2">
+        <p className="max-w-[min(100%,13.5rem)] text-center text-sm font-normal leading-snug break-words text-slate-300 [overflow-wrap:anywhere]">
+          <span className="mr-1 inline select-none align-middle text-lg leading-none" aria-hidden>
+            {template.icon}
+          </span>
+          {template.template_name}
+        </p>
         {lowerExtra}
       </div>
     </div>
@@ -205,10 +204,10 @@ function TimerCardView2Countdown({ template }: { template: TimerTemplate }) {
         <span className="text-xs font-normal uppercase tracking-wide text-amber-400">Paused</span>
       </div>
     ) : state === "finished" ? (
-      <span className="font-mono text-4xl font-light tabular-nums text-emerald-400">DONE</span>
+      <span className="font-mono text-3xl font-light tabular-nums text-emerald-400">DONE</span>
     ) : (
       <span
-        className={`font-mono text-5xl font-light tabular-nums ${
+        className={`font-mono text-4xl font-light tabular-nums ${
           state === "running"
             ? "text-emerald-400 motion-safe:animate-pulse"
             : "text-slate-100"
@@ -232,7 +231,7 @@ function TimerCardView2Countdown({ template }: { template: TimerTemplate }) {
       onKeyDown={handleKeyToggle}
       className="cursor-pointer py-8 text-center outline-none transition motion-safe:hover:scale-[1.02] focus-visible:ring-2 focus-visible:ring-emerald-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
     >
-      <div className="relative mx-auto h-56 w-56">
+      <div className={RING_FRAME_CLASS}>
         <TimerRing
           circumference={circumference}
           strokeOffset={strokeOffset}
@@ -242,7 +241,6 @@ function TimerCardView2Countdown({ template }: { template: TimerTemplate }) {
         />
         <View2UltraLeanFace
           template={template}
-          showIdleIcon={state === "idle"}
           lineColor={progressStroke}
           useNeutralLine={state === "idle"}
           upperSlot={upperSlot}
@@ -328,10 +326,10 @@ function TimerCardView2Interval({ template }: { template: TimerTemplate }) {
         <span className="text-xs font-normal uppercase tracking-wide text-amber-400">Paused</span>
       </div>
     ) : runState === "finished" ? (
-      <span className="font-mono text-4xl font-light tabular-nums text-emerald-400">DONE</span>
+      <span className="font-mono text-3xl font-light tabular-nums text-emerald-400">DONE</span>
     ) : (
       <span
-        className={`font-mono text-5xl font-light tabular-nums ${
+        className={`font-mono text-4xl font-light tabular-nums ${
           runState === "running" && phase === "work"
             ? "text-red-400 motion-safe:animate-pulse"
             : runState === "running" && phase === "rest"
@@ -367,7 +365,7 @@ function TimerCardView2Interval({ template }: { template: TimerTemplate }) {
       onKeyDown={handleKeyToggle}
       className="cursor-pointer py-8 text-center outline-none transition motion-safe:hover:scale-[1.02] focus-visible:ring-2 focus-visible:ring-emerald-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
     >
-      <div className="relative mx-auto h-56 w-56">
+      <div className={RING_FRAME_CLASS}>
         <TimerRing
           circumference={circumference}
           strokeOffset={strokeOffset}
@@ -377,7 +375,6 @@ function TimerCardView2Interval({ template }: { template: TimerTemplate }) {
         />
         <View2UltraLeanFace
           template={template}
-          showIdleIcon={runState === "idle"}
           lineColor={progressStroke}
           useNeutralLine={runState === "idle"}
           upperSlot={upperSlot}
