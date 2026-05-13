@@ -35,8 +35,8 @@ function readViewModeFromStorage(): ViewMode {
   return parseStoredViewMode(window.localStorage.getItem(STORAGE_KEY)) ?? "view1";
 }
 
-const VIEW_GRID = "grid grid-cols-2 gap-1.5 sm:gap-2 md:grid-cols-3 md:gap-3 lg:grid-cols-4 lg:gap-4";
-const EDIT_GRID = "grid grid-cols-1 gap-1.5 sm:grid-cols-2 sm:gap-2 lg:grid-cols-3 lg:gap-4";
+const VIEW_GRID = "grid grid-cols-2 gap-1 sm:gap-2 md:grid-cols-3 md:gap-3 lg:grid-cols-4 lg:gap-4";
+const EDIT_GRID = "grid grid-cols-1 gap-1 sm:grid-cols-2 sm:gap-2 lg:grid-cols-3 lg:gap-4";
 
 export function TimerGridClient({ templates }: { templates: TimerTemplate[] }) {
   const viewMode = useSyncExternalStore(subscribe, readViewModeFromStorage, () => "view1");
@@ -48,7 +48,7 @@ export function TimerGridClient({ templates }: { templates: TimerTemplate[] }) {
 
   return (
     <div>
-      <div className="mb-4 flex flex-col gap-3 sm:mb-5 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-2 flex flex-col gap-2 sm:mb-5 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
         <h2 className="text-xl font-semibold text-slate-100">Your routines</h2>
         <div className="flex flex-wrap gap-2" role="tablist" aria-label="Routine list display mode">
           <button

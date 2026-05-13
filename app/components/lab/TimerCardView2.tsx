@@ -41,7 +41,7 @@ const STOPWATCH_BACK_OPACITY = 0.5;
 const RING_FRAME_CLASS =
   "relative mx-auto aspect-square w-full min-w-0 max-w-44 overflow-hidden rounded-full sm:max-w-52 md:max-w-60 lg:max-w-72";
 
-const VIEW2_CARD_PY = "py-2 sm:py-4 md:py-6 lg:py-8";
+const VIEW2_CARD_PY = "py-0 sm:py-3 md:py-5 lg:py-7";
 
 const VIEW2_TIME_TEXT =
   "font-mono font-light tabular-nums text-xl sm:text-2xl md:text-3xl lg:text-4xl";
@@ -140,8 +140,8 @@ function View2UltraLeanFace({
   lowerExtra?: ReactNode;
 }) {
   return (
-    <div className="absolute inset-0 flex min-h-0 min-w-0 flex-col px-1 pt-1 pb-2.5 sm:px-0.5 sm:pt-0.5 sm:pb-2">
-      <div className="flex min-h-0 min-w-0 w-full flex-1 flex-col items-center justify-end pb-1.5 pt-0.5 sm:pt-0">
+    <div className="absolute inset-0 flex min-h-0 min-w-0 flex-col px-0.5 pt-0 pb-0.5 sm:px-0.5 sm:pt-0.5 sm:pb-2">
+      <div className="flex min-h-0 min-w-0 w-full flex-1 flex-col items-center justify-end pb-0 pt-0 sm:pb-1.5 sm:pt-0">
         {upperSlot}
       </div>
       {useNeutralLine ? (
@@ -149,7 +149,7 @@ function View2UltraLeanFace({
       ) : (
         <div className="h-px w-16 shrink-0 self-center" style={{ backgroundColor: lineColor, opacity: 0.4 }} />
       )}
-      <div className="flex min-h-0 min-w-0 w-full flex-1 flex-col items-stretch justify-between pt-2 pb-1">
+      <div className="flex min-h-0 min-w-0 w-full flex-1 flex-col items-stretch justify-between pt-0.5 pb-0 sm:pt-2 sm:pb-1">
         <div className="flex min-w-0 shrink-0 flex-col items-stretch">
           <p className="w-full min-w-0 max-w-full self-stretch text-balance text-center text-xs font-normal leading-snug break-words text-slate-300 [overflow-wrap:anywhere] sm:text-sm">
             {template.template_name}
@@ -157,7 +157,7 @@ function View2UltraLeanFace({
           {lowerExtra}
         </div>
         <span
-          className="mt-0.5 shrink-0 self-center select-none text-xl leading-none sm:text-2xl md:text-2xl lg:text-3xl"
+          className="mt-0 shrink-0 self-center select-none text-xl leading-none sm:mt-0.5 sm:text-2xl md:text-2xl lg:text-3xl"
           aria-hidden
         >
           {template.icon}
@@ -240,7 +240,7 @@ function TimerCardView2Countdown({ template }: { template: TimerTemplate }) {
 
   const lowerExtra =
     state === "finished" ? (
-      <p className="mt-2 max-w-full min-w-0 text-center text-xs font-normal text-emerald-400/90">Complete</p>
+      <p className="mt-0.5 max-w-full min-w-0 text-center text-xs font-normal text-emerald-400/90 sm:mt-2">Complete</p>
     ) : null;
 
   return (
@@ -356,13 +356,13 @@ function TimerCardView2Interval({ template }: { template: TimerTemplate }) {
     <>
       {runState === "running" ? (
         <p
-          className={`mt-2 max-w-full min-w-0 text-center text-xs font-normal opacity-70 ${phase === "work" ? "text-red-400" : "text-emerald-400"}`}
+          className={`mt-0.5 max-w-full min-w-0 text-center text-xs font-normal opacity-70 sm:mt-2 ${phase === "work" ? "text-red-400" : "text-emerald-400"}`}
         >
           {phase === "work" ? "Work" : "Rest"} · {roundLabel}
         </p>
       ) : null}
       {runState === "finished" ? (
-        <p className="mt-2 max-w-full min-w-0 text-center text-xs font-normal text-emerald-400/90">{rounds} rounds complete</p>
+        <p className="mt-0.5 max-w-full min-w-0 text-center text-xs font-normal text-emerald-400/90 sm:mt-2">{rounds} rounds complete</p>
       ) : null}
     </>
   );

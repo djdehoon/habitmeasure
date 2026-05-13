@@ -87,7 +87,7 @@ export function TimerGridWrapper({ children }: TimerGridWrapperProps) {
         editingTemplateId={editId}
       />
 
-      <div className="mx-auto w-full max-w-6xl p-2 sm:p-4 xl:max-w-7xl">{children}</div>
+      <div className="mx-auto w-full max-w-6xl px-2 py-0 sm:px-4 sm:py-4 xl:max-w-7xl">{children}</div>
     </>
   );
 }
