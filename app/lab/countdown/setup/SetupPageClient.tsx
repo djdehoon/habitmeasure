@@ -40,7 +40,7 @@ export function SetupPageClient({ templateId }: SetupPageClientProps) {
       if (!alive) return;
 
       if (result.error || !result.data) {
-        setFetchError(result.error ?? "Template niet gevonden.");
+        setFetchError(result.error ?? "Template not found.");
       } else {
         setFormData(mapTemplateToFormData(result.data));
       }
@@ -80,7 +80,7 @@ export function SetupPageClient({ templateId }: SetupPageClientProps) {
 
   const handleDelete = async () => {
     if (!templateId) return;
-    const confirmed = window.confirm("Weet je zeker?");
+    const confirmed = window.confirm("Are you sure?");
     if (!confirmed) return;
 
     setIsSubmitting(true);
@@ -97,15 +97,17 @@ export function SetupPageClient({ templateId }: SetupPageClientProps) {
 
   if (isLoading) {
     return (
-      <main className="mx-auto w-full max-w-3xl p-4 sm:p-6">
-        <p className="text-[#6B7280]">Template laden...</p>
+      <main className="mx-auto w-full max-w-3xl p-4 text-slate-100 sm:p-6">
+        <p className="text-slate-400">Loading template...</p>
       </main>
     );
   }
 
   return (
-    <main className="mx-auto w-full max-w-3xl p-4 sm:p-6">
-      {fetchError ? <p className="mb-4 rounded-md bg-[#E74C3C]/12 p-3 text-sm text-[#b2372b]">{fetchError}</p> : null}
+    <main className="mx-auto w-full max-w-3xl p-4 text-slate-100 sm:p-6">
+      {fetchError ? (
+        <p className="mb-4 rounded-md border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-300">{fetchError}</p>
+      ) : null}
 
       <CountdownSetupModal
         formData={formData}

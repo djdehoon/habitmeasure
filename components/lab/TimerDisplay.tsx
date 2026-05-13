@@ -31,12 +31,12 @@ export function TimerDisplay({ durationSeconds, timerName, onComplete }: TimerDi
   const strokeOffset = circumference * (1 - progress);
 
   return (
-    <section className="flex min-h-screen flex-col items-center justify-center bg-white px-4 py-4 text-[#1A1A2E] md:py-6">
-      <h1 className="heading-font text-center text-2xl font-bold md:text-3xl">{timerName}</h1>
+    <section className="flex min-h-[calc(100vh-5rem)] flex-col items-center justify-center bg-transparent px-4 py-4 text-slate-100 md:py-6">
+      <h1 className="heading-font text-center text-2xl font-bold text-slate-100 md:text-3xl">{timerName}</h1>
 
       <div className="relative mt-2 h-64 w-64 md:mt-3 md:h-72 md:w-72">
         <svg className="h-full w-full -rotate-90" viewBox="0 0 200 200" aria-hidden>
-          <circle cx="100" cy="100" r={radius} fill="none" stroke="#F5F7FA" strokeWidth="4" />
+          <circle cx="100" cy="100" r={radius} fill="none" stroke="rgb(30 41 59)" strokeWidth="4" />
           <circle
             cx="100"
             cy="100"
@@ -52,12 +52,12 @@ export function TimerDisplay({ durationSeconds, timerName, onComplete }: TimerDi
         </svg>
 
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="heading-font text-5xl font-black text-[#1A1A2E] md:text-6xl">{formatClock(timeRemaining)}</span>
+          <span className="heading-font text-5xl font-black text-slate-100 md:text-6xl">{formatClock(timeRemaining)}</span>
         </div>
       </div>
 
       {state === "finished" ? (
-        <p className="mt-6 text-lg font-semibold text-[#0C3D3A]">Habit complete! 🎉</p>
+        <p className="mt-6 text-lg font-semibold text-emerald-300">Routine complete! 🎉</p>
       ) : null}
 
       <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
@@ -103,7 +103,7 @@ export function TimerDisplay({ durationSeconds, timerName, onComplete }: TimerDi
         <button
           type="button"
           onClick={reset}
-          className="rounded-full bg-[#F5F7FA] px-8 py-3 text-base font-semibold text-[#1A1A2E] transition hover:bg-[#e9edf2]"
+          className="rounded-full bg-slate-800 px-8 py-3 text-base font-semibold text-slate-100 transition hover:bg-slate-700"
         >
           ↺ Reset
         </button>

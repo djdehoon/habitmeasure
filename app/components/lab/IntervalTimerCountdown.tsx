@@ -38,7 +38,7 @@ export function IntervalTimerCountdown({
   const [isStarting, setIsStarting] = useState(false);
 
   const ringColor = phase === "work" ? WORK_COLOR : REST_COLOR;
-  const phaseLabel = phase === "work" ? "WORK" : "REST";
+  const phaseLabel = phase === "work" ? "FOCUS" : "REST";
 
   const radius = 80;
   const circumference = useMemo(() => 2 * Math.PI * radius, []);
@@ -111,16 +111,16 @@ export function IntervalTimerCountdown({
   }, [runState, stop]);
 
   return (
-    <section className="relative flex min-h-screen flex-col items-center justify-center bg-white px-4 py-4 text-[#1A1A2E] md:py-6">
-      <h1 className="heading-font text-center text-2xl font-bold md:text-3xl">{templateName}</h1>
+    <section className="relative flex min-h-[calc(100vh-5rem)] flex-col items-center justify-center bg-transparent px-4 py-4 text-slate-100 md:py-6">
+      <h1 className="heading-font text-center text-2xl font-bold text-slate-100 md:text-3xl">{templateName}</h1>
 
       {sessionError ? (
-        <p className="mt-2 max-w-md text-center text-sm text-[#E74C3C]" role="alert">
+        <p className="mt-2 max-w-md text-center text-sm text-red-300" role="alert">
           {sessionError}
         </p>
       ) : null}
 
-      <p className="mt-2 text-sm font-medium text-[#6B7280] md:text-base">
+      <p className="mt-2 text-sm font-medium text-slate-400 md:text-base">
         Round {Math.min(displayRound, rounds)} / {rounds}
       </p>
 
@@ -134,7 +134,7 @@ export function IntervalTimerCountdown({
 
       <div className="relative mt-2 h-64 w-64 md:mt-3 md:h-72 md:w-72">
         <svg className="h-full w-full -rotate-90" viewBox="0 0 200 200" aria-hidden>
-          <circle cx="100" cy="100" r={radius} fill="none" stroke="#F5F7FA" strokeWidth="8" />
+          <circle cx="100" cy="100" r={radius} fill="none" stroke="rgb(30 41 59)" strokeWidth="8" />
           <circle
             cx="100"
             cy="100"
@@ -150,7 +150,7 @@ export function IntervalTimerCountdown({
         </svg>
 
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="heading-font text-5xl font-black text-[#1A1A2E] md:text-6xl">
+          <span className="heading-font text-5xl font-black text-slate-100 md:text-6xl">
             {formatClock(timeRemaining)}
           </span>
         </div>
@@ -163,8 +163,8 @@ export function IntervalTimerCountdown({
           aria-modal="true"
           aria-labelledby="interval-complete-title"
         >
-          <div className="max-w-sm rounded-2xl bg-white px-8 py-10 text-center shadow-lg">
-            <h2 id="interval-complete-title" className="heading-font text-2xl font-bold text-[#0C3D3A]">
+          <div className="max-w-sm rounded-2xl border border-white/10 bg-slate-900 px-8 py-10 text-center shadow-xl shadow-black/40">
+            <h2 id="interval-complete-title" className="heading-font text-2xl font-bold text-emerald-300">
               Routine Complete!
             </h2>
             <button
@@ -216,7 +216,7 @@ export function IntervalTimerCountdown({
         <button
           type="button"
           onClick={() => void handleStopOrDismiss()}
-          className="rounded-full bg-[#F5F7FA] px-8 py-3 text-base font-semibold text-[#1A1A2E] transition hover:bg-[#e9edf2]"
+          className="rounded-full bg-slate-800 px-8 py-3 text-base font-semibold text-slate-100 transition hover:bg-slate-700"
         >
           Stop
         </button>

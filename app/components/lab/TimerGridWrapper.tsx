@@ -43,28 +43,28 @@ export function TimerGridWrapper({ children }: TimerGridWrapperProps) {
 
   return (
     <>
-      <header className="border-b border-[rgba(0,0,0,0.08)] bg-white px-6 py-4">
+      <header className="border-b border-white/10 bg-slate-950/80 px-6 py-4 backdrop-blur-sm">
         <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3">
-          <h1 className="flex items-center gap-2 text-2xl font-bold text-[#1A1A2E]">
-            <span className="flex items-center gap-2 heading-font text-lg font-bold text-slate-800 sm:text-xl">
-              <span className="h-2 w-2 rounded-full bg-[#8BA2B5]" />
+          <h1 className="flex items-center gap-2 text-2xl font-bold text-slate-100">
+            <span className="flex items-center gap-2 heading-font text-lg font-bold text-slate-100 sm:text-xl">
+              <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.6)]" />
               HabitMeasure
             </span>
-            <span className="heading-font text-lg font-bold text-slate-800 sm:text-xl">Lab</span>
+            <span className="heading-font text-lg font-bold text-slate-300 sm:text-xl">Routine lab</span>
           </h1>
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={() => setIsTypeSelectorOpen(true)}
-              className="rounded-lg bg-[#00E5C0] px-4 py-2 font-semibold text-white transition-opacity hover:opacity-90"
+              className="rounded-lg bg-emerald-400 px-4 py-2 font-semibold text-slate-950 shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-300"
             >
-              + Add Timer
+              + Add routine
             </button>
             <button
               type="button"
               onClick={handleLogout}
               disabled={isSigningOut}
-              className="min-w-[100px] rounded-lg bg-gray-200 px-4 py-2 text-sm font-semibold text-[#1A1A2E] hover:bg-gray-300 disabled:opacity-60"
+              className="min-w-[100px] rounded-lg bg-slate-800 px-4 py-2 text-sm font-semibold text-slate-100 transition hover:bg-slate-700 disabled:opacity-60"
             >
               {isSigningOut ? "Logging out..." : "Log out"}
             </button>

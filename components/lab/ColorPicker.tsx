@@ -14,14 +14,14 @@ export function ColorPicker({ value, onChange }: ColorPickerProps) {
           <button
             key={color}
             type="button"
-            aria-label={`Selecteer kleur ${color}`}
+            aria-label={`Select color ${color}`}
             onClick={() => onChange(color)}
             className={`flex h-9 w-9 items-center justify-center rounded-full border-2 ${
-              selected ? "border-[#1A1A2E]" : "border-[rgba(0,0,0,0.15)]"
+              selected ? "border-white ring-2 ring-white/30" : "border-white/20"
             }`}
             style={{ backgroundColor: color }}
           >
-            {selected ? <span className="text-xs text-black">✓</span> : null}
+            {selected ? <span className="text-xs text-white drop-shadow">✓</span> : null}
           </button>
         );
       })}

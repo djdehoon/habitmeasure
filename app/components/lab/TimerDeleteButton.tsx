@@ -12,7 +12,7 @@ export function TimerDeleteButton({ templateId, onDeleted }: TimerDeleteButtonPr
   const [error, setError] = useState<string | null>(null);
 
   const handleDelete = async () => {
-    const confirmed = window.confirm("Delete this timer?");
+    const confirmed = window.confirm("Delete this routine?");
     if (!confirmed) return;
 
     setError(null);
@@ -27,13 +27,13 @@ export function TimerDeleteButton({ templateId, onDeleted }: TimerDeleteButtonPr
 
       if (!response.ok) {
         const payload = (await response.json().catch(() => null)) as { error?: string } | null;
-        setError(payload?.error ?? "Failed to delete timer.");
+        setError(payload?.error ?? "Failed to delete routine.");
         return;
       }
 
       onDeleted();
     } catch {
-      setError("Network error while deleting timer.");
+      setError("Network error while deleting routine.");
     } finally {
       setIsDeleting(false);
     }
@@ -45,11 +45,11 @@ export function TimerDeleteButton({ templateId, onDeleted }: TimerDeleteButtonPr
         type="button"
         onClick={handleDelete}
         disabled={isDeleting}
-        className="rounded-md border border-[#E74C3C]/50 bg-white px-3 py-1.5 text-sm text-[#E74C3C] transition hover:bg-[#E74C3C]/10 disabled:cursor-not-allowed disabled:opacity-60"
+        className="rounded-md border border-red-400/40 bg-slate-950/80 px-3 py-1.5 text-sm text-red-300 transition hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {isDeleting ? "Deleting..." : "Delete"}
       </button>
-      {error ? <p className="text-xs text-[#b2372b]">{error}</p> : null}
+      {error ? <p className="text-xs text-red-300">{error}</p> : null}
     </div>
   );
 }

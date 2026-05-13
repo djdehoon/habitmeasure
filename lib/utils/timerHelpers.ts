@@ -238,25 +238,25 @@ export function validateCountdownTemplateForm(formData: CountdownTemplateFormDat
   const durationSeconds = formData.durationMinutes * 60 + formData.durationSeconds;
 
   if (!name || name.length < 1) {
-    errors.templateName = "Template naam is verplicht.";
+    errors.templateName = "Template name is required.";
   } else if (name.length > 50) {
-    errors.templateName = "Template naam mag maximaal 50 tekens zijn.";
+    errors.templateName = "Template name must be at most 50 characters.";
   }
 
   if (durationSeconds < 1 || durationSeconds > 5999) {
-    errors.duration = "Duur moet tussen 00:01 en 99:59 liggen.";
+    errors.duration = "Duration must be between 00:01 and 99:59.";
   }
 
   if (notes.length > 200) {
-    errors.notes = "Notities mogen maximaal 200 tekens zijn.";
+    errors.notes = "Notes must be at most 200 characters.";
   }
 
   if (formData.minDelaySeconds < 5 || formData.minDelaySeconds > 60 || formData.minDelaySeconds % 5 !== 0) {
-    errors.minDelaySeconds = "Minimale wachttijd moet tussen 5 en 60 seconden liggen in stappen van 5.";
+    errors.minDelaySeconds = "Minimum delay must be between 5 and 60 seconds in steps of 5.";
   }
 
   if (formData.addTimeButtons.length === 0) {
-    errors.addTimeButtons = "Selecteer minimaal 1 snelle knop.";
+    errors.addTimeButtons = "Select at least one quick-add button.";
   }
 
   return errors;
@@ -267,9 +267,9 @@ export function validateIntervalTemplateForm(formData: IntervalTemplateFormData)
   const name = formData.templateName.trim();
 
   if (!name || name.length < 1) {
-    errors.templateName = "Template naam is verplicht.";
+    errors.templateName = "Template name is required.";
   } else if (name.length > 50) {
-    errors.templateName = "Template naam mag maximaal 50 tekens zijn.";
+    errors.templateName = "Template name must be at most 50 characters.";
   }
 
   const work = Math.floor(Number(formData.workSeconds));
@@ -277,23 +277,23 @@ export function validateIntervalTemplateForm(formData: IntervalTemplateFormData)
   const rounds = Math.floor(Number(formData.rounds));
 
   if (!Number.isFinite(work) || work < 1) {
-    errors.workSeconds = "Work moet minstens 1 seconde zijn.";
+    errors.workSeconds = "Focus phase must be at least 1 second.";
   }
 
   if (!Number.isFinite(rest) || rest < 1) {
-    errors.restSeconds = "Rust moet minstens 1 seconde zijn.";
+    errors.restSeconds = "Rest must be at least 1 second.";
   }
 
   if (!Number.isFinite(rounds) || rounds < 1) {
-    errors.rounds = "Rondes moet minstens 1 zijn.";
+    errors.rounds = "Rounds must be at least 1.";
   } else if (rounds > 999) {
-    errors.rounds = "Maximaal 999 rondes.";
+    errors.rounds = "At most 999 rounds.";
   }
 
   if (!errors.workSeconds && !errors.restSeconds && !errors.rounds) {
     const total = computeIntervalDurationSeconds(work, rest, rounds);
     if (total > 5999) {
-      errors.rounds = "Totale duur mag maximaal 99:59 zijn.";
+      errors.rounds = "Total duration must not exceed 99:59.";
     }
   }
 

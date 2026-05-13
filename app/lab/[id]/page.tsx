@@ -40,15 +40,18 @@ export default async function LabTimerPage({ params }: LabTimerPageProps) {
   const isInterval =
     timer.timer_type === "interval" && Number.isFinite(work) && work > 0 && Number.isFinite(rest) && rest > 0 && Number.isFinite(rounds) && rounds > 0;
 
-  const heading = isInterval ? "Interval Timer" : "Countdown Timer";
+  const heading = isInterval ? "Morning session" : "Countdown routine";
 
   return (
-    <div className="min-h-screen bg-white">
-      <header className="mx-auto flex w-full max-w-5xl items-center justify-center px-4 py-6">
-        <Link href="/lab" className="absolute left-4 text-sm font-medium text-[#6B7280] transition hover:text-[#1A1A2E]">
+    <div className="min-h-screen bg-transparent">
+      <header className="relative mx-auto flex w-full max-w-5xl items-center justify-center border-b border-white/10 px-4 py-6">
+        <Link
+          href="/lab"
+          className="absolute left-4 text-sm font-medium text-slate-400 transition hover:text-slate-100"
+        >
           ← Back
         </Link>
-        <h1 className="heading-font text-center text-xl font-bold text-[#1A1A2E] md:text-2xl">{heading}</h1>
+        <h1 className="heading-font text-center text-xl font-bold text-slate-100 md:text-2xl">{heading}</h1>
       </header>
 
       {isInterval ? (

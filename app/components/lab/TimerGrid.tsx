@@ -11,7 +11,7 @@ export default async function TimerGrid() {
 
   if (authError || !user) {
     return (
-      <div className="rounded-xl border border-[rgba(0,0,0,0.08)] bg-[#F5F7FA] py-12 text-center text-lg text-[#6B7280]">
+      <div className="rounded-xl border border-white/10 bg-slate-900/50 py-12 text-center text-lg text-slate-300">
         Please log in
       </div>
     );
@@ -24,15 +24,15 @@ export default async function TimerGrid() {
     .order("created_at", { ascending: false });
 
   if (error) {
-    return <p className="rounded-md bg-[#E74C3C]/15 p-3 text-sm text-[#b2372b]">{error.message}</p>;
+    return <p className="rounded-md border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-300">{error.message}</p>;
   }
 
   const templates = (data as TimerTemplate[]) ?? [];
 
   if (templates.length === 0) {
     return (
-      <div className="rounded-xl border border-[rgba(0,0,0,0.08)] bg-[#F5F7FA] py-12 text-center text-lg text-[#6B7280]">
-        No timers yet
+      <div className="rounded-xl border border-white/10 bg-slate-900/50 py-12 text-center text-lg text-slate-400">
+        No routines yet
       </div>
     );
   }

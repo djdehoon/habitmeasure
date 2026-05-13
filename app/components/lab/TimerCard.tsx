@@ -16,7 +16,7 @@ export function TimerCard({ template }: TimerCardProps) {
 
   return (
     <article
-      className="cursor-pointer rounded-xl border border-[rgba(0,0,0,0.08)] bg-[#F5F7FA] p-4 text-[#1A1A2E] transition hover:border-[#00E5C0]/60"
+      className="glass-panel cursor-pointer border border-white/10 p-4 text-slate-100 transition hover:border-emerald-400/40"
       onClick={openTimer}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
@@ -26,24 +26,24 @@ export function TimerCard({ template }: TimerCardProps) {
       }}
       role="button"
       tabIndex={0}
-      aria-label={`Open timer ${template.template_name}`}
+      aria-label={`Open routine ${template.template_name}`}
     >
       <div className="mb-3 flex items-center justify-between gap-3">
         <h3 className="truncate text-lg font-semibold">{template.template_name}</h3>
         <span className="text-2xl leading-none">{template.icon}</span>
       </div>
 
-      <div className="mb-4 flex items-center justify-between text-sm text-[#6B7280]">
-        <span className="font-medium">{template.timer_type === "interval" ? "Session" : "Duration"}</span>
-        <span className="text-base font-bold text-[#1A1A2E]">{formatIntervalSummary(template)}</span>
+      <div className="mb-4 flex items-center justify-between text-sm text-slate-400">
+        <span className="font-medium">{template.timer_type === "interval" ? "Morning session" : "Duration"}</span>
+        <span className="text-base font-bold text-slate-100">{formatIntervalSummary(template)}</span>
       </div>
 
       <div className="mb-4 flex items-center gap-2">
-        <span className="text-sm text-[#6B7280]">Color</span>
+        <span className="text-sm text-slate-400">Color</span>
         <span
-          className="inline-block h-4 w-4 rounded-full border border-black/15"
+          className="inline-block h-4 w-4 rounded-full border border-white/20"
           style={{ backgroundColor: template.color }}
-          aria-label={`Timer color ${template.color}`}
+          aria-label={`Routine color ${template.color}`}
         />
       </div>
 
@@ -54,7 +54,7 @@ export function TimerCard({ template }: TimerCardProps) {
             event.stopPropagation();
             router.push(`/lab?edit=${template.id}`);
           }}
-          className="rounded-md border border-[#E74C3C]/50 bg-white px-3 py-1.5 text-sm text-[#E74C3C] transition hover:bg-[#E74C3C]/10"
+          className="rounded-md border border-red-400/40 bg-slate-950/80 px-3 py-1.5 text-sm text-red-300 transition hover:bg-red-500/10"
         >
           Edit
         </button>

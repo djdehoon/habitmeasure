@@ -43,11 +43,11 @@ export function AddTimerModal({ open, onClose, timerType, editingTemplateId = nu
   const [error, setError] = useState<string | null>(null);
   const isEditMode = Boolean(editingTemplateId);
 
-  const title = useMemo(() => (isEditMode ? "Edit Timer" : "+ Add Timer"), [isEditMode]);
+  const title = useMemo(() => (isEditMode ? "Edit routine" : "+ Add routine"), [isEditMode]);
   const submitLabel = useMemo(() => {
     if (isSubmitting) return "Saving...";
     if (isEditMode) return "Save Changes";
-    if (activeKind === "interval") return "Create Interval Timer";
+    if (activeKind === "interval") return "Create morning session";
     return "Done";
   }, [isEditMode, isSubmitting, activeKind]);
 
@@ -89,7 +89,7 @@ export function AddTimerModal({ open, onClose, timerType, editingTemplateId = nu
         if (!response.ok) {
           const payload = (await response.json().catch(() => null)) as { error?: string } | null;
           if (isActive) {
-            setError(payload?.error ?? "Failed to load timer.");
+            setError(payload?.error ?? "Failed to load routine.");
           }
           return;
         }
@@ -98,7 +98,7 @@ export function AddTimerModal({ open, onClose, timerType, editingTemplateId = nu
         const template = payload.template;
 
         if (!template) {
-          if (isActive) setError("Timer template not found.");
+          if (isActive) setError("Routine not found.");
           return;
         }
 
@@ -114,7 +114,7 @@ export function AddTimerModal({ open, onClose, timerType, editingTemplateId = nu
           setErrors({});
         }
       } catch {
-        if (isActive) setError("Network error while loading timer.");
+        if (isActive) setError("Network error while loading routine.");
       } finally {
         if (isActive) setIsFetchingTemplate(false);
       }
@@ -157,7 +157,7 @@ export function AddTimerModal({ open, onClose, timerType, editingTemplateId = nu
 
         if (!response.ok) {
           const errPayload = (await response.json().catch(() => null)) as { error?: string } | null;
-          setError(errPayload?.error ?? (isEditMode ? "Failed to update timer." : "Failed to create timer."));
+          setError(errPayload?.error ?? (isEditMode ? "Failed to update routine." : "Failed to create routine."));
           return;
         }
 
@@ -165,7 +165,7 @@ export function AddTimerModal({ open, onClose, timerType, editingTemplateId = nu
         onClose();
         router.refresh();
       } catch {
-        setError(isEditMode ? "Network error while updating timer." : "Network error while creating timer.");
+        setError(isEditMode ? "Network error while updating routine." : "Network error while creating routine.");
       } finally {
         setIsSubmitting(false);
       }
@@ -202,7 +202,7 @@ export function AddTimerModal({ open, onClose, timerType, editingTemplateId = nu
 
       if (!response.ok) {
         const errPayload = (await response.json().catch(() => null)) as { error?: string } | null;
-        setError(errPayload?.error ?? (isEditMode ? "Failed to update timer." : "Failed to create timer."));
+        setError(errPayload?.error ?? (isEditMode ? "Failed to update routine." : "Failed to create routine."));
         return;
       }
 
@@ -210,32 +210,36 @@ export function AddTimerModal({ open, onClose, timerType, editingTemplateId = nu
       onClose();
       router.refresh();
     } catch {
-      setError(isEditMode ? "Network error while updating timer." : "Network error while creating timer.");
+      setError(isEditMode ? "Network error while updating routine." : "Network error while creating routine.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/35 p-4">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 p-4">
       <div className="flex min-h-full items-start justify-center sm:items-center">
-        <div className="my-4 w-full max-w-3xl max-h-[calc(100dvh-2rem)] overflow-y-auto rounded-xl border border-[rgba(0,0,0,0.1)] bg-[#F5F7FA] p-5 text-[#1A1A2E]">
+        <div className="my-4 max-h-[calc(100dvh-2rem)] w-full max-w-3xl overflow-y-auto rounded-xl border border-white/10 bg-slate-900 p-5 text-slate-100 shadow-xl shadow-black/40">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-xl font-bold">{title}</h2>
+            <h2 className="text-xl font-bold text-slate-100">{title}</h2>
             <button
               type="button"
               onClick={handleClose}
               disabled={isSubmitting || isFetchingTemplate}
-              className="btn-ghost rounded-md px-2.5 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-60"
+              className="rounded-md px-2.5 py-1 text-sm text-slate-400 transition hover:bg-white/10 hover:text-slate-100 disabled:cursor-not-allowed disabled:opacity-60"
             >
               Close
             </button>
           </div>
 
           {isFetchingTemplate ? (
-            <p className="mb-4 rounded-md bg-[#00E5C0]/15 p-2 text-sm text-[#0f8f7a]">Loading timer...</p>
+            <p className="mb-4 rounded-md border border-emerald-500/20 bg-emerald-500/10 p-2 text-sm text-emerald-200">
+              Loading routine...
+            </p>
           ) : null}
-          {error ? <p className="mb-4 rounded-md bg-[#E74C3C]/15 p-2 text-sm text-[#b2372b]">{error}</p> : null}
+          {error ? (
+            <p className="mb-4 rounded-md border border-red-500/20 bg-red-500/10 p-2 text-sm text-red-300">{error}</p>
+          ) : null}
 
           {activeKind === "interval" ? (
             <IntervalTimerSetup

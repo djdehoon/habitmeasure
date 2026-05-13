@@ -17,10 +17,10 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
             onClick={() => onChange(icon)}
             className={`h-10 w-10 rounded-md border text-lg ${
               selected
-                ? "border-[#00E5C0] bg-[#00E5C0]/20 text-[#1A1A2E]"
-                : "border-[rgba(0,0,0,0.12)] bg-white text-[#1A1A2E]"
+                ? "border-emerald-400 bg-emerald-500/15 text-slate-100"
+                : "border-white/15 bg-slate-950 text-slate-100 hover:bg-slate-800/80"
             }`}
-            aria-label={`Selecteer icon ${icon}`}
+            aria-label={`Select icon ${icon}`}
           >
             {icon}
           </button>

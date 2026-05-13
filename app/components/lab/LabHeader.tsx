@@ -8,15 +8,15 @@ export function LabHeader() {
 
   return (
     <>
-      <header className="border-b border-[rgba(0,0,0,0.08)] bg-white px-6 py-4">
+      <header className="border-b border-white/10 bg-slate-950/80 px-6 py-4 backdrop-blur-sm">
         <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3">
-          <h1 className="text-2xl font-bold text-[#1A1A2E]">Lab</h1>
+          <h1 className="text-2xl font-bold text-slate-100">Routine lab</h1>
           <button
             type="button"
             onClick={() => setModalOpen(true)}
-            className="rounded-lg bg-[#00E5C0] px-4 py-2 font-semibold text-white transition-opacity hover:opacity-90"
+            className="rounded-lg bg-emerald-400 px-4 py-2 font-semibold text-slate-950 shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-300"
           >
-            + Add Timer
+            + Add routine
           </button>
         </div>
       </header>
