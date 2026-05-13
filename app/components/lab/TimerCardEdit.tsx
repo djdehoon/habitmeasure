@@ -18,7 +18,7 @@ export function TimerCardEdit({ template }: TimerCardEditProps) {
   const router = useRouter();
 
   return (
-    <article className="glass-panel rounded-xl border border-white/10 p-4 text-slate-100">
+    <article className="glass-panel rounded-xl border border-white/10 p-5 text-slate-100">
       <div className="mb-3 text-center text-4xl leading-none" aria-hidden>
         {template.icon}
       </div>

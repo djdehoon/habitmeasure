@@ -35,8 +35,8 @@ function readViewModeFromStorage(): ViewMode {
   return parseStoredViewMode(window.localStorage.getItem(STORAGE_KEY)) ?? "view1";
 }
 
-const VIEW_GRID = "grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3 md:gap-3 lg:grid-cols-4 lg:gap-4";
-const EDIT_GRID = "grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3 lg:gap-4";
+const VIEW_GRID = "grid grid-cols-2 gap-1.5 sm:gap-2 md:grid-cols-3 md:gap-3 lg:grid-cols-4 lg:gap-4";
+const EDIT_GRID = "grid grid-cols-1 gap-1.5 sm:grid-cols-2 sm:gap-2 lg:grid-cols-3 lg:gap-4";
 
 export function TimerGridClient({ templates }: { templates: TimerTemplate[] }) {
   const viewMode = useSyncExternalStore(subscribe, readViewModeFromStorage, () => "view1");

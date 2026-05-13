@@ -35,7 +35,7 @@ const TRACK_STROKE = 2;
 const PROGRESS_STROKE = 4;
 
 const RING_FRAME_CLASS =
-  "relative mx-auto aspect-square w-full min-w-0 max-w-40 overflow-hidden rounded-full sm:max-w-48 md:max-w-56 lg:max-w-64";
+  "relative mx-auto aspect-square w-full min-w-0 max-w-44 overflow-hidden rounded-full sm:max-w-52 md:max-w-60 lg:max-w-72";
 
 const VIEW2_CARD_PY = "py-2 sm:py-4 md:py-6 lg:py-8";
 

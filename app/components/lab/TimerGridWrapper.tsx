@@ -44,7 +44,7 @@ export function TimerGridWrapper({ children }: TimerGridWrapperProps) {
   return (
     <>
       <header className="border-b border-white/10 bg-slate-950/80 px-6 py-4 backdrop-blur-sm">
-        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3">
+        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 xl:max-w-7xl">
           <h1 className="flex items-center gap-2 text-2xl font-bold text-slate-100">
             <span className="flex items-center gap-2 heading-font text-lg font-bold text-slate-100 sm:text-xl">
               <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.6)]" />
@@ -87,7 +87,7 @@ export function TimerGridWrapper({ children }: TimerGridWrapperProps) {
         editingTemplateId={editId}
       />
 
-      <div className="mx-auto w-full max-w-6xl p-3 sm:p-5">{children}</div>
+      <div className="mx-auto w-full max-w-6xl p-2 sm:p-4 xl:max-w-7xl">{children}</div>
     </>
   );
 }

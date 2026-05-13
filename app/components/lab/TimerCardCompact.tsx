@@ -33,7 +33,7 @@ export function TimerCardCompact({ template }: { template: TimerTemplate }) {
 
   if (template.timer_type === "countdown") {
     return (
-      <div className="rounded-xl border border-white/10 bg-slate-900/80 p-4 text-slate-100 transition hover:border-emerald-400/40">
+      <div className="rounded-xl border border-white/10 bg-slate-900/80 p-5 text-slate-100 transition hover:border-emerald-400/40">
         <div className="mb-2 text-3xl leading-none" aria-hidden>
           {template.icon}
         </div>
@@ -47,7 +47,7 @@ export function TimerCardCompact({ template }: { template: TimerTemplate }) {
 
   if (hasValidIntervalFields(template)) {
     return (
-      <div className="rounded-xl border border-white/10 bg-slate-900/80 p-4 text-slate-100 transition hover:border-emerald-400/40">
+      <div className="rounded-xl border border-white/10 bg-slate-900/80 p-5 text-slate-100 transition hover:border-emerald-400/40">
         <div className="mb-2 text-3xl leading-none" aria-hidden>
           {template.icon}
         </div>
@@ -61,7 +61,7 @@ export function TimerCardCompact({ template }: { template: TimerTemplate }) {
 
   return (
     <div
-      className="cursor-pointer rounded-xl border border-white/10 bg-slate-900/80 p-4 text-slate-100 transition hover:border-emerald-400/40"
+      className="cursor-pointer rounded-xl border border-white/10 bg-slate-900/80 p-5 text-slate-100 transition hover:border-emerald-400/40"
       onClick={go}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
