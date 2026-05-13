@@ -31,8 +31,12 @@ function hasValidIntervalFields(t: TimerTemplate): boolean {
 const RING_RADIUS = 56;
 const VIEWBOX = 160;
 const CENTER = VIEWBOX / 2;
-const TRACK_STROKE = 2;
-const PROGRESS_STROKE = 4;
+/** Neutral stopwatch-style track (always full). */
+const STOPWATCH_BACK_STROKE = 6;
+/** Colored progress arc / idle fill; same width as track for layered stopwatch look. */
+const STOPWATCH_PROGRESS_STROKE = 6;
+const STOPWATCH_BACK_COLOR = "#333333";
+const STOPWATCH_BACK_OPACITY = 0.5;
 
 const RING_FRAME_CLASS =
   "relative mx-auto aspect-square w-full min-w-0 max-w-44 overflow-hidden rounded-full sm:max-w-52 md:max-w-60 lg:max-w-72";
@@ -87,9 +91,9 @@ function TimerRing({
         cy={CENTER}
         r={RING_RADIUS}
         fill="none"
-        stroke={routineColor}
-        strokeOpacity={0.3}
-        strokeWidth={TRACK_STROKE}
+        stroke={STOPWATCH_BACK_COLOR}
+        strokeOpacity={STOPWATCH_BACK_OPACITY}
+        strokeWidth={STOPWATCH_BACK_STROKE}
       />
       {progressMode === "full" ? (
         <circle
@@ -98,7 +102,7 @@ function TimerRing({
           r={RING_RADIUS}
           fill="none"
           stroke={routineColor}
-          strokeWidth={PROGRESS_STROKE}
+          strokeWidth={STOPWATCH_PROGRESS_STROKE}
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={0}
@@ -110,7 +114,7 @@ function TimerRing({
           r={RING_RADIUS}
           fill="none"
           stroke={progressStroke}
-          strokeWidth={PROGRESS_STROKE}
+          strokeWidth={STOPWATCH_PROGRESS_STROKE}
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={strokeOffset}
