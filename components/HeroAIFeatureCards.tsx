@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 
 const cards = [
   {
-    title: "AI Genereert",
+    title: "AI Generates",
     body: "Routines and timers that fit your pace, goals, and available time.",
     icon: (
       <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" aria-hidden>
@@ -19,8 +19,8 @@ const cards = [
     ),
   },
   {
-    title: "Timer Loopt",
-    body: "Interval- en countdown-fases met duidelijke signalen — jij blijft in de zone.",
+    title: "Timer Runs",
+    body: "Interval and countdown phases with clear cues—you stay in the zone.",
     icon: (
       <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" aria-hidden>
         <circle cx="12" cy="13" r="8" className="stroke-sky-400" strokeWidth="1.5" />
@@ -30,8 +30,8 @@ const cards = [
     ),
   },
   {
-    title: "Wij Volgen",
-    body: "Sessies en voortgang vastgelegd — zie patronen zonder extra administratie.",
+    title: "We Track",
+    body: "Sessions and progress logged—spot patterns without extra admin.",
     icon: (
       <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" aria-hidden>
         <path d="M4 19V5M8 17V9m4 8V7m4 10v-6m4 8V11" className="stroke-violet-400" strokeWidth="1.5" strokeLinecap="round" />
@@ -39,8 +39,8 @@ const cards = [
     ),
   },
   {
-    title: "Jij Groeit",
-    body: "Kleine stappen, meetbaar resultaat — volhouden wordt zichtbaar.",
+    title: "You Grow",
+    body: "Small steps, measurable results—sticking with it becomes visible.",
     icon: (
       <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" aria-hidden>
         <path

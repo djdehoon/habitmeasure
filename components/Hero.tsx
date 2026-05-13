@@ -45,8 +45,8 @@ export function Hero() {
             AI generates your routine.
           </span>
           <br />
-          <span className="text-slate-100">Jij voert hem uit.</span>{" "}
-          <span className="text-slate-300">Wij volgen je voortgang.</span>
+          <span className="text-slate-100">You follow through.</span>{" "}
+          <span className="text-slate-300">We track your progress.</span>
         </motion.h1>
 
         <motion.p
@@ -64,13 +64,13 @@ export function Hero() {
             href="#waitlist"
             className="w-full rounded-xl bg-emerald-400 px-8 py-3.5 text-center text-base font-bold text-slate-950 shadow-lg shadow-emerald-500/25 transition hover:bg-emerald-300 sm:w-auto"
           >
-            Schrijf je in →
+            Join the waitlist →
           </motion.a>
           <motion.a
             href="#how"
             className="w-full rounded-xl border border-white/20 bg-white/5 px-8 py-3.5 text-center text-base font-semibold text-slate-100 backdrop-blur-sm transition hover:border-white/30 hover:bg-white/10 sm:w-auto"
           >
-            Zo werkt het
+            How it works
           </motion.a>
         </motion.div>
 
@@ -78,7 +78,7 @@ export function Hero() {
           className="max-w-md font-sans text-xs leading-relaxed tracking-wide text-slate-500"
           variants={itemVariants}
         >
-          Early access. Bouw betere gewoontes — met AI die meedenkt en data die motiveert.
+          Early access. Build better habits—with AI that supports you and data that keeps you motivated.
         </motion.p>
       </motion.div>
     </section>
