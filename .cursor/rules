@@ -40,20 +40,16 @@ Local: C:\Users\djdeh\Development\HabitMeasure
 
 ## VERSION MANAGEMENT (required at every task)
 
-At the end of EVERY task, always update BOTH:
+**Single source of truth:** the app semver lives only in [package.json](package.json) under `"version"`.
 
-1. `package.json` → Change `"version"` to the new version number
-2. `lib/version.ts` → Change `APP_VERSION` to match
+At the end of every task that ships a version bump:
 
-These must ALWAYS be in sync. Never update one without the other.
+1. Update `"version"` in `package.json` (semver: patch per small change, minor for feature groups, major for breaking redesigns).
+2. Run `npm install` at the repo root so [package-lock.json](package-lock.json) root metadata (`version` and `packages[""].version`) stays aligned with `package.json`, then commit the lockfile if it changed.
 
-File: `lib/version.ts`
-```typescript
-export const APP_VERSION = 'X.Y.Z'
-```
+**UI:** [app/components/VersionFooter.tsx](app/components/VersionFooter.tsx) imports `@/package.json` and displays `packageJson.version`. Do not add a second constants file for the same value.
 
-The footer reads from APP_VERSION. If you don't update lib/version.ts,
-the version shown on the website will NOT change.
+**Do not** maintain `lib/version.ts` or `APP_VERSION` (removed; one source only).
 
 ## COMMIT FORMAAT
 vX.Y.Z type(scope): Imperatieve beschrijving (Engels, geen punt, ≤50 tekens)
@@ -371,6 +367,23 @@ WAAROM?
 - ✅ Geen "Planning next moves" hang
 - ✅ 3-6x sneller
 - ✅ 95% succes-rate
+
+## VERSION MANAGEMENT PROTOCOL
+
+### Single Source of Truth
+- **ONLY** `package.json` contains the version number
+- **NEVER** create separate version files (lib/version.ts, etc.)
+- **NEVER** hardcode version strings in code
+
+### How to Use Version in Code
+```typescript
+// ✅ CORRECT:
+import packageJson from '@/package.json';
+console.log(`Version: ${packageJson.version}`);
+
+// ❌ WRONG:
+const VERSION = '1.6.8'; // hardcoded
+import { APP_VERSION } from '@/lib/version'; // duplicate source
 
 ---
 
