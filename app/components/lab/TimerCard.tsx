@@ -60,16 +60,11 @@ export function TimerCard({ template }: TimerCardProps) {
       <TimerTypeBadge timerType={template.timer_type} />
 
       <div className="mb-3 flex items-center justify-between gap-3 pr-24">
-        <h3 className="truncate text-lg font-semibold">{template.template_name}</h3>
-        <span className="shrink-0 text-2xl leading-none">{template.icon}</span>
-      </div>
+        <h3 className="truncate text-lg font-semibold">{template.icon} {template.template_name}</h3>
+{/*        <span className="shrink-0 text-2xl leading-none">{template.icon}</span>
+*/}      </div>
 
-      <div className="mb-4 flex items-center justify-between text-sm text-slate-400">
-        <span className="font-medium">
-          {template.timer_type === "interval" ? "Interval timer" : "Countdown"}
-        </span>
-        <span className="text-base font-bold text-slate-100">{formatIntervalSummary(template)}</span>
-      </div>
+      
 
       <div className="mb-4 flex items-center gap-2">
         <span className="text-sm text-slate-400">Color</span>
@@ -77,7 +72,8 @@ export function TimerCard({ template }: TimerCardProps) {
           className="inline-block h-4 w-4 rounded-full border border-white/20"
           style={{ backgroundColor: template.color }}
           aria-label={`Routine color ${template.color}`}
-        />
+        ></span>
+        <span className="ml-auto text-base font-bold text-slate-100">{formatIntervalSummary(template)}</span>
       </div>
 
       <div className="flex items-start gap-2">
