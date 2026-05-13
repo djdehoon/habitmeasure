@@ -1,8 +1,37 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { formatIntervalSummary, type TimerTemplate } from "@/lib/utils/timerHelpers";
+import { formatIntervalSummary, type TimerTemplate, type TimerType } from "@/lib/utils/timerHelpers";
 import { TimerDeleteButton } from "@/app/components/lab/TimerDeleteButton";
+
+const TIMER_TYPE_BADGES: Record<
+  TimerType,
+  { icon: string; label: string; tone: string }
+> = {
+  countdown: {
+    icon: "⏱️",
+    label: "Countdown",
+    tone: "border-blue-500/20 bg-blue-500/10 text-blue-300",
+  },
+  interval: {
+    icon: "🔄",
+    label: "Interval",
+    tone: "border-violet-500/20 bg-violet-500/10 text-violet-300",
+  },
+};
+
+function TimerTypeBadge({ timerType }: { timerType: TimerType }) {
+  const cfg = TIMER_TYPE_BADGES[timerType];
+  return (
+    <div
+      className={`pointer-events-none absolute right-2 top-2 z-10 flex items-center gap-1 rounded-full border px-2 py-1 text-xs font-medium ${cfg.tone}`}
+      aria-hidden
+    >
+      <span>{cfg.icon}</span>
+      <span>{cfg.label}</span>
+    </div>
+  );
+}
 
 type TimerCardProps = {
   template: TimerTemplate;
@@ -16,7 +45,7 @@ export function TimerCard({ template }: TimerCardProps) {
 
   return (
     <article
-      className="glass-panel cursor-pointer border border-white/10 p-4 text-slate-100 transition hover:border-emerald-400/40"
+      className="glass-panel relative cursor-pointer border border-white/10 p-4 text-slate-100 transition hover:border-emerald-400/40"
       onClick={openTimer}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
@@ -28,13 +57,17 @@ export function TimerCard({ template }: TimerCardProps) {
       tabIndex={0}
       aria-label={`Open routine ${template.template_name}`}
     >
-      <div className="mb-3 flex items-center justify-between gap-3">
+      <TimerTypeBadge timerType={template.timer_type} />
+
+      <div className="mb-3 flex items-center justify-between gap-3 pr-24">
         <h3 className="truncate text-lg font-semibold">{template.template_name}</h3>
-        <span className="text-2xl leading-none">{template.icon}</span>
+        <span className="shrink-0 text-2xl leading-none">{template.icon}</span>
       </div>
 
       <div className="mb-4 flex items-center justify-between text-sm text-slate-400">
-        <span className="font-medium">{"Duration"}</span>
+        <span className="font-medium">
+          {template.timer_type === "interval" ? "Interval timer" : "Countdown"}
+        </span>
         <span className="text-base font-bold text-slate-100">{formatIntervalSummary(template)}</span>
       </div>
 
