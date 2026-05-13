@@ -45,7 +45,7 @@ export function TimerCard({ template }: TimerCardProps) {
 
   return (
     <article
-      className="glass-panel relative cursor-pointer border border-white/10 p-4 text-slate-100 transition hover:border-emerald-400/40"
+      className="glass-panel relative min-w-0 cursor-pointer border border-white/10 p-4 text-slate-100 transition hover:border-emerald-400/40"
       onClick={openTimer}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
@@ -59,8 +59,10 @@ export function TimerCard({ template }: TimerCardProps) {
     >
       <TimerTypeBadge timerType={template.timer_type} />
 
-      <div className="mb-3 flex items-center justify-between gap-3 pr-24">
-        <h3 className="truncate text-lg font-semibold">{template.icon} {template.template_name}</h3>
+      <div className="mb-3 flex min-w-0 items-center justify-between gap-3 pr-24">
+        <h3 className="min-w-0 flex-1 break-words text-balance text-lg font-semibold [overflow-wrap:anywhere]">
+          {template.icon} {template.template_name}
+        </h3>
 {/*        <span className="shrink-0 text-2xl leading-none">{template.icon}</span>
 */}      </div>
 

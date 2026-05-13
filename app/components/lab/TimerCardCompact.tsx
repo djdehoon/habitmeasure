@@ -33,11 +33,13 @@ export function TimerCardCompact({ template }: { template: TimerTemplate }) {
 
   if (template.timer_type === "countdown") {
     return (
-      <div className="rounded-xl border border-white/10 bg-slate-900/80 p-5 text-slate-100 transition hover:border-emerald-400/40">
+      <div className="min-w-0 rounded-xl border border-white/10 bg-slate-900/80 p-5 text-slate-100 transition hover:border-emerald-400/40">
         <div className="mb-2 text-3xl leading-none" aria-hidden>
           {template.icon}
         </div>
-        <h3 className="mb-1 truncate font-semibold text-slate-100">{template.template_name}</h3>
+        <h3 className="mb-1 min-w-0 break-words text-balance font-semibold text-slate-100 [overflow-wrap:anywhere]">
+          {template.template_name}
+        </h3>
         <p className="mb-2 text-xs text-slate-400">{TYPE_LABEL[template.timer_type]}</p>
         <p className="mb-3 text-sm font-bold text-emerald-400">{formatIntervalSummary(template)}</p>
         <TimerCardRunning template={template} />
@@ -47,11 +49,13 @@ export function TimerCardCompact({ template }: { template: TimerTemplate }) {
 
   if (hasValidIntervalFields(template)) {
     return (
-      <div className="rounded-xl border border-white/10 bg-slate-900/80 p-5 text-slate-100 transition hover:border-emerald-400/40">
+      <div className="min-w-0 rounded-xl border border-white/10 bg-slate-900/80 p-5 text-slate-100 transition hover:border-emerald-400/40">
         <div className="mb-2 text-3xl leading-none" aria-hidden>
           {template.icon}
         </div>
-        <h3 className="mb-1 truncate font-semibold text-slate-100">{template.template_name}</h3>
+        <h3 className="mb-1 min-w-0 break-words text-balance font-semibold text-slate-100 [overflow-wrap:anywhere]">
+          {template.template_name}
+        </h3>
         <p className="mb-2 text-xs text-slate-400">{TYPE_LABEL[template.timer_type]}</p>
         <p className="mb-3 text-sm font-bold text-emerald-400">{formatIntervalSummary(template)}</p>
         <TimerCardIntervalRunning template={template} />
@@ -61,7 +65,7 @@ export function TimerCardCompact({ template }: { template: TimerTemplate }) {
 
   return (
     <div
-      className="cursor-pointer rounded-xl border border-white/10 bg-slate-900/80 p-5 text-slate-100 transition hover:border-emerald-400/40"
+      className="min-w-0 cursor-pointer rounded-xl border border-white/10 bg-slate-900/80 p-5 text-slate-100 transition hover:border-emerald-400/40"
       onClick={go}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
@@ -76,7 +80,7 @@ export function TimerCardCompact({ template }: { template: TimerTemplate }) {
       <div className="mb-2 text-3xl leading-none" aria-hidden>
         {template.icon}
       </div>
-      <h3 className="mb-1 truncate font-semibold text-slate-100">{template.template_name}</h3>
+      <h3 className="mb-1 min-w-0 break-words text-balance font-semibold text-slate-100 [overflow-wrap:anywhere]">{template.template_name}</h3>
       <p className="mb-2 text-xs text-slate-400">{TYPE_LABEL[template.timer_type]}</p>
       <p className="text-sm font-bold text-emerald-400">{formatIntervalSummary(template)}</p>
     </div>

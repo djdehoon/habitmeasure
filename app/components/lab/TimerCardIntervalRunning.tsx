@@ -115,7 +115,7 @@ export function TimerCardIntervalRunning({ template }: TimerCardIntervalRunningP
         aria-label={ariaLabel}
         onClick={handleTap}
         onKeyDown={handleKeyToggle}
-        className={`cursor-pointer rounded-2xl border-2 bg-slate-950/40 p-4 text-center outline-none transition hover:bg-slate-900/50 focus-visible:ring-2 focus-visible:ring-emerald-400/60 ${borderClass}`}
+        className={`cursor-pointer min-w-0 rounded-2xl border-2 bg-slate-950/40 p-4 text-center outline-none transition hover:bg-slate-900/50 focus-visible:ring-2 focus-visible:ring-emerald-400/60 ${borderClass}`}
       >
         <div className="mb-2 text-2xl leading-none" aria-hidden>
           {template.icon}
@@ -181,7 +181,7 @@ export function TimerCardIntervalRunning({ template }: TimerCardIntervalRunningP
           <p className="mt-2 text-xs font-medium text-emerald-400/90">{rounds} rounds complete</p>
         ) : null}
 
-        <p className="mt-2 truncate text-xs text-slate-400">{template.template_name}</p>
+        <p className="mt-2 min-w-0 break-words text-balance text-xs text-slate-400 [overflow-wrap:anywhere]">{template.template_name}</p>
         <p className="text-xs text-slate-500">{roundLabel}</p>
         <p
           className={`text-xs font-medium ${

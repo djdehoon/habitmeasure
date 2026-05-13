@@ -18,11 +18,16 @@ export function TimerCardEdit({ template }: TimerCardEditProps) {
   const router = useRouter();
 
   return (
-    <article className="glass-panel rounded-xl border border-white/10 p-5 text-slate-100">
+    <article className="glass-panel min-w-0 rounded-xl border border-white/10 p-5 text-slate-100">
       <div className="mb-3 text-center text-4xl leading-none" aria-hidden>
         {template.icon}
       </div>
-      <h3 className="mb-1 truncate text-center text-lg font-semibold text-slate-100">{template.template_name}</h3>
+      <h3 className="mb-1 min-w-0 break-words text-balance text-center text-lg font-semibold text-slate-100 [overflow-wrap:anywhere]">
+        {template.template_name}
+      </h3>
+      <p className="mb-2 break-all text-center font-mono text-[10px] leading-snug text-slate-500 [overflow-wrap:anywhere]">
+        {template.id}
+      </p>
       <p className="mb-2 text-center text-xs text-slate-400">{TYPE_LABEL[template.timer_type]}</p>
       <div className="mb-3 flex items-center justify-center gap-2">
         <span className="text-sm text-slate-400">Color</span>

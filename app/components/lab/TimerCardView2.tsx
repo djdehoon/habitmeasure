@@ -417,7 +417,9 @@ function TimerCardView2Fallback({ template }: { template: TimerTemplate }) {
       <div className="mb-2 text-4xl leading-none opacity-80" aria-hidden>
         {template.icon}
       </div>
-      <p className="mb-2 truncate px-1 text-sm font-medium text-slate-400">{template.template_name}</p>
+      <p className="mb-2 min-w-0 break-words px-1 text-center text-sm font-medium text-balance text-slate-400 [overflow-wrap:anywhere]">
+        {template.template_name}
+      </p>
       <p className="text-xs font-light text-slate-500">Tap to open this routine in the lab</p>
     </div>
   );
