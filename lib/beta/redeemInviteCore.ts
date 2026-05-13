@@ -1,3 +1,4 @@
+import { devLog } from "@/lib/utils/logger";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 /**
@@ -11,7 +12,7 @@ export async function redeemInviteForUserWithServiceClient(
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   // ... alle checks daarvoor ...
 
-  console.log("🚀 redeemInviteForUserWithServiceClient called with:", { userId, normalizedCode });
+  devLog("🚀 redeemInviteForUserWithServiceClient called with:", { userId, normalizedCode });
 
   const { data: invite, error: inviteErr } = await service
     .from("beta_testers")
@@ -19,19 +20,18 @@ export async function redeemInviteForUserWithServiceClient(
     .eq("invite_code", normalizedCode)
     .maybeSingle();
 
-    console.log("redeemInviteCore - Invite lookup:", { 
-      normalizedCode, 
-      invite, 
-      inviteErr 
-    });
-    
+  devLog("redeemInviteCore - Invite lookup:", {
+    normalizedCode,
+    invite,
+    inviteErr,
+  });
 
   if (inviteErr || !invite) {
     return { ok: false, error: "Invalid or expired invite." };
   }
 
   // ✅ VOEG HIER DE LOGS IN
-  console.log("Before update query:", {
+  devLog("Before update query:", {
     id: invite.id,
     use_count: invite.use_count,
     max_uses: invite.max_uses,
@@ -47,7 +47,7 @@ export async function redeemInviteForUserWithServiceClient(
     .select("id")
     .maybeSingle();
 
-  console.log("Update result:", { bumped, bumpErr });  // ✅ EN HIER
+  devLog("Update result:", { bumped, bumpErr });
 
   if (bumpErr || !bumped) {
     return { ok: false, error: "Invite could not be redeemed." };

@@ -1,3 +1,4 @@
+import { devLog } from "@/lib/utils/logger";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 export function normalizeInviteCode(raw: string | null | undefined): string {
@@ -10,11 +11,11 @@ export async function checkInviteCodeValidWithClient(
 ): Promise<boolean> {
   const normalized = normalizeInviteCode(code);
   if (!normalized) {
-    console.log("❌ Code is empty");
+    devLog("❌ Code is empty");
     return false;
   }
 
-  console.log("📡 Querying beta_testers table...");
+  devLog("📡 Querying beta_testers table...");
 
   const { data, error } = await supabase
     .from("beta_testers")
@@ -22,8 +23,8 @@ export async function checkInviteCodeValidWithClient(
     .eq("invite_code", normalized)
     .maybeSingle();
 
-  console.log("📊 Query result:", { data, error });
-  console.log("📊 Data keys:", data ? Object.keys(data) : "no data");
+  devLog("📊 Query result:", { data, error });
+  devLog("📊 Data keys:", data ? Object.keys(data) : "no data");
 
   if (error) {
     console.error("❌ Error:", error);
@@ -31,28 +32,28 @@ export async function checkInviteCodeValidWithClient(
   }
 
   if (!data || !data.id) {
-    console.log("❌ No data found");
+    devLog("❌ No data found");
     return false;
   }
 
   if (data.expires_at && new Date(data.expires_at as string) < new Date()) {
-    console.log("❌ Code expired:", data.expires_at);
+    devLog("❌ Code expired:", data.expires_at);
     return false;
   }
 
-  console.log("✅ Code is valid!");
+  devLog("✅ Code is valid!");
   return true;
 }
 
 export async function checkInviteCodeValid(code: string): Promise<boolean> {
   const normalized = normalizeInviteCode(code);
-  console.log("🔍 Normalized code:", normalized);
+  devLog("🔍 Normalized code:", normalized);
 
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 
-  console.log("🔐 Service Role Key exists:", !!serviceRoleKey);
-  console.log("🔐 Supabase URL:", supabaseUrl);
+  devLog("🔐 Service Role Key exists:", !!serviceRoleKey);
+  devLog("🔐 Supabase URL:", supabaseUrl);
 
   if (!serviceRoleKey || !supabaseUrl) {
     console.error("❌ Missing env vars!");
@@ -60,7 +61,7 @@ export async function checkInviteCodeValid(code: string): Promise<boolean> {
   }
 
   if (!normalized) {
-    console.log("❌ Code is empty");
+    devLog("❌ Code is empty");
     return false;
   }
 
