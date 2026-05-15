@@ -1,0 +1,435 @@
+"use client";
+
+import Link from "next/link";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { DelayedStartModal } from "@/app/components/lab/DelayedStartModal";
+import { ProgressRing } from "@/app/components/lab/ProgressRing";
+import type { TimerSessionRow } from "@/app/lib/types";
+import { playFinishSound, playPauseSound, playStartSound } from "@/app/lib/sounds";
+import { useCountdown } from "@/lib/hooks/useCountdown";
+import {
+  createTimerSession,
+  listSessionsForTemplate,
+  updateTimerSession,
+} from "@/lib/hooks/useTimerSessions";
+import { addTimeButtonToSeconds } from "@/lib/utils/addTimeSeconds";
+import {
+  formatClock,
+  isStatusFocusedRingDisplay,
+  ringClockClassName,
+  ringStatusClassName,
+  statusLabel,
+} from "@/lib/utils/countdownFormat";
+import { computeSessionStats, formatTotalDuration } from "@/lib/utils/sessionStats";
+import {
+  normalizeAddTimeButtons,
+  type AddTimeButtonValue,
+  type TimerTemplate,
+} from "@/lib/utils/timerHelpers";
+
+type TabId = "control" | "stats" | "history";
+
+type CountdownExecutionProps = {
+  template: TimerTemplate;
+};
+
+function formatSessionDate(iso: string): string {
+  try {
+    return new Intl.DateTimeFormat(undefined, {
+      dateStyle: "medium",
+      timeStyle: "short",
+    }).format(new Date(iso));
+  } catch {
+    return iso;
+  }
+}
+
+function statusBadgeClass(status: TimerSessionRow["status"]): string {
+  switch (status) {
+    case "completed":
+      return "bg-emerald-500/20 text-emerald-300";
+    case "cancelled":
+      return "bg-slate-500/20 text-slate-400";
+    case "paused":
+      return "bg-amber-500/20 text-amber-300";
+    default:
+      return "bg-sky-500/20 text-sky-300";
+  }
+}
+
+export function CountdownExecution({ template }: CountdownExecutionProps) {
+  const routineColor = template.color?.trim() || "#FFEB3B";
+  const durationSeconds = Math.max(1, Math.floor(Number(template.duration_seconds)));
+  const minDelay = Math.max(0, Math.floor(Number(template.min_delay_seconds) || 0));
+  const quickButtons = normalizeAddTimeButtons(template.add_time_buttons);
+
+  const { state, timeRemaining, progress, start, startWithDelay, pause, resume, reset, addTime } =
+    useCountdown(durationSeconds);
+
+  const [activeTab, setActiveTab] = useState<TabId>("control");
+  const [delayModalOpen, setDelayModalOpen] = useState(false);
+  const [sessionError, setSessionError] = useState<string | null>(null);
+  const [isStarting, setIsStarting] = useState(false);
+  const [sessions, setSessions] = useState<TimerSessionRow[]>([]);
+  const [sessionsLoading, setSessionsLoading] = useState(false);
+  const [sessionsError, setSessionsError] = useState<string | null>(null);
+
+  const sessionIdRef = useRef<string | null>(null);
+  const terminalSentRef = useRef(false);
+  const prevStateRef = useRef(state);
+
+  const ringMode = state === "idle" || state === "waiting" ? "full" : state === "finished" ? "done" : "partial";
+
+  const label = statusLabel(state);
+
+  const loadSessions = useCallback(async () => {
+    setSessionsLoading(true);
+    setSessionsError(null);
+    const { data, error } = await listSessionsForTemplate(template.id);
+    setSessionsLoading(false);
+    if (error) {
+      setSessionsError(error);
+      return;
+    }
+    setSessions(data ?? []);
+  }, [template.id]);
+
+  const selectTab = useCallback(
+    (tab: TabId) => {
+      setActiveTab(tab);
+      if (tab === "stats" || tab === "history") {
+        void loadSessions();
+      }
+    },
+    [loadSessions],
+  );
+
+  const closeSession = useCallback(async (status: "completed" | "cancelled") => {
+    if (!sessionIdRef.current || terminalSentRef.current) return;
+    const { error } = await updateTimerSession(sessionIdRef.current, status);
+    if (error) setSessionError(error);
+    else terminalSentRef.current = true;
+  }, []);
+
+  const openSession = useCallback(async () => {
+    if (sessionIdRef.current) return;
+    setSessionError(null);
+    setIsStarting(true);
+    try {
+      const { data, error } = await createTimerSession(template.id);
+      if (error || !data) {
+        setSessionError(error ?? "Could not start session.");
+        return;
+      }
+      sessionIdRef.current = data.session_id;
+      terminalSentRef.current = false;
+    } finally {
+      setIsStarting(false);
+    }
+  }, [template.id]);
+
+  useEffect(() => {
+    const prev = prevStateRef.current;
+    prevStateRef.current = state;
+
+    if (prev === "waiting" && state === "running") {
+      void openSession();
+    } else if (prev !== "running" && state === "running" && prev !== "waiting") {
+      void openSession();
+    }
+
+    if (state === "finished" && prev !== "finished") {
+      playFinishSound();
+      void (async () => {
+        await closeSession("completed");
+        void loadSessions();
+        if (template.autocompletion) {
+          setTimeout(() => {
+            sessionIdRef.current = null;
+            terminalSentRef.current = false;
+            reset();
+          }, 800);
+        }
+      })();
+    }
+  }, [state, openSession, closeSession, loadSessions, template.autocompletion, reset]);
+
+  useEffect(() => {
+    return () => {
+      if (sessionIdRef.current && !terminalSentRef.current) {
+        void updateTimerSession(sessionIdRef.current, "cancelled");
+      }
+    };
+  }, []);
+
+  const handlePlay = useCallback(() => {
+    if (state === "idle") {
+      playStartSound();
+      start(durationSeconds, minDelay > 0 ? minDelay : 0);
+    } else if (state === "paused") {
+      playStartSound();
+      void (async () => {
+        if (sessionIdRef.current) {
+          const { error } = await updateTimerSession(sessionIdRef.current, "running");
+          if (error) setSessionError(error);
+        }
+        resume();
+      })();
+    } else if (state === "finished") {
+      playStartSound();
+      sessionIdRef.current = null;
+      terminalSentRef.current = false;
+      start(durationSeconds, minDelay > 0 ? minDelay : 0);
+    }
+  }, [state, start, resume, durationSeconds, minDelay]);
+
+  const handlePause = useCallback(() => {
+    if (state !== "running") return;
+    playPauseSound();
+    void (async () => {
+      if (sessionIdRef.current) {
+        const { error } = await updateTimerSession(sessionIdRef.current, "paused");
+        if (error) setSessionError(error);
+      }
+      pause();
+    })();
+  }, [state, pause]);
+
+  const handleReset = useCallback(() => {
+    void (async () => {
+      const sessionId = sessionIdRef.current;
+      const shouldCancel = Boolean(sessionId && !terminalSentRef.current);
+      sessionIdRef.current = null;
+      terminalSentRef.current = false;
+      reset();
+      if (shouldCancel && sessionId) {
+        const { error } = await updateTimerSession(sessionId, "cancelled");
+        if (error) setSessionError(error);
+      }
+      void loadSessions();
+    })();
+  }, [reset, loadSessions]);
+
+  const handleDelayedConfirm = useCallback(
+    (delaySeconds: number) => {
+      playStartSound();
+      if (state === "idle" || state === "finished") {
+        sessionIdRef.current = null;
+        terminalSentRef.current = false;
+        start(durationSeconds, delaySeconds);
+      } else {
+        startWithDelay(delaySeconds);
+      }
+    },
+    [state, start, startWithDelay, durationSeconds],
+  );
+
+  const stats = useMemo(() => computeSessionStats(sessions), [sessions]);
+
+  const tabs: { id: TabId; label: string }[] = [
+    { id: "control", label: "CONTROL" },
+    { id: "stats", label: "STATS" },
+    { id: "history", label: "HISTORY" },
+  ];
+
+  return (
+    <div className="flex min-h-[100dvh] flex-col bg-black text-slate-100">
+      <header className="relative flex items-center justify-center border-b border-white/10 px-4 py-3">
+        <Link
+          href="/lab"
+          className="absolute left-4 flex h-10 w-10 items-center justify-center rounded-full text-slate-300 transition hover:bg-white/10 hover:text-white"
+          aria-label="Close"
+        >
+          ✕
+        </Link>
+        <h1 className="max-w-[60%] truncate text-sm font-medium">{template.template_name}</h1>
+        <Link
+          href={`/lab?edit=${template.id}`}
+          className="absolute right-4 flex h-10 w-10 items-center justify-center rounded-full text-slate-300 transition hover:bg-white/10 hover:text-white"
+          aria-label="Edit timer"
+        >
+          🔧
+        </Link>
+      </header>
+
+      <div className="flex flex-1 flex-col items-center px-4 pt-6 pb-4">
+        <div className="relative">
+          <ProgressRing color={routineColor} progress={progress} mode={ringMode} />
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <div
+              className={`flex max-w-[90%] justify-center ${isStatusFocusedRingDisplay(state) ? "items-baseline gap-1.5" : "items-center gap-2"}`}
+              aria-live="polite"
+            >
+              <span className={ringClockClassName(state)}>{formatClock(timeRemaining)}</span>
+              {label ? (
+                <>
+                  <span
+                    className={`w-px shrink-0 bg-sky-400/60 ${isStatusFocusedRingDisplay(state) ? "h-9 self-center sm:h-10" : "h-8"}`}
+                    aria-hidden
+                  />
+                  <span className={ringStatusClassName(state)}>{label}</span>
+                </>
+              ) : null}
+            </div>
+            <div
+              className="mt-3 h-px w-20"
+            style={{ backgroundColor: state === "finished" ? "#22c55e" : routineColor, opacity: 0.55 }}
+          />
+            <p className="mt-2 text-sm text-slate-500">{template.template_name}</p>
+          </div>
+        </div>
+
+        {sessionError ? (
+          <p className="mt-4 text-center text-sm text-red-300" role="alert">
+            {sessionError}
+          </p>
+        ) : null}
+
+        <nav className="mt-8 flex w-full max-w-md rounded-lg bg-slate-900/80 p-1" aria-label="Timer sections">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => selectTab(tab.id)}
+              className={`flex-1 rounded-md py-2 text-xs font-semibold tracking-wide transition ${
+                activeTab === tab.id ? "bg-slate-700 text-white" : "text-slate-500 hover:text-slate-300"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </nav>
+
+        <div className="mt-6 w-full max-w-md flex-1">
+          {activeTab === "control" ? (
+            <div className="space-y-6">
+              <div className="flex items-center justify-center gap-4 text-sm text-slate-400">
+                {quickButtons.map((value: AddTimeButtonValue) => (
+                  <button
+                    key={value}
+                    type="button"
+                    disabled={state !== "running" && state !== "paused"}
+                    onClick={() => addTime(addTimeButtonToSeconds(value))}
+                    className="min-h-11 px-2 transition hover:text-white disabled:opacity-40"
+                  >
+                    +{value === "1m" ? "1m" : value}
+                  </button>
+                ))}
+              </div>
+
+              <div className="flex items-center justify-center gap-8">
+                <button
+                  type="button"
+                  onClick={() => void handlePlay()}
+                  disabled={isStarting || state === "running" || state === "waiting"}
+                  className="flex h-14 w-14 items-center justify-center text-2xl text-slate-200 transition hover:text-white disabled:opacity-40"
+                  aria-label="Play"
+                >
+                  ▶
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDelayModalOpen(true)}
+                  disabled={state === "running" || state === "waiting"}
+                  className="flex h-14 w-14 items-center justify-center text-2xl text-slate-200 transition hover:text-white disabled:opacity-40"
+                  aria-label="Delayed start"
+                >
+                  ⏱
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void handlePause()}
+                  disabled={state !== "running"}
+                  className="flex h-14 w-14 items-center justify-center text-2xl text-slate-200 transition hover:text-white disabled:opacity-40"
+                  aria-label="Pause"
+                >
+                  ⏸
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void handleReset()}
+                  disabled={state === "idle"}
+                  className="flex h-14 w-14 items-center justify-center text-2xl text-slate-200 transition hover:text-white disabled:opacity-40"
+                  aria-label="Reset"
+                >
+                  ↻
+                </button>
+              </div>
+            </div>
+          ) : null}
+
+          {activeTab === "stats" ? (
+            <div className="space-y-3">
+              {sessionsLoading ? (
+                <p className="text-center text-sm text-slate-500">Loading stats…</p>
+              ) : sessionsError ? (
+                <p className="text-center text-sm text-red-300">{sessionsError}</p>
+              ) : (
+                <>
+                  <StatCard label="Total runs" value={String(stats.totalRuns)} />
+                  <StatCard label="Completed" value={String(stats.completedCount)} />
+                  <StatCard label="Total time" value={formatTotalDuration(stats.totalSeconds)} />
+                  <StatCard
+                    label="Last completed"
+                    value={
+                      stats.lastCompletedAt ? formatSessionDate(stats.lastCompletedAt) : "—"
+                    }
+                  />
+                </>
+              )}
+            </div>
+          ) : null}
+
+          {activeTab === "history" ? (
+            <div className="max-h-[40vh] space-y-2 overflow-y-auto">
+              {sessionsLoading ? (
+                <p className="text-center text-sm text-slate-500">Loading history…</p>
+              ) : sessionsError ? (
+                <p className="text-center text-sm text-red-300">{sessionsError}</p>
+              ) : sessions.length === 0 ? (
+                <p className="text-center text-sm text-slate-500">No sessions yet.</p>
+              ) : (
+                sessions.map((session) => (
+                  <div
+                    key={session.id}
+                    className="flex items-center justify-between rounded-lg border border-white/10 bg-slate-900/60 px-4 py-3"
+                  >
+                    <div>
+                      <p className="text-sm text-slate-200">{formatSessionDate(session.started_at)}</p>
+                      {session.duration_seconds != null ? (
+                        <p className="text-xs text-slate-500">
+                          {formatTotalDuration(session.duration_seconds)}
+                        </p>
+                      ) : null}
+                    </div>
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-xs font-medium uppercase ${statusBadgeClass(session.status)}`}
+                    >
+                      {session.status}
+                    </span>
+                  </div>
+                ))
+              )}
+            </div>
+          ) : null}
+        </div>
+      </div>
+
+      <DelayedStartModal
+        open={delayModalOpen}
+        defaultDelay={minDelay > 0 ? minDelay : 5}
+        onClose={() => setDelayModalOpen(false)}
+        onConfirm={handleDelayedConfirm}
+      />
+    </div>
+  );
+}
+
+function StatCard({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg border border-white/10 bg-slate-900/60 px-4 py-3">
+      <p className="text-xs uppercase tracking-wide text-slate-500">{label}</p>
+      <p className="mt-1 text-lg font-semibold text-slate-100">{value}</p>
+    </div>
+  );
+}

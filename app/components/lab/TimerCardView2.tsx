@@ -171,6 +171,7 @@ function View2UltraLeanFace({
 }
 
 function TimerCardView2Countdown({ template }: { template: TimerTemplate }) {
+  const router = useRouter();
   const routineColor = template.color?.trim() || "#00E5C0";
   const durationSeconds = Math.max(1, Math.floor(Number(template.duration_seconds)));
   const { state, timeRemaining, progress, start, pause, resume } = useCountdown(durationSeconds);
@@ -187,6 +188,8 @@ function TimerCardView2Countdown({ template }: { template: TimerTemplate }) {
     if (state === "idle") {
       playStartSound();
       start(durationSeconds);
+    } else if (state === "waiting") {
+      return;
     } else if (state === "running") {
       playPauseSound();
       pause();
@@ -209,19 +212,26 @@ function TimerCardView2Countdown({ template }: { template: TimerTemplate }) {
   const ariaLabel =
     state === "idle"
       ? `Start timer for ${template.template_name}`
-      : state === "running"
-        ? `Pause timer for ${template.template_name}`
-        : state === "paused"
-          ? `Resume timer for ${template.template_name}`
-          : `Restart timer for ${template.template_name}`;
+      : state === "waiting"
+        ? `Waiting to start ${template.template_name}`
+        : state === "running"
+          ? `Pause timer for ${template.template_name}`
+          : state === "paused"
+            ? `Resume timer for ${template.template_name}`
+            : `Restart timer for ${template.template_name}`;
 
   const progressStroke = state === "finished" ? "#10b981" : routineColor;
 
   const ringProgressMode: RingProgressMode =
-    state === "idle" ? "full" : state === "finished" ? "none" : "partial";
+    state === "idle" || state === "waiting" ? "full" : state === "finished" ? "none" : "partial";
 
   const upperSlot =
-    state === "paused" ? (
+    state === "waiting" ? (
+      <div className="flex min-w-0 flex-wrap items-center justify-center gap-2">
+        <span className={`${VIEW2_PAUSED_TIME_TEXT} text-sky-300`}>{formatClock(timeRemaining)}</span>
+        <span className="text-xs font-normal uppercase tracking-wide text-sky-400">Wait</span>
+      </div>
+    ) : state === "paused" ? (
       <div className="flex min-w-0 flex-wrap items-center justify-center gap-2">
         <span className={`${VIEW2_PAUSED_TIME_TEXT} text-amber-300`}>{formatClock(timeRemaining)}</span>
         <span className="text-xs font-normal uppercase tracking-wide text-amber-400">Paused</span>
@@ -246,29 +256,41 @@ function TimerCardView2Countdown({ template }: { template: TimerTemplate }) {
     ) : null;
 
   return (
-    <div
-      role="button"
-      tabIndex={0}
-      aria-label={ariaLabel}
-      onClick={handleTap}
-      onKeyDown={handleKeyToggle}
-      className={`${VIEW2_CARD_FOCUS} ${VIEW2_CARD_PY}`}
-    >
-      <div className={RING_FRAME_CLASS}>
-        <TimerRing
-          circumference={circumference}
-          strokeOffset={strokeOffset}
-          routineColor={routineColor}
-          progressStroke={progressStroke}
-          progressMode={ringProgressMode}
-        />
-        <View2UltraLeanFace
-          template={template}
-          lineColor={progressStroke}
-          useNeutralLine={state === "idle"}
-          upperSlot={upperSlot}
-          lowerExtra={lowerExtra}
-        />
+    <div className={`relative ${VIEW2_CARD_PY}`}>
+      <button
+        type="button"
+        onClick={(event) => {
+          event.stopPropagation();
+          router.push(`/lab/countdown/${template.id}`);
+        }}
+        className="absolute right-0 top-0 z-10 rounded-md border border-white/15 bg-slate-950/80 px-2 py-0.5 text-[10px] uppercase tracking-wide text-slate-400 transition hover:text-sky-300"
+      >
+        Full
+      </button>
+      <div
+        role="button"
+        tabIndex={0}
+        aria-label={ariaLabel}
+        onClick={handleTap}
+        onKeyDown={handleKeyToggle}
+        className={VIEW2_CARD_FOCUS}
+      >
+        <div className={RING_FRAME_CLASS}>
+          <TimerRing
+            circumference={circumference}
+            strokeOffset={strokeOffset}
+            routineColor={routineColor}
+            progressStroke={progressStroke}
+            progressMode={ringProgressMode}
+          />
+          <View2UltraLeanFace
+            template={template}
+            lineColor={progressStroke}
+            useNeutralLine={state === "idle"}
+            upperSlot={upperSlot}
+            lowerExtra={lowerExtra}
+          />
+        </div>
       </div>
     </div>
   );

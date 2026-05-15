@@ -34,6 +34,10 @@ export default async function LabTimerPage({ params }: LabTimerPageProps) {
 
   const timer = data as TimerTemplate;
 
+  if (timer.timer_type === "countdown") {
+    redirect(`/lab/countdown/${id}`);
+  }
+
   const work = Number(timer.work_seconds);
   const rest = Number(timer.rest_seconds);
   const rounds = Number(timer.rounds);

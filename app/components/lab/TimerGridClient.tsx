@@ -68,6 +68,7 @@ export function TimerGridClient({ templates }: { templates: TimerTemplate[] }) {
             type="button"
             role="tab"
             aria-selected={viewMode === "view1"}
+            title="Inline timer on card, plus full-screen execution"
             onClick={() => handleViewChange("view1")}
             className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
               viewMode === "view1"
@@ -75,7 +76,7 @@ export function TimerGridClient({ templates }: { templates: TimerTemplate[] }) {
                 : "bg-slate-800 text-slate-300 hover:bg-slate-700"
             }`}
           >
-            View 1
+            Inline + full screen
           </button>
           <button
             type="button"

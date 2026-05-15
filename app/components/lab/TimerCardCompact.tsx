@@ -32,10 +32,20 @@ export function TimerCardCompact({ template }: { template: TimerTemplate }) {
   };
 
   if (template.timer_type === "countdown") {
+    const openFull = () => router.push(`/lab/countdown/${template.id}`);
     return (
       <div className="min-w-0 rounded-xl border border-white/10 bg-slate-900/80 p-5 text-slate-100 transition hover:border-emerald-400/40">
-        <div className="mb-2 text-3xl leading-none" aria-hidden>
-          {template.icon}
+        <div className="mb-2 flex items-start justify-between gap-2">
+          <span className="text-3xl leading-none" aria-hidden>
+            {template.icon}
+          </span>
+          <button
+            type="button"
+            onClick={openFull}
+            className="shrink-0 rounded-md border border-white/15 px-2 py-1 text-xs text-slate-400 transition hover:border-sky-400/50 hover:text-sky-300"
+          >
+            Open
+          </button>
         </div>
         <h3 className="mb-1 min-w-0 break-words text-balance font-semibold text-slate-100 [overflow-wrap:anywhere]">
           {template.template_name}

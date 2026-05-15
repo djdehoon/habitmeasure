@@ -131,10 +131,51 @@ export async function updateTimerSession(
   }
 }
 
-/** @deprecated Fase 2 list API — use createTimerSession / updateTimerSession for interval logging. */
+type ListSessionsResult =
+  | { data: TimerSessionRow[]; error: null }
+  | { data: null; error: string };
+
+export async function listSessionsForTemplate(
+  templateId: string,
+  limit = 50,
+): Promise<ListSessionsResult> {
+  const trimmed = templateId.trim();
+  if (!trimmed) {
+    return { data: null, error: "template_id is required." };
+  }
+
+  try {
+    const supabase = getSupabaseBrowserClient();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+      return { data: null, error: "Unauthorized." };
+    }
+
+    const { data, error } = await supabase
+      .from("timer_sessions")
+      .select("*")
+      .eq("template_id", trimmed)
+      .eq("user_id", user.id)
+      .order("started_at", { ascending: false })
+      .limit(limit);
+
+    if (error) {
+      return { data: null, error: error.message };
+    }
+
+    return { data: (data ?? []) as TimerSessionRow[], error: null };
+  } catch {
+    return { data: null, error: "Network error while loading sessions." };
+  }
+}
+
 export function useTimerSessions() {
   return {
-    listSessions: async () => ({ data: [], error: null as string | null }),
+    listSessionsForTemplate,
     createTimerSession,
     updateTimerSession,
   };

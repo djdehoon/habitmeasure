@@ -39,6 +39,8 @@ export function TimerCardRunning({ template }: TimerCardRunningProps) {
     if (state === "idle") {
       playStartSound();
       start(durationSeconds);
+    } else if (state === "waiting") {
+      return;
     } else if (state === "running") {
       playPauseSound();
       pause();
@@ -61,20 +63,24 @@ export function TimerCardRunning({ template }: TimerCardRunningProps) {
   const ariaLabel =
     state === "idle"
       ? `Start timer for ${template.template_name}`
-      : state === "running"
-        ? `Pause timer for ${template.template_name}`
-        : state === "paused"
-          ? `Resume timer for ${template.template_name}`
-          : `Restart timer for ${template.template_name}`;
+      : state === "waiting"
+        ? `Waiting to start ${template.template_name}`
+        : state === "running"
+          ? `Pause timer for ${template.template_name}`
+          : state === "paused"
+            ? `Resume timer for ${template.template_name}`
+            : `Restart timer for ${template.template_name}`;
 
   const borderClass =
     state === "running"
       ? "border-emerald-400"
-      : state === "paused"
-        ? "border-amber-400"
-        : state === "finished"
-          ? "border-emerald-500"
-          : "border-slate-600";
+      : state === "waiting"
+        ? "border-sky-400"
+        : state === "paused"
+          ? "border-amber-400"
+          : state === "finished"
+            ? "border-emerald-500"
+            : "border-slate-600";
 
   const progressStroke =
     state === "paused" ? "#fbbf24" : state === "finished" ? "#10b981" : "#34d399";
@@ -82,20 +88,24 @@ export function TimerCardRunning({ template }: TimerCardRunningProps) {
   const hint =
     state === "idle"
       ? "Tap to start"
-      : state === "running"
-        ? "Tap to pause"
-        : state === "paused"
-          ? "Tap to resume"
-          : "Tap to restart";
+      : state === "waiting"
+        ? "Starting soon…"
+        : state === "running"
+          ? "Tap to pause"
+          : state === "paused"
+            ? "Tap to resume"
+            : "Tap to restart";
 
   const timeClass =
     state === "running"
       ? "text-emerald-400 motion-safe:animate-pulse"
-      : state === "paused"
-        ? "text-amber-300"
-        : state === "finished"
-          ? "text-emerald-400"
-          : "text-slate-100";
+      : state === "waiting"
+        ? "text-sky-300"
+        : state === "paused"
+          ? "text-amber-300"
+          : state === "finished"
+            ? "text-emerald-400"
+            : "text-slate-100";
 
   return (
     <div className="space-y-3" onClick={(event) => event.stopPropagation()}>
@@ -133,7 +143,7 @@ export function TimerCardRunning({ template }: TimerCardRunningProps) {
                 strokeDasharray={circumference}
                 strokeDashoffset={0}
               />
-            ) : state === "running" || state === "paused" ? (
+            ) : state === "running" || state === "paused" || state === "waiting" ? (
               <circle
                 cx={CENTER}
                 cy={CENTER}
@@ -194,17 +204,30 @@ export function TimerCardRunning({ template }: TimerCardRunningProps) {
       )}
 
       {state === "idle" ? (
-        <button
-          type="button"
-          onClick={(event) => {
-            event.stopPropagation();
-            router.push(`/lab?edit=${template.id}`);
-          }}
-          onKeyDown={(event) => event.stopPropagation()}
-          className="w-full rounded-lg border border-slate-600 py-1.5 text-xs font-medium text-slate-400 transition hover:border-slate-500 hover:bg-slate-800/80 hover:text-slate-200"
-        >
-          Edit routine
-        </button>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              router.push(`/lab/countdown/${template.id}`);
+            }}
+            onKeyDown={(event) => event.stopPropagation()}
+            className="flex-1 rounded-lg border border-sky-500/40 py-1.5 text-xs font-medium text-sky-300 transition hover:bg-sky-500/10"
+          >
+            Full screen
+          </button>
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              router.push(`/lab?edit=${template.id}`);
+            }}
+            onKeyDown={(event) => event.stopPropagation()}
+            className="flex-1 rounded-lg border border-slate-600 py-1.5 text-xs font-medium text-slate-400 transition hover:border-slate-500 hover:bg-slate-800/80 hover:text-slate-200"
+          >
+            Edit
+          </button>
+        </div>
       ) : null}
     </div>
   );
