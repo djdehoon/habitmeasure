@@ -29,17 +29,17 @@ export const isCompactRingDisplay = isStatusFocusedRingDisplay;
 
 export function ringClockClassName(state: CountdownState): string {
   if (isStatusFocusedRingDisplay(state)) {
-    return "font-mono font-light tabular-nums text-base text-slate-400 sm:text-lg";
+    return "font-mono font-light tabular-nums text-3xl text-slate-400 ";
   }
   if (state === "finished") {
-    return "font-mono font-light tabular-nums tracking-tight text-7xl md:text-7xl";
+    return "font-mono font-light tabular-nums tracking-tight text-7xl sm:text-7xl";
   }
-  return "font-mono font-light tabular-nums tracking-tight text-7xl md:text-7xl";
+  return "font-mono font-light tabular-nums tracking-tight text-7xl sm:text-7xl";
 }
 
 export function ringStatusClassName(state: CountdownState): string {
   if (isStatusFocusedRingDisplay(state)) {
-    return "text-3xl font-semibold uppercase tracking-wide text-sky-400 sm:text-4xl";
+    return "text-3xl font-semibold uppercase tracking-wide text-sky-400 sm:text-1xl";
   }
-  return "text-2xl font-semibold uppercase tracking-wide text-sky-400 md:text-3xl";
+  return "text-3xl font-semibold uppercase tracking-wide text-sky-400 sm:text-3xl";
 }

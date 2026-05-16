@@ -1,6 +1,6 @@
 {
   "name": "habitmeasure",
-  "version": "1.6.56",
+  "version": "1.6.58",
   "private": true,
   "scripts": {
     "dev": "next dev",

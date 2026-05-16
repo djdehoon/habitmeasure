@@ -4,6 +4,17 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { DelayedStartModal } from "@/app/components/lab/DelayedStartModal";
 import { CountdownControlButtons } from "@/app/components/lab/CountdownControlButtons";
+import {
+  premiumCard,
+  premiumCardInteractive,
+  premiumLabel,
+  premiumMuted,
+  premiumStatusBadge,
+  premiumTabActive,
+  premiumTabBar,
+  premiumTabInactive,
+  premiumValue,
+} from "@/app/components/lab/countdownPremiumStyles";
 import { ProgressRing } from "@/app/components/lab/ProgressRing";
 import type { TimerSessionRow } from "@/app/lib/types";
 import { playFinishSound, playPauseSound, playStartSound } from "@/app/lib/sounds";
@@ -42,19 +53,6 @@ function formatSessionDate(iso: string): string {
     }).format(new Date(iso));
   } catch {
     return iso;
-  }
-}
-
-function statusBadgeClass(status: TimerSessionRow["status"]): string {
-  switch (status) {
-    case "completed":
-      return "bg-emerald-500/20 text-emerald-300";
-    case "cancelled":
-      return "bg-slate-500/20 text-slate-400";
-    case "paused":
-      return "bg-amber-500/20 text-amber-300";
-    default:
-      return "bg-sky-500/20 text-sky-300";
   }
 }
 
@@ -343,11 +341,7 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
                 </>
               ) : null}
             </div>
-            <div
-              className="mt-3 h-px w-20"
-              style={{ backgroundColor: state === "finished" ? "#22c55e" : routineColor, opacity: 0.55 }}
-            />
-            <p className="mt-2 text-sm text-slate-500">{template.template_name}</p>
+            
           </div>
         </div>
 
@@ -357,15 +351,13 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
           </p>
         ) : null}
 
-        <nav className="mt-8 flex w-full max-w-md rounded-lg bg-slate-900/80 p-1" aria-label="Timer sections">
+        <nav className={`mt-8 max-w-md ${premiumTabBar}`} aria-label="Timer sections">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               type="button"
               onClick={() => selectTab(tab.id)}
-              className={`flex-1 rounded-md py-2 text-xs font-semibold tracking-wide transition ${
-                activeTab === tab.id ? "bg-slate-700 text-white" : "text-slate-500 hover:text-slate-300"
-              }`}
+              className={activeTab === tab.id ? premiumTabActive : premiumTabInactive}
             >
               {tab.label}
             </button>
@@ -387,13 +379,13 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
           ) : null}
 
           {activeTab === "stats" ? (
-            <div className="space-y-3">
+            <div className="space-y-2">
               {sessionsLoading ? (
-                <p className="text-center text-sm text-slate-500">Loading stats…</p>
+                <p className={premiumMuted}>Loading stats…</p>
               ) : sessionsError ? (
-                <p className="text-center text-sm text-red-300">{sessionsError}</p>
+                <p className="text-center text-xs text-red-300">{sessionsError}</p>
               ) : (
-                <>
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                   <StatCard label="Total runs" value={String(stats.totalRuns)} />
                   <StatCard label="Completed" value={String(stats.completedCount)} />
                   <StatCard label="Total time" value={formatTotalDuration(stats.totalSeconds)} />
@@ -403,7 +395,7 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
                       stats.lastCompletedAt ? formatSessionDate(stats.lastCompletedAt) : "—"
                     }
                   />
-                </>
+                </div>
               )}
             </div>
           ) : null}
@@ -411,30 +403,28 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
           {activeTab === "history" ? (
             <div className="max-h-[40vh] space-y-2 overflow-y-auto">
               {sessionsLoading ? (
-                <p className="text-center text-sm text-slate-500">Loading history…</p>
+                <p className={premiumMuted}>Loading history…</p>
               ) : sessionsError ? (
-                <p className="text-center text-sm text-red-300">{sessionsError}</p>
+                <p className="text-center text-xs text-red-300">{sessionsError}</p>
               ) : sessions.length === 0 ? (
-                <p className="text-center text-sm text-slate-500">No sessions yet.</p>
+                <p className={premiumMuted}>No sessions yet.</p>
               ) : (
                 sessions.map((session) => (
                   <div
                     key={session.id}
-                    className="flex items-center justify-between rounded-lg border border-white/10 bg-slate-900/60 px-4 py-3"
+                    className={`flex items-center justify-between ${premiumCardInteractive}`}
                   >
                     <div>
-                      <p className="text-sm text-slate-200">{formatSessionDate(session.started_at)}</p>
+                      <p className="text-sm font-medium text-slate-200">
+                        {formatSessionDate(session.started_at)}
+                      </p>
                       {session.duration_seconds != null ? (
-                        <p className="text-xs text-slate-500">
+                        <p className="mt-0.5 text-xs text-slate-400">
                           {formatTotalDuration(session.duration_seconds)}
                         </p>
                       ) : null}
                     </div>
-                    <span
-                      className={`rounded-full px-2 py-0.5 text-xs font-medium uppercase ${statusBadgeClass(session.status)}`}
-                    >
-                      {session.status}
-                    </span>
+                    <span className={premiumStatusBadge(session.status)}>{session.status}</span>
                   </div>
                 ))
               )}
@@ -455,9 +445,9 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
 
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-white/10 bg-slate-900/60 px-4 py-3">
-      <p className="text-xs uppercase tracking-wide text-slate-500">{label}</p>
-      <p className="mt-1 text-lg font-semibold text-slate-100">{value}</p>
+    <div className={premiumCard}>
+      <p className={premiumLabel}>{label}</p>
+      <p className={premiumValue}>{value}</p>
     </div>
   );
 }
