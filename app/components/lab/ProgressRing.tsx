@@ -8,14 +8,20 @@ type ProgressRingProps = {
   className?: string;
 };
 
+function strokeWidthForRadius(radius: number): number {
+  return Math.max(6, Math.round(radius / 22));
+}
+
 export function ProgressRing({
-  radius = 80,
+  radius = 140,
   color,
   progress,
   mode,
-  className = "h-64 w-64 md:h-72 md:w-72",
+  className = "h-full w-full",
 }: ProgressRingProps) {
-  const viewSize = 200;
+  const strokeWidth = strokeWidthForRadius(radius);
+  const pad = strokeWidth / 2 + 4;
+  const viewSize = 2 * (radius + pad);
   const center = viewSize / 2;
   const circumference = 2 * Math.PI * radius;
   const strokeOffset = circumference * (1 - progress);
@@ -26,7 +32,7 @@ export function ProgressRing({
   return (
     <div className={`relative ${className}`}>
       <svg className="h-full w-full -rotate-90" viewBox={`0 0 ${viewSize} ${viewSize}`} aria-hidden>
-        <circle cx={center} cy={center} r={radius} fill="none" stroke={trackColor} strokeWidth="6" />
+        <circle cx={center} cy={center} r={radius} fill="none" stroke={trackColor} strokeWidth={strokeWidth} />
         {mode === "full" ? (
           <circle
             cx={center}
@@ -34,7 +40,7 @@ export function ProgressRing({
             r={radius}
             fill="none"
             stroke={stroke}
-            strokeWidth="6"
+            strokeWidth={strokeWidth}
             strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={0}
@@ -46,7 +52,7 @@ export function ProgressRing({
             r={radius}
             fill="none"
             stroke={stroke}
-            strokeWidth="6"
+            strokeWidth={strokeWidth}
             strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={strokeOffset}
@@ -59,7 +65,7 @@ export function ProgressRing({
             r={radius}
             fill="none"
             stroke={doneColor}
-            strokeWidth="6"
+            strokeWidth={strokeWidth}
             strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={0}

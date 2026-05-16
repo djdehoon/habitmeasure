@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { DelayedStartModal } from "@/app/components/lab/DelayedStartModal";
+import { CountdownControlButtons } from "@/app/components/lab/CountdownControlButtons";
 import { ProgressRing } from "@/app/components/lab/ProgressRing";
 import type { TimerSessionRow } from "@/app/lib/types";
 import { playFinishSound, playPauseSound, playStartSound } from "@/app/lib/sounds";
-import { useCountdown } from "@/lib/hooks/useCountdown";
+import { useCountdown, type CountdownState } from "@/lib/hooks/useCountdown";
 import {
   createTimerSession,
   listSessionsForTemplate,
@@ -77,10 +78,41 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
   const sessionIdRef = useRef<string | null>(null);
   const terminalSentRef = useRef(false);
   const prevStateRef = useRef(state);
+  const ringContainerRef = useRef<HTMLDivElement>(null);
+  const [ringRadius, setRingRadius] = useState(140);
 
   const ringMode = state === "idle" || state === "waiting" ? "full" : state === "finished" ? "done" : "partial";
 
   const label = statusLabel(state);
+
+  useEffect(() => {
+    const element = ringContainerRef.current;
+    if (!element) return;
+
+    const updateRadius = () => {
+      const { width, height } = element.getBoundingClientRect();
+      const size = Math.min(width, height);
+      if (size <= 0) return;
+      const next = Math.floor(size / 2) - 10;
+      setRingRadius(Math.min(180, Math.max(120, next)));
+    };
+
+    updateRadius();
+    const observer = new ResizeObserver(updateRadius);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  const circleAriaLabel = useMemo(() => {
+    const labels: Record<CountdownState, string> = {
+      idle: "Start timer",
+      waiting: "Start timer now",
+      running: "Pause timer",
+      paused: "Resume timer",
+      finished: "Reset timer",
+    };
+    return labels[state];
+  }, [state]);
 
   const loadSessions = useCallback(async () => {
     setSessionsLoading(true);
@@ -224,6 +256,32 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
     [state, start, startWithDelay, durationSeconds],
   );
 
+  const handleCircleClick = useCallback(() => {
+    if (state === "idle") {
+      void handlePlay();
+    } else if (state === "waiting") {
+      playStartSound();
+      sessionIdRef.current = null;
+      terminalSentRef.current = false;
+      start(durationSeconds, 0);
+    } else if (state === "running") {
+      void handlePause();
+    } else if (state === "paused") {
+      void handlePlay();
+    } else if (state === "finished") {
+      void handleReset();
+    }
+  }, [state, handlePlay, handlePause, handleReset, start, durationSeconds]);
+
+  const handleCircleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      void handleCircleClick();
+    },
+    [handleCircleClick],
+  );
+
   const stats = useMemo(() => computeSessionStats(sessions), [sessions]);
 
   const tabs: { id: TabId; label: string }[] = [
@@ -252,10 +310,24 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
         </Link>
       </header>
 
-      <div className="flex flex-1 flex-col items-center px-4 pt-6 pb-4">
-        <div className="relative">
-          <ProgressRing color={routineColor} progress={progress} mode={ringMode} />
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
+      <div className="flex min-h-0 flex-1 flex-col items-center px-4 pt-4 pb-4">
+        <div
+          ref={ringContainerRef}
+          role="button"
+          tabIndex={0}
+          aria-label={circleAriaLabel}
+          onClick={() => void handleCircleClick()}
+          onKeyDown={handleCircleKeyDown}
+          className="relative mx-auto flex w-full min-w-[min(92vw,22rem)] max-w-[min(92vw,22rem)] shrink-0 flex-1 max-h-[min(52dvh,22rem)] cursor-pointer select-none aspect-square transition-transform active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+        >
+          <ProgressRing
+            radius={ringRadius}
+            color={routineColor}
+            progress={progress}
+            mode={ringMode}
+            className="h-full w-full"
+          />
+          <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
             <div
               className={`flex max-w-[90%] justify-center ${isStatusFocusedRingDisplay(state) ? "items-baseline gap-1.5" : "items-center gap-2"}`}
               aria-live="polite"
@@ -273,14 +345,14 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
             </div>
             <div
               className="mt-3 h-px w-20"
-            style={{ backgroundColor: state === "finished" ? "#22c55e" : routineColor, opacity: 0.55 }}
-          />
+              style={{ backgroundColor: state === "finished" ? "#22c55e" : routineColor, opacity: 0.55 }}
+            />
             <p className="mt-2 text-sm text-slate-500">{template.template_name}</p>
           </div>
         </div>
 
         {sessionError ? (
-          <p className="mt-4 text-center text-sm text-red-300" role="alert">
+          <p className="mt-2 shrink-0 text-center text-sm text-red-300" role="alert">
             {sessionError}
           </p>
         ) : null}
@@ -302,60 +374,16 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
 
         <div className="mt-6 w-full max-w-md flex-1">
           {activeTab === "control" ? (
-            <div className="space-y-6">
-              <div className="flex items-center justify-center gap-4 text-sm text-slate-400">
-                {quickButtons.map((value: AddTimeButtonValue) => (
-                  <button
-                    key={value}
-                    type="button"
-                    disabled={state !== "running" && state !== "paused"}
-                    onClick={() => addTime(addTimeButtonToSeconds(value))}
-                    className="min-h-11 px-2 transition hover:text-white disabled:opacity-40"
-                  >
-                    +{value === "1m" ? "1m" : value}
-                  </button>
-                ))}
-              </div>
-
-              <div className="flex items-center justify-center gap-8">
-                <button
-                  type="button"
-                  onClick={() => void handlePlay()}
-                  disabled={isStarting || state === "running" || state === "waiting"}
-                  className="flex h-14 w-14 items-center justify-center text-2xl text-slate-200 transition hover:text-white disabled:opacity-40"
-                  aria-label="Play"
-                >
-                  ▶
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setDelayModalOpen(true)}
-                  disabled={state === "running" || state === "waiting"}
-                  className="flex h-14 w-14 items-center justify-center text-2xl text-slate-200 transition hover:text-white disabled:opacity-40"
-                  aria-label="Delayed start"
-                >
-                  ⏱
-                </button>
-                <button
-                  type="button"
-                  onClick={() => void handlePause()}
-                  disabled={state !== "running"}
-                  className="flex h-14 w-14 items-center justify-center text-2xl text-slate-200 transition hover:text-white disabled:opacity-40"
-                  aria-label="Pause"
-                >
-                  ⏸
-                </button>
-                <button
-                  type="button"
-                  onClick={() => void handleReset()}
-                  disabled={state === "idle"}
-                  className="flex h-14 w-14 items-center justify-center text-2xl text-slate-200 transition hover:text-white disabled:opacity-40"
-                  aria-label="Reset"
-                >
-                  ↻
-                </button>
-              </div>
-            </div>
+            <CountdownControlButtons
+              state={state}
+              isStarting={isStarting}
+              quickButtons={quickButtons}
+              onPlay={() => void handlePlay()}
+              onPause={() => void handlePause()}
+              onReset={() => void handleReset()}
+              onAddTime={(value) => addTime(addTimeButtonToSeconds(value))}
+              onDelayedStart={() => setDelayModalOpen(true)}
+            />
           ) : null}
 
           {activeTab === "stats" ? (

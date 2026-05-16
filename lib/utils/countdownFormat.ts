@@ -32,9 +32,9 @@ export function ringClockClassName(state: CountdownState): string {
     return "font-mono font-light tabular-nums text-base text-slate-400 sm:text-lg";
   }
   if (state === "finished") {
-    return "font-mono font-light tabular-nums tracking-tight text-4xl md:text-5xl";
+    return "font-mono font-light tabular-nums tracking-tight text-7xl md:text-7xl";
   }
-  return "font-mono font-light tabular-nums tracking-tight text-5xl md:text-6xl";
+  return "font-mono font-light tabular-nums tracking-tight text-7xl md:text-7xl";
 }
 
 export function ringStatusClassName(state: CountdownState): string {
