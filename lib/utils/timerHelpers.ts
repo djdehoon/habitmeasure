@@ -280,8 +280,9 @@ export function validateCountdownTemplateForm(formData: CountdownTemplateFormDat
     errors.notes = "Notes must be at most 200 characters.";
   }
 
-  if (formData.minDelaySeconds < 5 || formData.minDelaySeconds > 60 || formData.minDelaySeconds % 5 !== 0) {
-    errors.minDelaySeconds = "Minimum delay must be between 5 and 60 seconds in steps of 5.";
+  const minDelay = formData.minDelaySeconds;
+  if (minDelay !== 0 && (minDelay < 5 || minDelay > 60 || minDelay % 5 !== 0)) {
+    errors.minDelaySeconds = "Use 0 for no delay, or choose 5–60 seconds in steps of 5.";
   }
 
   if (formData.addTimeButtons.length === 0) {

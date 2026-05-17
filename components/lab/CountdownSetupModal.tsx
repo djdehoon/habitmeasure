@@ -90,7 +90,7 @@ export function CountdownSetupModal({
           <div className="flex items-center gap-3">
             <input
               type="range"
-              min={5}
+              min={0}
               max={60}
               step={5}
               value={formData.minDelaySeconds}

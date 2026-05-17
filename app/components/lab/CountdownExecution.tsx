@@ -435,7 +435,7 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
 
       <DelayedStartModal
         open={delayModalOpen}
-        defaultDelay={minDelay > 0 ? minDelay : 5}
+        defaultDelay={minDelay}
         onClose={() => setDelayModalOpen(false)}
         onConfirm={handleDelayedConfirm}
       />

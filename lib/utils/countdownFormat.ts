@@ -19,27 +19,27 @@ export function statusLabel(state: CountdownState): string | null {
   }
 }
 
-/** WAIT / PAUSED: status is primary in the ring; timer is secondary. */
+/** WAIT / PAUSED / DONE: status is primary in the ring; timer is secondary. */
 export function isStatusFocusedRingDisplay(state: CountdownState): boolean {
-  return state === "waiting" || state === "paused";
+  return state === "waiting" || state === "paused" || state === "finished";
 }
 
-/** @alias isStatusFocusedRingDisplay — ring layout uses smaller clock when WAIT/PAUSED. */
+/** @alias isStatusFocusedRingDisplay — ring layout uses smaller clock when WAIT/PAUSED/DONE. */
 export const isCompactRingDisplay = isStatusFocusedRingDisplay;
+
+const statusFocusedClockClassName =
+  "font-sans font-semibold tabular-nums text-3xl text-slate-400";
+
+const mainClockClassName =
+  "font-sans font-semibold tabular-nums tracking-tight text-7xl sm:text-7xl";
 
 export function ringClockClassName(state: CountdownState): string {
   if (isStatusFocusedRingDisplay(state)) {
-    return "font-mono font-light tabular-nums text-3xl text-slate-400 ";
+    return statusFocusedClockClassName;
   }
-  if (state === "finished") {
-    return "font-mono font-light tabular-nums tracking-tight text-7xl sm:text-7xl";
-  }
-  return "font-mono font-light tabular-nums tracking-tight text-7xl sm:text-7xl";
+  return mainClockClassName;
 }
 
 export function ringStatusClassName(state: CountdownState): string {
-  if (isStatusFocusedRingDisplay(state)) {
-    return "text-3xl font-semibold uppercase tracking-wide text-sky-400 sm:text-1xl";
-  }
-  return "text-3xl font-semibold uppercase tracking-wide text-sky-400 sm:text-3xl";
+  return "text-3xl font-semibold uppercase tracking-wide text-sky-400 sm:text-4xl";
 }
