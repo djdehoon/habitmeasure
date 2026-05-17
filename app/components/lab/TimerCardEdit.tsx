@@ -1,7 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { formatIntervalSummary, type TimerTemplate, type TimerType } from "@/lib/utils/timerHelpers";
+import {
+  formatIntervalSummary,
+  getTimerFullscreenHref,
+  type TimerTemplate,
+  type TimerType,
+} from "@/lib/utils/timerHelpers";
 import { TimerDeleteButton } from "@/app/components/lab/TimerDeleteButton";
 
 const TYPE_LABEL: Record<TimerType, string> = {
@@ -13,12 +18,35 @@ type TimerCardEditProps = {
   template: TimerTemplate;
 };
 
-/** Management-focused card: summary + Edit / Delete (no whole-card navigation). */
+/** Management-focused card: summary + Edit / Delete; body opens fullscreen when available. */
 export function TimerCardEdit({ template }: TimerCardEditProps) {
   const router = useRouter();
+  const fullscreenHref = getTimerFullscreenHref(template);
+
+  const openFullscreen = () => {
+    if (fullscreenHref) router.push(fullscreenHref);
+  };
 
   return (
-    <article className="glass-panel flex min-w-0 flex-col rounded-xl border border-white/10 p-5 text-slate-100">
+    <article
+      className={`glass-panel flex min-w-0 flex-col rounded-xl border border-white/10 p-5 text-slate-100 ${
+        fullscreenHref ? "cursor-pointer transition hover:border-emerald-400/40" : ""
+      }`}
+      onClick={fullscreenHref ? openFullscreen : undefined}
+      onKeyDown={
+        fullscreenHref
+          ? (event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                openFullscreen();
+              }
+            }
+          : undefined
+      }
+      role={fullscreenHref ? "button" : undefined}
+      tabIndex={fullscreenHref ? 0 : undefined}
+      aria-label={fullscreenHref ? `Open ${template.template_name} in full screen` : undefined}
+    >
       <h3 className="order-1 mb-1 min-w-0 break-words text-balance text-center text-lg font-semibold text-slate-100 [overflow-wrap:anywhere] sm:order-2 sm:mb-1">
         {template.template_name}
       </h3>
@@ -47,12 +75,15 @@ export function TimerCardEdit({ template }: TimerCardEditProps) {
       <div className="order-7 flex flex-wrap items-start justify-center gap-2 sm:order-7">
         <button
           type="button"
-          onClick={() => router.push(`/lab?edit=${template.id}`)}
+          onClick={(event) => {
+            event.stopPropagation();
+            router.push(`/lab?edit=${template.id}`);
+          }}
           className="rounded-md border border-red-400/40 bg-slate-950/80 px-3 py-1.5 text-sm text-red-300 transition hover:bg-red-500/10"
         >
           Edit
         </button>
-        <div>
+        <div onClick={(event) => event.stopPropagation()}>
           <TimerDeleteButton templateId={template.id} onDeleted={() => router.refresh()} />
         </div>
       </div>

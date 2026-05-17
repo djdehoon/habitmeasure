@@ -180,6 +180,31 @@ export function formatIntervalSummary(template: TimerTemplate): string {
   return `${n}× ${w}s / ${rs}s`;
 }
 
+export function hasValidIntervalFields(template: TimerTemplate): boolean {
+  if (template.timer_type !== "interval") return false;
+  const work = Number(template.work_seconds);
+  const rest = Number(template.rest_seconds);
+  const rounds = Number(template.rounds);
+  return (
+    Number.isFinite(work) &&
+    work > 0 &&
+    Number.isFinite(rest) &&
+    rest > 0 &&
+    Number.isFinite(rounds) &&
+    rounds > 0
+  );
+}
+
+export function getTimerFullscreenHref(template: TimerTemplate): string | null {
+  if (template.timer_type === "countdown") {
+    return `/lab/countdown/${template.id}`;
+  }
+  if (template.timer_type === "interval" && hasValidIntervalFields(template)) {
+    return `/lab/${template.id}`;
+  }
+  return null;
+}
+
 export function mapTemplateToFormData(template: TimerTemplate): CountdownTemplateFormData {
   const { minutes, seconds } = toDurationParts(template.duration_seconds);
   return {
