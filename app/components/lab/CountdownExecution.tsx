@@ -172,6 +172,13 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
       return;
     }
 
+    if (timeRemaining > 300) {
+      fiveMinWarnedRef.current = false;
+    }
+    if (timeRemaining > 5) {
+      fiveSecWarnedRef.current = false;
+    }
+
     if (state !== "running") return;
 
     if (timeRemaining === 300 && !fiveMinWarnedRef.current) {
