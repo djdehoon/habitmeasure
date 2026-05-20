@@ -172,6 +172,13 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
       return;
     }
 
+    if (state === "waiting") {
+      if (timeRemaining >= 1 && timeRemaining <= 5) {
+        play5SecWarningSound();
+      }
+      return;
+    }
+
     if (timeRemaining > 300) {
       fiveMinWarnedRef.current = false;
     }

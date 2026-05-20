@@ -238,9 +238,23 @@ html {
   }
 }
 
+@keyframes pulse-button {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
 @layer utilities {
   .animate-pulse-ring {
     animation: var(--animate-pulse-ring);
+  }
+
+  .animate-pulse-button {
+    animation: pulse-button 0.6s ease-in-out infinite;
   }
 }
 
