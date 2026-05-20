@@ -227,6 +227,20 @@ html {
   }
 }
 
+@keyframes pulse-button {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+.animate-pulse-button {
+  animation: pulse-button 0.6s ease-in-out infinite;
+}
+
 @media (max-width: 768px) {
   .section-wrap {
     padding: 4rem 0;

@@ -6,16 +6,18 @@ export function formatClock(totalSeconds: number): string {
   return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 }
 
-export function statusLabel(state: CountdownState): string | null {
+export function statusLabel(state: CountdownState): string {
   switch (state) {
+    case "idle":
+      return "Ready";
+    case "running":
+      return "Running";
     case "waiting":
       return "WAIT";
     case "paused":
       return "PAUSED";
     case "finished":
       return "DONE";
-    default:
-      return null;
   }
 }
 
@@ -33,10 +35,8 @@ const statusFocusedClockClassName =
 const mainClockClassName =
   "font-sans font-semibold tabular-nums tracking-tight text-7xl sm:text-7xl";
 
-export function ringClockClassName(state: CountdownState): string {
-  if (isStatusFocusedRingDisplay(state)) {
-    return statusFocusedClockClassName;
-  }
+/** Ring center: time stays primary (View New layout — time, divider, status). */
+export function ringClockClassName(_state: CountdownState): string {
   return mainClockClassName;
 }
 

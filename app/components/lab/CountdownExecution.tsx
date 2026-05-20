@@ -27,7 +27,6 @@ import {
 import { addTimeButtonToSeconds } from "@/lib/utils/addTimeSeconds";
 import {
   formatClock,
-  isStatusFocusedRingDisplay,
   ringClockClassName,
   ringStatusClassName,
   statusLabel,
@@ -80,7 +79,7 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
   const [ringRadius, setRingRadius] = useState(140);
 
   const ringMode = state === "idle" || state === "waiting" ? "full" : state === "finished" ? "done" : "partial";
-
+  const ringStrokeColor = ringMode === "done" ? "#22c55e" : routineColor;
   const label = statusLabel(state);
 
   useEffect(() => {
@@ -327,19 +326,16 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
           />
           <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
             <div
-              className={`flex max-w-[90%] justify-center ${isStatusFocusedRingDisplay(state) ? "items-baseline gap-1.5" : "items-center gap-2"}`}
+              className="flex max-w-[90%] flex-col items-center gap-2"
               aria-live="polite"
             >
               <span className={ringClockClassName(state)}>{formatClock(timeRemaining)}</span>
-              {label ? (
-                <>
-                  <span
-                    className={`w-px shrink-0 bg-sky-400/60 ${isStatusFocusedRingDisplay(state) ? "h-9 self-center sm:h-10" : "h-8"}`}
-                    aria-hidden
-                  />
-                  <span className={ringStatusClassName(state)}>{label}</span>
-                </>
-              ) : null}
+              <div
+                className="h-px w-[80%] shrink-0"
+                style={{ backgroundColor: ringStrokeColor, opacity: 0.5 }}
+                aria-hidden
+              />
+              <span className={ringStatusClassName(state)}>{label}</span>
             </div>
             
           </div>
