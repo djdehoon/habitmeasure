@@ -2,7 +2,11 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { BetaRedeemButton } from "@/app/components/BetaRedeemButton";
 import { BetaSignupForm } from "@/app/components/BetaSignupForm";
-import { checkInviteCodeValid, getBetaInviteServiceClient, normalizeInviteCode } from "@/lib/beta/verifyInvite";
+import {
+  checkInviteCodeValidDetailed,
+  getBetaInviteServiceClient,
+  normalizeInviteCode,
+} from "@/lib/beta/verifyInvite";
 import { getServerUser } from "@/lib/supabase/server";
 import { checkUserBetaStatus } from "@/lib/beta/betaPageActions";
 
@@ -87,7 +91,8 @@ export default async function BetaPage({
     );
   }
 
-  const inviteValid = await checkInviteCodeValid(code);
+  const inviteCheck = await checkInviteCodeValidDetailed(code);
+  const inviteValid = inviteCheck.valid;
 
   if (user && !inviteValid) {
     return (
@@ -137,6 +142,12 @@ export default async function BetaPage({
         <div className="flex flex-1 flex-col items-center justify-center gap-4 p-4 text-center">
           <h1 className="heading-font text-2xl font-bold text-slate-800">Invalid or expired invite</h1>
           <p className="max-w-md text-slate-600">Check the link or ask the team for a new beta invite.</p>
+          {process.env.NODE_ENV === "development" && !inviteCheck.valid ? (
+            <p className="max-w-md rounded-lg border border-red-200 bg-red-50 px-3 py-2 font-mono text-xs text-red-900">
+              Debug: {inviteCheck.reason}
+              {inviteCheck.detail ? ` — ${inviteCheck.detail}` : ""}
+            </p>
+          ) : null}
           <Link href="/" className="text-sm font-semibold text-[#5a7d72] underline-offset-2 hover:underline">
             Home
           </Link>

@@ -22,9 +22,15 @@ export async function redeemInviteCode(
     return { ok: false, error: "Beta invites are temporarily unavailable (server configuration)." };
   }
 
-  const isValid = await checkInviteCodeValidWithClient(service, normalized);
-  if (!isValid) {
-    return { ok: false, error: "Invalid or expired invite." };
+  const validation = await checkInviteCodeValidWithClient(service, normalized);
+  if (!validation.valid) {
+    const hint =
+      validation.reason === "missing_env"
+        ? "Server configuration error."
+        : validation.reason === "exhausted"
+          ? "This invite has no remaining uses."
+          : "Invalid or expired invite.";
+    return { ok: false, error: hint };
   }
 
   try {

@@ -5,14 +5,31 @@ export function normalizeInviteCode(raw: string | null | undefined): string {
   return (raw ?? "").trim().toUpperCase();
 }
 
+export type InviteInvalidReason =
+  | "empty"
+  | "missing_env"
+  | "query_error"
+  | "not_found"
+  | "expired"
+  | "revoked"
+  | "exhausted";
+
+export type InviteValidationResult = { valid: true } | { valid: false; reason: InviteInvalidReason; detail?: string };
+
+function logInvalid(reason: InviteInvalidReason, detail?: string) {
+  const msg = detail ? `beta invite invalid: ${reason} (${detail})` : `beta invite invalid: ${reason}`;
+  console.error(msg);
+  devLog(`❌ ${msg}`);
+}
+
 export async function checkInviteCodeValidWithClient(
   supabase: SupabaseClient,
   code: string,
-): Promise<boolean> {
+): Promise<InviteValidationResult> {
   const normalized = normalizeInviteCode(code);
   if (!normalized) {
-    devLog("❌ Code is empty");
-    return false;
+    logInvalid("empty");
+    return { valid: false, reason: "empty" };
   }
 
   devLog("📡 Querying beta_testers table...");
@@ -27,37 +44,38 @@ export async function checkInviteCodeValidWithClient(
   devLog("📊 Data keys:", data ? Object.keys(data) : "no data");
 
   if (error) {
-    console.error("❌ Error:", error);
-    return false;
+    const detail = error.message ?? String(error);
+    logInvalid("query_error", detail);
+    return { valid: false, reason: "query_error", detail };
   }
 
   if (!data || !data.id) {
-    devLog("❌ No data found");
-    return false;
+    logInvalid("not_found", normalized);
+    return { valid: false, reason: "not_found", detail: normalized };
   }
 
   if (data.expires_at && new Date(data.expires_at as string) < new Date()) {
-    devLog("❌ Code expired:", data.expires_at);
-    return false;
+    logInvalid("expired", String(data.expires_at));
+    return { valid: false, reason: "expired", detail: String(data.expires_at) };
   }
 
   if (data.revoked_at) {
-    devLog("❌ Code revoked:", data.revoked_at);
-    return false;
+    logInvalid("revoked", String(data.revoked_at));
+    return { valid: false, reason: "revoked", detail: String(data.revoked_at) };
   }
 
   const useCount = Number(data.use_count) || 0;
   const maxUses = Number(data.max_uses) || 1;
   if (useCount >= maxUses) {
-    devLog("❌ Code exhausted:", { useCount, maxUses });
-    return false;
+    logInvalid("exhausted", `${useCount}/${maxUses}`);
+    return { valid: false, reason: "exhausted", detail: `${useCount}/${maxUses}` };
   }
 
   devLog("✅ Code is valid!");
-  return true;
+  return { valid: true };
 }
 
-export async function checkInviteCodeValid(code: string): Promise<boolean> {
+export async function checkInviteCodeValidDetailed(code: string): Promise<InviteValidationResult> {
   const normalized = normalizeInviteCode(code);
   devLog("🔍 Normalized code:", normalized);
 
@@ -68,22 +86,32 @@ export async function checkInviteCodeValid(code: string): Promise<boolean> {
   devLog("🔐 Supabase URL:", supabaseUrl);
 
   if (!serviceRoleKey || !supabaseUrl) {
-    console.error("❌ Missing env vars!");
-    return false;
+    logInvalid("missing_env", !serviceRoleKey ? "SUPABASE_SERVICE_ROLE_KEY" : "NEXT_PUBLIC_SUPABASE_URL");
+    return {
+      valid: false,
+      reason: "missing_env",
+      detail: !serviceRoleKey ? "SUPABASE_SERVICE_ROLE_KEY" : "NEXT_PUBLIC_SUPABASE_URL",
+    };
   }
 
   if (!normalized) {
-    devLog("❌ Code is empty");
-    return false;
+    logInvalid("empty");
+    return { valid: false, reason: "empty" };
   }
 
   const supabase = getBetaInviteServiceClient();
   if (!supabase) {
-    console.error("❌ Missing env vars!");
-    return false;
+    logInvalid("missing_env", "getBetaInviteServiceClient");
+    return { valid: false, reason: "missing_env", detail: "service client" };
   }
 
   return checkInviteCodeValidWithClient(supabase, normalized);
+}
+
+/** @deprecated Prefer checkInviteCodeValidDetailed for debugging; boolean wrapper for callers. */
+export async function checkInviteCodeValid(code: string): Promise<boolean> {
+  const result = await checkInviteCodeValidDetailed(code);
+  return result.valid;
 }
 
 export function getBetaInviteServiceClient(): SupabaseClient | null {
