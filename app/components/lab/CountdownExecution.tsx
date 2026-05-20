@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent }
 import { DelayedStartModal } from "@/app/components/lab/DelayedStartModal";
 import { CountdownControlButtons } from "@/app/components/lab/CountdownControlButtons";
 import {
+  countdownRingColumnWidth,
   premiumCard,
   premiumCardInteractive,
   premiumLabel,
@@ -362,7 +363,7 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
           aria-label={circleAriaLabel}
           onClick={() => void handleCircleClick()}
           onKeyDown={handleCircleKeyDown}
-          className="relative mx-auto flex w-full min-w-[min(92vw,22rem)] max-w-[min(92vw,22rem)] shrink-0 flex-1 max-h-[min(52dvh,22rem)] cursor-pointer select-none aspect-square transition-transform active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+          className={`relative mx-auto flex ${countdownRingColumnWidth} min-w-[min(92vw,22rem)] shrink-0 flex-1 max-h-[min(52dvh,22rem)] cursor-pointer select-none aspect-square transition-transform active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black`}
         >
           <ProgressRing
             radius={ringRadius}
@@ -395,20 +396,21 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
           </p>
         ) : null}
 
-        <nav className={`mt-8 max-w-md ${premiumTabBar}`} aria-label="Timer sections">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => selectTab(tab.id)}
-              className={activeTab === tab.id ? premiumTabActive : premiumTabInactive}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </nav>
+        <div className={`mx-auto mt-4 flex min-h-0 flex-1 flex-col ${countdownRingColumnWidth}`}>
+          <nav className={premiumTabBar} aria-label="Timer sections">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => selectTab(tab.id)}
+                className={activeTab === tab.id ? premiumTabActive : premiumTabInactive}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </nav>
 
-        <div className="mt-6 w-full max-w-md flex-1">
+          <div className="mt-3 w-full min-h-0 flex-1">
           {activeTab === "control" ? (
             <CountdownControlButtons
               state={state}
@@ -429,7 +431,7 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
               ) : sessionsError ? (
                 <p className="text-center text-xs text-red-300">{sessionsError}</p>
               ) : (
-                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                <div className="grid grid-cols-2 gap-2">
                   <StatCard label="Total runs" value={String(stats.totalRuns)} />
                   <StatCard label="Completed" value={String(stats.completedCount)} />
                   <StatCard label="Total time" value={formatTotalDuration(stats.totalSeconds)} />
@@ -474,6 +476,7 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
               )}
             </div>
           ) : null}
+          </div>
         </div>
       </div>
 
