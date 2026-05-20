@@ -3,13 +3,11 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { PasswordField } from "@/app/components/auth/PasswordField";
 import { signUp } from "@/lib/supabase/auth";
 
 const inputClassName =
   "w-full rounded-xl border border-slate-200/90 bg-white px-3 py-2.5 text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/25";
-
-const inputWithIconPaddingClassName =
-  "w-full rounded-xl border border-slate-200/90 bg-white px-3 py-2.5 pr-10 text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/25";
 
 export function BetaSignupForm({ inviteCode }: { inviteCode: string }) {
   const router = useRouter();
@@ -116,51 +114,25 @@ export function BetaSignupForm({ inviteCode }: { inviteCode: string }) {
           />
         </label>
 
-        <label className="block">
-          <span className="mb-1.5 block text-sm font-medium text-slate-700">Password</span>
-          <div className="relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              required
-              autoComplete="new-password"
-              minLength={6}
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              className={inputWithIconPaddingClassName}
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"
-              aria-label={showPassword ? "Hide password" : "Show password"}
-            >
-              {showPassword ? "Hide" : "Show"}
-            </button>
-          </div>
-        </label>
+        <PasswordField
+          id="password"
+          fieldRole="new"
+          label="Password"
+          value={password}
+          onChange={setPassword}
+          show={showPassword}
+          onToggleShow={() => setShowPassword((prev) => !prev)}
+        />
 
-        <label className="block">
-          <span className="mb-1.5 block text-sm font-medium text-slate-700">Confirm Password</span>
-          <div className="relative">
-            <input
-              type={showConfirmPassword ? "text" : "password"}
-              required
-              autoComplete="new-password"
-              minLength={6}
-              value={confirmPassword}
-              onChange={(event) => setConfirmPassword(event.target.value)}
-              className={inputWithIconPaddingClassName}
-            />
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword((prev) => !prev)}
-              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"
-              aria-label={showConfirmPassword ? "Hide confirmation password" : "Show confirmation password"}
-            >
-              {showConfirmPassword ? "Hide" : "Show"}
-            </button>
-          </div>
-        </label>
+        <PasswordField
+          id="confirm-password"
+          fieldRole="confirm"
+          label="Confirm Password"
+          value={confirmPassword}
+          onChange={setConfirmPassword}
+          show={showConfirmPassword}
+          onToggleShow={() => setShowConfirmPassword((prev) => !prev)}
+        />
 
         {error ? (
           <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800" role="alert">

@@ -79,3 +79,41 @@ export async function signUp(
 
   return { data };
 }
+
+const MIN_PASSWORD_LENGTH = 6;
+
+export type PasswordActionResult = { ok: true } | { ok: false; error: string };
+
+function buildPasswordRecoveryRedirectTo(siteUrl: string): string {
+  const base = (process.env.NEXT_PUBLIC_SITE_URL ?? siteUrl).replace(/\/$/, "");
+  const next = encodeURIComponent("/auth/update-password");
+  return `${base}/auth/callback?next=${next}`;
+}
+
+export async function requestPasswordReset(email: string, siteUrl: string): Promise<PasswordActionResult> {
+  const supabase = getSupabaseBrowserClient();
+  const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+    redirectTo: buildPasswordRecoveryRedirectTo(siteUrl),
+  });
+
+  if (error) {
+    return { ok: false, error: error.message };
+  }
+
+  return { ok: true };
+}
+
+export async function updatePasswordAfterRecovery(newPassword: string): Promise<PasswordActionResult> {
+  if (newPassword.length < MIN_PASSWORD_LENGTH) {
+    return { ok: false, error: `Password must be at least ${MIN_PASSWORD_LENGTH} characters.` };
+  }
+
+  const supabase = getSupabaseBrowserClient();
+  const { error } = await supabase.auth.updateUser({ password: newPassword });
+
+  if (error) {
+    return { ok: false, error: error.message };
+  }
+
+  return { ok: true };
+}

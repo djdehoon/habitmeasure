@@ -18,6 +18,23 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
+## Password reset (Supabase)
+
+Forgot-password uses email recovery via `/auth/login` → `/auth/callback` → `/auth/update-password`.
+
+In **Supabase Dashboard → Authentication → URL configuration**, add these redirect URLs:
+
+- `http://localhost:3000/auth/callback`
+- Your production origin + `/auth/callback` (e.g. `https://your-domain.com/auth/callback`)
+
+Optional in `.env.local`:
+
+```env
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
+
+If omitted, the app uses `window.location.origin` when sending the reset email.
+
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
 ## Learn More
