@@ -16,7 +16,7 @@ export async function redeemInviteForUserWithServiceClient(
 
   const { data: invite, error: inviteErr } = await service
     .from("beta_testers")
-    .select("id, use_count, max_uses, revoked_at, expires_at")
+    .select("id, use_count, max_uses, status, expires_at")
     .eq("invite_code", normalizedCode)
     .maybeSingle();
 
@@ -34,7 +34,7 @@ export async function redeemInviteForUserWithServiceClient(
     return { ok: false, error: "Invalid or expired invite." };
   }
 
-  if (invite.revoked_at) {
+  if (invite.status === "revoked") {
     return { ok: false, error: "Invalid or expired invite." };
   }
 
