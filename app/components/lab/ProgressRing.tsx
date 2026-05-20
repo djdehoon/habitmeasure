@@ -6,6 +6,7 @@ type ProgressRingProps = {
   progress: number;
   mode: ProgressRingMode;
   className?: string;
+  isPulsing?: boolean;
 };
 
 const SOFT_LAYER_OPACITY = 0.15;
@@ -31,6 +32,7 @@ export function ProgressRing({
   progress,
   mode,
   className = "h-full w-full",
+  isPulsing = false,
 }: ProgressRingProps) {
   const strokeWidth = strokeWidthForRadius(radius);
   const pad = strokeWidth / 2 + 4;
@@ -43,10 +45,16 @@ export function ProgressRing({
   const trackColor = "rgb(30 41 59)";
   const stroke = mode === "done" ? doneColor : color;
   const softColorLayer = hexToRgba(color, SOFT_LAYER_OPACITY);
+  const glowColor = hexToRgba(mode === "done" ? doneColor : color, 0.6);
 
   return (
     <div className={`relative ${className}`}>
-      <svg className="h-full w-full -rotate-90" viewBox={`0 0 ${viewSize} ${viewSize}`} aria-hidden>
+      <svg
+        className={`h-full w-full -rotate-90 ${isPulsing ? "animate-pulse-ring" : ""}`}
+        style={{ "--ring-glow": glowColor } as React.CSSProperties}
+        viewBox={`0 0 ${viewSize} ${viewSize}`}
+        aria-hidden
+      >
         <circle
           cx={center}
           cy={center}

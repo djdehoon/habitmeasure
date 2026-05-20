@@ -358,6 +358,7 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
             color={routineColor}
             progress={progress}
             mode={ringMode}
+            isPulsing={state === "running"}
             className="h-full w-full"
           />
           <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
