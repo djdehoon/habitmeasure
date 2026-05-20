@@ -116,79 +116,6 @@ html {
   box-shadow: 0 4px 28px rgba(0, 0, 0, 0.28);
 }
 
-.phone-frame {
-  position: relative;
-  width: 240px;
-  height: 480px;
-  border-radius: 34px;
-  background: var(--bg-primary);
-  border: 1px solid rgba(148, 163, 184, 0.35);
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
-  overflow: hidden;
-}
-
-.phone-frame::before {
-  content: "";
-  position: absolute;
-  top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80px;
-  height: 6px;
-  border-radius: 999px;
-  background: rgba(148, 163, 184, 0.35);
-}
-
-.timer-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
-}
-
-.timer-circle {
-  box-sizing: border-box;
-  width: 84px;
-  height: 84px;
-  border-radius: 999px;
-  background: rgba(243, 246, 250, 0.95);
-  border: 3px solid currentColor;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  font-size: 11px;
-  text-align: center;
-  padding: 5px 8px;
-}
-
-.heatmap-grid {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 0.35rem;
-}
-
-.heat-cell {
-  width: 14px;
-  height: 14px;
-  border-radius: 4px;
-}
-
-.heat-0 {
-  background: rgba(139, 162, 181, 0.08);
-}
-.heat-1 {
-  background: rgba(139, 162, 181, 0.2);
-}
-.heat-2 {
-  background: rgba(139, 162, 181, 0.35);
-}
-.heat-3 {
-  background: rgba(139, 162, 181, 0.5);
-}
-.heat-4 {
-  background: rgba(139, 162, 181, 0.68);
-}
-
 .preview-phone {
   position: relative;
   width: 180px;
@@ -247,10 +174,6 @@ html {
 @media (max-width: 768px) {
   .section-wrap {
     padding: 4rem 0;
-  }
-
-  .phone-frame {
-    width: min(240px, 100%);
   }
 
   .preview-phone {
