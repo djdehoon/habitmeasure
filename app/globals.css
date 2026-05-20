@@ -18,6 +18,7 @@
 @theme inline {
   --font-sans: var(--font-inter);
   --font-heading: var(--font-plus-jakarta-sans);
+  --animate-pulse-button: pulse-button 0.6s ease-in-out infinite;
 }
 
 body {
@@ -237,8 +238,11 @@ html {
   }
 }
 
-.animate-pulse-button {
-  animation: pulse-button 0.6s ease-in-out infinite;
+@layer utilities {
+  .animate-pulse-button {
+    animation: var(--animate-pulse-button);
+    transform-origin: center;
+  }
 }
 
 @media (max-width: 768px) {

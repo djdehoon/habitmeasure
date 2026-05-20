@@ -10,8 +10,8 @@ const mainPill = `${pillBase} min-h-9 px-4 py-1.5 text-xs`;
 
 const secondaryPill = `${pillBase} min-h-8 px-3 py-1 text-[11px]`;
 
-const pulseWhenRunning = (state: CountdownState) =>
-  state === "running" ? "motion-safe:animate-pulse-button" : "";
+const pulseIfRunning = (active: boolean) =>
+  active ? "animate-pulse-button transform-gpu" : "";
 
 function addTimeLabel(value: AddTimeButtonValue): string {
   if (value === "1m") return "+1 min";
@@ -58,7 +58,7 @@ export function CountdownControlButtons({
           type="button"
           onClick={onPlay}
           disabled={playDisabled}
-          className={`${mainPill} border border-teal-400/35 bg-teal-500/10 text-teal-200 hover:bg-teal-500/20 ${pulseWhenRunning(state)}`}
+          className={`${mainPill} border border-teal-400/35 bg-teal-500/10 text-teal-200 hover:bg-teal-500/20 ${pulseIfRunning(state === "running" && !playDisabled)}`}
         >
           {playLabel(state)}
         </button>
@@ -66,7 +66,7 @@ export function CountdownControlButtons({
           type="button"
           onClick={onPause}
           disabled={pauseDisabled}
-          className={`${mainPill} border border-amber-400/35 bg-amber-500/10 text-amber-100 hover:bg-amber-500/20 ${pulseWhenRunning(state)}`}
+          className={`${mainPill} border border-amber-400/35 bg-amber-500/10 text-amber-100 hover:bg-amber-500/20 ${pulseIfRunning(state === "running" && !pauseDisabled)}`}
         >
           Pause
         </button>
@@ -74,7 +74,7 @@ export function CountdownControlButtons({
           type="button"
           onClick={onReset}
           disabled={resetDisabled}
-          className={`${mainPill} border border-white/15 bg-white/5 text-slate-300 hover:bg-white/10 ${pulseWhenRunning(state)}`}
+          className={`${mainPill} border border-white/15 bg-white/5 text-slate-300 hover:bg-white/10 ${pulseIfRunning(state === "running" && !resetDisabled)}`}
         >
           Reset
         </button>
@@ -87,7 +87,7 @@ export function CountdownControlButtons({
             type="button"
             disabled={addTimeDisabled}
             onClick={() => onAddTime(value)}
-            className={`${secondaryPill} border border-teal-400/35 bg-teal-500/10 text-teal-200/90 hover:bg-teal-500/20 ${pulseWhenRunning(state)}`}
+            className={`${secondaryPill} border border-teal-400/35 bg-teal-500/10 text-teal-200/90 hover:bg-teal-500/20 ${pulseIfRunning(state === "running" && !addTimeDisabled)}`}
           >
             {addTimeLabel(value)}
           </button>
@@ -96,7 +96,7 @@ export function CountdownControlButtons({
           type="button"
           onClick={onDelayedStart}
           disabled={delayedStartDisabled}
-          className={`${secondaryPill} border border-white/10 bg-white/5 text-slate-400 hover:bg-white/10 hover:text-slate-300 ${pulseWhenRunning(state)}`}
+          className={`${secondaryPill} border border-white/10 bg-white/5 text-slate-400 hover:bg-white/10 hover:text-slate-300 ${pulseIfRunning(state === "running" && !delayedStartDisabled)}`}
         >
           Delayed start
         </button>

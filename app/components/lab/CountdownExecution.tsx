@@ -17,7 +17,13 @@ import {
 } from "@/app/components/lab/countdownPremiumStyles";
 import { ProgressRing } from "@/app/components/lab/ProgressRing";
 import type { TimerSessionRow } from "@/app/lib/types";
-import { playFinishSound, playPauseSound, playStartSound } from "@/app/lib/sounds";
+import {
+  play5MinWarningSound,
+  play5SecWarningSound,
+  playFinishSound,
+  playPauseSound,
+  playStartSound,
+} from "@/app/lib/sounds";
 import { useCountdown, type CountdownState } from "@/lib/hooks/useCountdown";
 import {
   createTimerSession,
@@ -75,6 +81,8 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
   const sessionIdRef = useRef<string | null>(null);
   const terminalSentRef = useRef(false);
   const prevStateRef = useRef(state);
+  const fiveMinWarnedRef = useRef(false);
+  const fiveSecWarnedRef = useRef(false);
   const ringContainerRef = useRef<HTMLDivElement>(null);
   const [ringRadius, setRingRadius] = useState(140);
 
@@ -158,6 +166,25 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
   }, [template.id]);
 
   useEffect(() => {
+    if (state === "idle" || state === "finished") {
+      fiveMinWarnedRef.current = false;
+      fiveSecWarnedRef.current = false;
+      return;
+    }
+
+    if (state !== "running") return;
+
+    if (timeRemaining === 300 && !fiveMinWarnedRef.current) {
+      fiveMinWarnedRef.current = true;
+      play5MinWarningSound();
+    }
+    if (timeRemaining === 5 && !fiveSecWarnedRef.current) {
+      fiveSecWarnedRef.current = true;
+      play5SecWarningSound();
+    }
+  }, [state, timeRemaining]);
+
+  useEffect(() => {
     const prev = prevStateRef.current;
     prevStateRef.current = state;
 
@@ -230,6 +257,8 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
       const shouldCancel = Boolean(sessionId && !terminalSentRef.current);
       sessionIdRef.current = null;
       terminalSentRef.current = false;
+      fiveMinWarnedRef.current = false;
+      fiveSecWarnedRef.current = false;
       reset();
       if (shouldCancel && sessionId) {
         const { error } = await updateTimerSession(sessionId, "cancelled");

@@ -42,6 +42,14 @@ export const playFinishSound = () => {
   setTimeout(() => playBeep(1000, 200), 250);
 };
 
+export const play5MinWarningSound = () => {
+  playBeep(600, 400);
+};
+
+export const play5SecWarningSound = () => {
+  playBeep(700, 200);
+};
+
 /** Interval: phase switch (work↔rest) — 800 Hz + 1000 Hz, 200 ms each. */
 export const playIntervalPhaseChange = () => {
   playBeep(800, 200);
