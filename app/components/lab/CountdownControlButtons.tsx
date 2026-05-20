@@ -43,11 +43,10 @@ export function CountdownControlButtons({
   onDelayedStart,
 }: CountdownControlButtonsProps) {
   const playDisabled = isStarting || state === "running" || state === "waiting";
-  const pauseDisabled = state !== "running";
+  const pauseInactive = state !== "running";
   const resetDisabled = state === "idle";
   const addTimeDisabled = state !== "running" && state !== "paused";
   const delayedStartDisabled = state === "running" || state === "waiting";
-  const pulseIfRunning = state === "running";
 
   return (
     <div className="flex w-full flex-col gap-3">
@@ -63,8 +62,10 @@ export function CountdownControlButtons({
         <button
           type="button"
           onClick={onPause}
-          disabled={pauseDisabled}
-          className={`${mainPill} border border-amber-400/35 bg-amber-500/10 text-amber-100 hover:bg-amber-500/20 ${pulseIfRunning && !pauseDisabled ? "animate-pulse-button" : ""}`}
+          aria-disabled={pauseInactive}
+          className={`${mainPill} border border-amber-400/35 bg-amber-500/10 text-amber-100 hover:bg-amber-500/20 ${
+            pauseInactive ? "cursor-not-allowed opacity-40" : ""
+          }`}
         >
           Pause
         </button>
@@ -72,7 +73,7 @@ export function CountdownControlButtons({
           type="button"
           onClick={onReset}
           disabled={resetDisabled}
-          className={`${mainPill} border border-white/15 bg-white/5 text-slate-300 hover:bg-white/10 ${pulseIfRunning && !resetDisabled ? "animate-pulse-button" : ""}`}
+          className={`${mainPill} border border-white/15 bg-white/5 text-slate-300 hover:bg-white/10`}
         >
           Reset
         </button>
@@ -85,7 +86,7 @@ export function CountdownControlButtons({
             type="button"
             disabled={addTimeDisabled}
             onClick={() => onAddTime(value)}
-            className={`${secondaryPill} border border-teal-400/35 bg-teal-500/10 text-teal-200/90 hover:bg-teal-500/20 ${pulseIfRunning && !addTimeDisabled ? "animate-pulse-button" : ""}`}
+            className={`${secondaryPill} border border-teal-400/35 bg-teal-500/10 text-teal-200/90 hover:bg-teal-500/20`}
           >
             {addTimeLabel(value)}
           </button>

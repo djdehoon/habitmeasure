@@ -16,7 +16,7 @@ export async function redeemInviteForUserWithServiceClient(
 
   const { data: invite, error: inviteErr } = await service
     .from("beta_testers")
-    .select("id, use_count, max_uses")
+    .select("id, use_count, max_uses, revoked_at, expires_at")
     .eq("invite_code", normalizedCode)
     .maybeSingle();
 
@@ -27,6 +27,14 @@ export async function redeemInviteForUserWithServiceClient(
   });
 
   if (inviteErr || !invite) {
+    return { ok: false, error: "Invalid or expired invite." };
+  }
+
+  if (invite.expires_at && new Date(invite.expires_at as string) < new Date()) {
+    return { ok: false, error: "Invalid or expired invite." };
+  }
+
+  if (invite.revoked_at) {
     return { ok: false, error: "Invalid or expired invite." };
   }
 

@@ -58,10 +58,20 @@ export default async function BetaPage({
         <div className="flex flex-1 flex-col items-center justify-center gap-4 p-4 text-center">
           <h1 className="heading-font text-2xl font-bold text-slate-800">Beta access is invite-only</h1>
           {notice === "invite_required" ? (
-            <p className="max-w-md rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
-              The lab is restricted to beta testers. Use your invite link with an <span className="font-mono">invite</span>{" "}
-              query parameter, or ask the team for access.
-            </p>
+            <div className="max-w-md space-y-2 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+              <p>
+                The lab is only available after you redeem a beta invite. Opening <span className="font-mono">/lab</span>{" "}
+                alone does not activate access — you need the full invite URL from your email or message.
+              </p>
+              <p className="font-medium text-amber-950">Your link must look like:</p>
+              <p className="break-all rounded-lg border border-amber-200/80 bg-white/80 px-3 py-2 font-mono text-xs text-slate-800">
+                /beta?invite=YOUR_CODE
+              </p>
+              <p className="text-xs text-amber-800">
+                Example: <span className="font-mono">/beta?invite=BETA_FRIEND_001</span> (use the code you were given, not
+                this example unless it is yours).
+              </p>
+            </div>
           ) : null}
           <p className="max-w-md text-slate-600">
             Use the invite link you received (it looks like{" "}

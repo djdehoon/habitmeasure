@@ -33,6 +33,15 @@ export const playStartSound = () => {
   playBeep(600, 300);
 };
 
+/** Main countdown begins (after delay or immediate start). */
+export const playLongStartSound = () => {
+  // C5 → E5 → G5 → C6: bright, uplifting, distinct from pause/warning tones
+  playBeep(523, 170);
+  setTimeout(() => playBeep(659, 170), 190);
+  setTimeout(() => playBeep(784, 200), 380);
+  setTimeout(() => playBeep(1047, 260), 600);
+};
+
 export const playPauseSound = () => {
   playBeep(420, 220);
 };

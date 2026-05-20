@@ -21,6 +21,7 @@ import {
   play5MinWarningSound,
   play5SecWarningSound,
   playFinishSound,
+  playLongStartSound,
   playPauseSound,
   playStartSound,
 } from "@/app/lib/sounds";
@@ -203,6 +204,7 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
     prevStateRef.current = state;
 
     if (prev === "waiting" && state === "running") {
+      playLongStartSound();
       void openSession();
     } else if (prev !== "running" && state === "running" && prev !== "waiting") {
       void openSession();
@@ -234,7 +236,8 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
 
   const handlePlay = useCallback(() => {
     if (state === "idle") {
-      playStartSound();
+      if (minDelay > 0) playStartSound();
+      else playLongStartSound();
       start(durationSeconds, minDelay > 0 ? minDelay : 0);
     } else if (state === "paused") {
       playStartSound();
@@ -246,7 +249,8 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
         resume();
       })();
     } else if (state === "finished") {
-      playStartSound();
+      if (minDelay > 0) playStartSound();
+      else playLongStartSound();
       sessionIdRef.current = null;
       terminalSentRef.current = false;
       start(durationSeconds, minDelay > 0 ? minDelay : 0);
@@ -300,7 +304,7 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
     if (state === "idle") {
       void handlePlay();
     } else if (state === "waiting") {
-      playStartSound();
+      playLongStartSound();
       sessionIdRef.current = null;
       terminalSentRef.current = false;
       start(durationSeconds, 0);

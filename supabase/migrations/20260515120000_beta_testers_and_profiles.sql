@@ -67,4 +67,8 @@ ALTER TABLE public.beta_testers ENABLE ROW LEVEL SECURITY;
 -- Seed an invite (replace CODE):
 --   INSERT INTO public.beta_testers (invite_code, max_uses, note)
 --   VALUES ('YOURCODEHERE', 1, 'First beta wave');
+-- Shared code for multiple friends (e.g. BETA_FRIEND_001):
+--   UPDATE public.beta_testers SET max_uses = 10 WHERE invite_code = 'BETA_FRIEND_001';
+-- If one person already redeemed and a friend needs the same code:
+--   UPDATE public.beta_testers SET max_uses = 2 WHERE invite_code = 'BETA_FRIEND_001';
 -- ---------------------------------------------------------------------------

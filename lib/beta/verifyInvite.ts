@@ -19,7 +19,7 @@ export async function checkInviteCodeValidWithClient(
 
   const { data, error } = await supabase
     .from("beta_testers")
-    .select("id, invite_code, status, expires_at, use_count, max_uses")
+    .select("id, invite_code, expires_at, revoked_at, use_count, max_uses")
     .eq("invite_code", normalized)
     .maybeSingle();
 
@@ -38,6 +38,18 @@ export async function checkInviteCodeValidWithClient(
 
   if (data.expires_at && new Date(data.expires_at as string) < new Date()) {
     devLog("❌ Code expired:", data.expires_at);
+    return false;
+  }
+
+  if (data.revoked_at) {
+    devLog("❌ Code revoked:", data.revoked_at);
+    return false;
+  }
+
+  const useCount = Number(data.use_count) || 0;
+  const maxUses = Number(data.max_uses) || 1;
+  if (useCount >= maxUses) {
+    devLog("❌ Code exhausted:", { useCount, maxUses });
     return false;
   }
 
