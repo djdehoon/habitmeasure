@@ -52,13 +52,17 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "black-translucent",
+    statusBarStyle: "black",
     title: "HabitMeasure",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0C0F14",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#0C0F14" },
+    { media: "(prefers-color-scheme: dark)", color: "#0C0F14" },
+  ],
+  colorScheme: "dark",
 };
 
 export default function RootLayout({
@@ -70,6 +74,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className={`${plusJakartaSans.variable} ${inter.variable}`}>
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
         <meta name="format-detection" content="telephone=no,email=no,address=no,date=no,url=no" />
         <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png" />
         <script src="https://t.contentsquare.net/uxa/d8d9368b75f03.js" async />

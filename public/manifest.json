@@ -4,8 +4,8 @@
   "description": "Small habits. Big change. You measure it.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#FFFFFF",
-  "theme_color": "#00E5C0",
+  "background_color": "#0C0F14",
+  "theme_color": "#0C0F14",
   "icons": [
     {
       "src": "/images/icons/icon-192.png",
