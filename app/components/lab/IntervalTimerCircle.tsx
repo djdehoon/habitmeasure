@@ -5,6 +5,7 @@ import { ProgressRing } from "@/app/components/lab/ProgressRing";
 import { countdownRingColumnWidth } from "@/app/components/lab/countdownPremiumStyles";
 import {
   calculateActivityBlocks,
+  computeActivitiesDurationSeconds,
   formatActivitiesTotalDuration,
   type IntervalActivity,
 } from "@/lib/utils/intervalActivities";
@@ -29,9 +30,27 @@ type IntervalTimerCircleProps = {
 
 const PAUSED_COLOR = "#FF8C00";
 const FINISHED_COLOR = "#22c55e";
+/** Gap between outer ticks and inner ProgressRing. */
+const RING_GAP = 12;
+const TICK_LENGTH = 9;
+const TARGET_TICKS = 64;
+
+type ActivityTick = {
+  angle: number;
+  color: string;
+  opacity: number;
+  key: string;
+};
 
 function clamp01(value: number): number {
   return Math.min(1, Math.max(0, value));
+}
+
+function polar(cx: number, cy: number, r: number, angleRad: number) {
+  return {
+    x: cx + r * Math.cos(angleRad),
+    y: cy + r * Math.sin(angleRad),
+  };
 }
 
 export function IntervalTimerCircle({
@@ -58,10 +77,72 @@ export function IntervalTimerCircle({
       ? Math.max(0, waitingSeconds)
       : Math.max(0, Math.ceil(phaseDuration - elapsedTime));
 
+  const totalSeconds = useMemo(
+    () => Math.max(1, computeActivitiesDurationSeconds(activities)),
+    [activities],
+  );
+
   const blocks = useMemo(
     () => calculateActivityBlocks(activities, globalElapsedTime),
     [activities, globalElapsedTime],
   );
+
+  const progressRatio =
+    timerState === "idle" || timerState === "waiting"
+      ? 0
+      : timerState === "finished"
+        ? 1
+        : clamp01(globalElapsedTime / totalSeconds);
+
+  const activityTicks = useMemo(() => {
+    const ticks: ActivityTick[] = [];
+    let cumulative = 0;
+
+    for (let i = 0; i < activities.length; i += 1) {
+      const activity = activities[i];
+      const duration = Math.max(1, Math.floor(activity.duration));
+      const startRatio = cumulative / totalSeconds;
+      const endRatio = (cumulative + duration) / totalSeconds;
+      const span = Math.max(0.0001, endRatio - startRatio);
+      const count = Math.max(3, Math.round(span * TARGET_TICKS));
+
+      for (let t = 0; t < count; t += 1) {
+        const ratio = startRatio + ((t + 0.5) / count) * span;
+        const angle = -Math.PI / 2 + ratio * 2 * Math.PI;
+
+        let opacity = 0.85;
+        if (timerState === "finished") {
+          opacity = 0.4;
+        } else if (timerState === "running" || timerState === "paused") {
+          if (ratio <= progressRatio) {
+            opacity = 0;
+          } else if (i === currentActivityIndex) {
+            opacity = 1;
+          } else {
+            opacity = 0.55;
+          }
+        }
+
+        ticks.push({
+          angle,
+          color: activity.color?.trim() || templateColor,
+          opacity,
+          key: `${activity.id}-${t}`,
+        });
+      }
+
+      cumulative += duration;
+    }
+
+    return ticks;
+  }, [
+    activities,
+    totalSeconds,
+    timerState,
+    progressRatio,
+    currentActivityIndex,
+    templateColor,
+  ]);
 
   const ringColor =
     timerState === "paused"
@@ -82,6 +163,13 @@ export function IntervalTimerCircle({
         : clamp01(phaseProgress);
 
   const isPulsing = timerState === "running";
+
+  // Outer ticks at the rim; solid ProgressRing inset inside
+  const inset = RING_GAP + TICK_LENGTH;
+  const tickMidRadius = Math.max(70, ringRadius - TICK_LENGTH / 2);
+  const innerRadius = Math.max(80, ringRadius - inset);
+  const viewSize = 2 * (ringRadius + 6);
+  const center = viewSize / 2;
 
   useEffect(() => {
     const element = ringContainerRef.current;
@@ -182,15 +270,46 @@ export function IntervalTimerCircle({
         ref={ringContainerRef}
         className={`absolute inset-0 ${timerState === "paused" ? "opacity-70" : ""}`}
       >
-        <ProgressRing
-          radius={ringRadius}
-          color={ringColor}
-          progress={ringProgress}
-          mode={ringMode}
-          isPulsing={isPulsing}
-          strokeTransition={false}
-          className={`h-full w-full ${timerState === "finished" ? "motion-safe:animate-bounce-ring" : ""}`}
-        />
+        {/* Outer per-activity colored radial dashes */}
+        <svg
+          className="pointer-events-none absolute inset-0 z-[1] h-full w-full"
+          viewBox={`0 0 ${viewSize} ${viewSize}`}
+          aria-hidden
+        >
+          {activityTicks.map((tick) => {
+            const outerPt = polar(center, center, tickMidRadius + TICK_LENGTH / 2, tick.angle);
+            const innerPt = polar(center, center, tickMidRadius - TICK_LENGTH / 2, tick.angle);
+            return (
+              <line
+                key={tick.key}
+                x1={innerPt.x}
+                y1={innerPt.y}
+                x2={outerPt.x}
+                y2={outerPt.y}
+                stroke={tick.color}
+                strokeOpacity={tick.opacity}
+                strokeWidth={3.25}
+                strokeLinecap="round"
+              />
+            );
+          })}
+        </svg>
+
+        {/* Inner solid activity progress */}
+        <div
+          className="absolute inset-0 z-0 flex items-center justify-center"
+          style={{ padding: inset }}
+        >
+          <ProgressRing
+            radius={innerRadius}
+            color={ringColor}
+            progress={ringProgress}
+            mode={ringMode}
+            isPulsing={isPulsing}
+            strokeTransition={false}
+            className={`h-full w-full ${timerState === "finished" ? "motion-safe:animate-bounce-ring" : ""}`}
+          />
+        </div>
       </div>
 
       <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-6 py-8 text-center">
