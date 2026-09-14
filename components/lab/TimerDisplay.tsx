@@ -35,7 +35,12 @@ export function TimerDisplay({ durationSeconds, timerName, onComplete }: TimerDi
       <h1 className="heading-font text-center text-2xl font-bold text-slate-100 md:text-3xl">{timerName}</h1>
 
       <div className="relative mt-2 h-64 w-64 md:mt-3 md:h-72 md:w-72">
-        <svg className="h-full w-full -rotate-90" viewBox="0 0 200 200" aria-hidden>
+        <svg
+          className="h-full w-full"
+          style={{ transform: "scaleX(-1) rotate(-90deg)" }}
+          viewBox="0 0 200 200"
+          aria-hidden
+        >
           <circle cx="100" cy="100" r={radius} fill="none" stroke="rgb(30 41 59)" strokeWidth="4" />
           <circle
             cx="100"

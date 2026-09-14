@@ -49,6 +49,7 @@ export function useCountdown(initialDurationSeconds: number): UseCountdownResult
   const phaseTotalMsRef = useRef(normalizedInitial * 1000);
   const remainingMsRef = useRef(normalizedInitial * 1000);
   const rafRef = useRef<number | null>(null);
+  const wholeSecondsRef = useRef(normalizedInitial);
 
   useEffect(() => {
     stateRef.current = state;
@@ -69,7 +70,11 @@ export function useCountdown(initialDurationSeconds: number): UseCountdownResult
     const safePhase = Math.max(1, phaseTotalMs);
     const clampedMs = Math.max(0, remainingMs);
     remainingMsRef.current = clampedMs;
-    setTimeRemaining(Math.max(0, Math.ceil(clampedMs / 1000)));
+    const nextSeconds = Math.max(0, Math.ceil(clampedMs / 1000));
+    if (nextSeconds !== wholeSecondsRef.current) {
+      wholeSecondsRef.current = nextSeconds;
+      setTimeRemaining(nextSeconds);
+    }
     setProgress(clamp01(clampedMs / safePhase));
   }, []);
 
@@ -79,6 +84,7 @@ export function useCountdown(initialDurationSeconds: number): UseCountdownResult
       phaseTotalMsRef.current = totalMs;
       remainingMsRef.current = totalMs;
       endsAtRef.current = Date.now() + totalMs;
+      wholeSecondsRef.current = -1;
       setState(nextState);
       applySnapshot(totalMs, totalMs);
     },
@@ -142,6 +148,7 @@ export function useCountdown(initialDurationSeconds: number): UseCountdownResult
     endsAtRef.current = null;
     phaseTotalMsRef.current = normalizedInitial * 1000;
     remainingMsRef.current = normalizedInitial * 1000;
+    wholeSecondsRef.current = normalizedInitial;
     setState("idle");
     setDuration(normalizedInitial);
     durationRef.current = normalizedInitial;
@@ -200,6 +207,7 @@ export function useCountdown(initialDurationSeconds: number): UseCountdownResult
         }
         endsAtRef.current = null;
         remainingMsRef.current = 0;
+        wholeSecondsRef.current = 0;
         setTimeRemaining(0);
         setProgress(0);
         setState("finished");

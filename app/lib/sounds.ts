@@ -4,12 +4,44 @@ type WebkitWindow = Window & {
   webkitAudioContext?: typeof AudioContext;
 };
 
+let sharedContext: AudioContext | null = null;
+
+function getAudioContextClass(): typeof AudioContext | null {
+  if (typeof window === "undefined") return null;
+  return window.AudioContext || (window as WebkitWindow).webkitAudioContext || null;
+}
+
+function getSharedAudioContext(): AudioContext | null {
+  const AudioContextClass = getAudioContextClass();
+  if (!AudioContextClass) return null;
+  if (!sharedContext || sharedContext.state === "closed") {
+    sharedContext = new AudioContextClass();
+  }
+  return sharedContext;
+}
+
+/** Call from a user gesture so later effect/setTimeout beeps can play. */
+export const unlockAudio = (): void => {
+  try {
+    const ctx = getSharedAudioContext();
+    if (!ctx) return;
+    if (ctx.state === "suspended") {
+      void ctx.resume();
+    }
+  } catch {
+    // ignore
+  }
+};
+
 export const playBeep = (frequency: number = 800, duration: number = 500) => {
   try {
-    const AudioContextClass = window.AudioContext || (window as WebkitWindow).webkitAudioContext;
-    if (!AudioContextClass) return;
+    const audioContext = getSharedAudioContext();
+    if (!audioContext) return;
 
-    const audioContext = new AudioContextClass();
+    if (audioContext.state === "suspended") {
+      void audioContext.resume();
+    }
+
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
 
@@ -19,11 +51,12 @@ export const playBeep = (frequency: number = 800, duration: number = 500) => {
     oscillator.frequency.value = frequency;
     oscillator.type = "sine";
 
-    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration / 1000);
+    const now = audioContext.currentTime;
+    gainNode.gain.setValueAtTime(0.3, now);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, now + duration / 1000);
 
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + duration / 1000);
+    oscillator.start(now);
+    oscillator.stop(now + duration / 1000);
   } catch {
     console.log("Audio not supported");
   }

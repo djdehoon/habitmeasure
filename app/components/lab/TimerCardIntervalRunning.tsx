@@ -124,7 +124,12 @@ export function TimerCardIntervalRunning({ template }: TimerCardIntervalRunningP
         </div>
 
         <div className="relative mx-auto h-36 w-36">
-          <svg className="h-full w-full -rotate-90" viewBox={`0 0 ${VIEWBOX} ${VIEWBOX}`} aria-hidden>
+          <svg
+            className="h-full w-full"
+            style={{ transform: "scaleX(-1) rotate(-90deg)" }}
+            viewBox={`0 0 ${VIEWBOX} ${VIEWBOX}`}
+            aria-hidden
+          >
             <circle
               cx={CENTER}
               cy={CENTER}

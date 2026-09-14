@@ -71,7 +71,12 @@ function TimerRing({
   progressMode: RingProgressMode;
 }) {
   return (
-    <svg className="h-full w-full -rotate-90" viewBox={`0 0 ${VIEWBOX} ${VIEWBOX}`} aria-hidden>
+    <svg
+      className="h-full w-full"
+      style={{ transform: "scaleX(-1) rotate(-90deg)" }}
+      viewBox={`0 0 ${VIEWBOX} ${VIEWBOX}`}
+      aria-hidden
+    >
       <circle
         cx={CENTER}
         cy={CENTER}
@@ -206,7 +211,7 @@ function TimerCardView2Countdown({ template }: { template: TimerTemplate }) {
             ? `Resume timer for ${template.template_name}`
             : `Restart timer for ${template.template_name}`;
 
-  const progressStroke = state === "finished" ? "#10b981" : routineColor;
+  const progressStroke = routineColor;
 
   const ringProgressMode: RingProgressMode =
     state === "idle" || state === "waiting" ? "full" : state === "finished" ? "none" : "partial";
@@ -332,7 +337,7 @@ function TimerCardView2Interval({ template }: { template: TimerTemplate }) {
           ? `Resume interval for ${template.template_name}`
           : `Restart interval for ${template.template_name}`;
 
-  const progressStroke = runState === "finished" ? "#10b981" : routineColor;
+  const progressStroke = routineColor;
 
   const ringProgressMode: RingProgressMode =
     runState === "finished" ? "none" : "partial";

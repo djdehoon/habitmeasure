@@ -24,6 +24,7 @@ import {
   playFinishSound,
   playLongStartSound,
   playPauseSound,
+  unlockAudio,
 } from "@/app/lib/sounds";
 import { useCountdown, type CountdownState } from "@/lib/hooks/useCountdown";
 import {
@@ -88,7 +89,7 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
   const [enterAnim, setEnterAnim] = useState(false);
 
   const ringMode = state === "idle" ? "full" : state === "finished" ? "done" : "partial";
-  const ringStrokeColor = ringMode === "done" ? "#22c55e" : routineColor;
+  const ringStrokeColor = routineColor;
   const label = statusLabel(state);
 
   useEffect(() => {
@@ -234,6 +235,7 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
   }, []);
 
   const handlePlay = useCallback(() => {
+    unlockAudio();
     if (state === "idle") {
       if (minDelay > 0) {
         // Delayed start: no start beep — first delay tick provides the audio cue
@@ -264,6 +266,7 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
 
   const handlePause = useCallback(() => {
     if (state !== "running") return;
+    unlockAudio();
     playPauseSound();
     void (async () => {
       if (sessionIdRef.current) {
@@ -292,6 +295,7 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
 
   const handleDelayedConfirm = useCallback(
     (delaySeconds: number) => {
+      unlockAudio();
       // Delayed start: skip start beep so the first countdown tick is not doubled
       if (delaySeconds <= 0) {
         playLongStartSound();
@@ -308,6 +312,7 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
   );
 
   const handleCircleClick = useCallback(() => {
+    unlockAudio();
     if (state === "idle") {
       void handlePlay();
     } else if (state === "waiting") {

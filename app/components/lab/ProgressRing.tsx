@@ -44,17 +44,21 @@ export function ProgressRing({
   const innerFillRadius = Math.max(0, radius - strokeWidth / 2);
   const circumference = 2 * Math.PI * radius;
   const strokeOffset = circumference * (1 - progress);
-  const doneColor = "#22c55e";
   const trackColor = "rgb(30 41 59)";
-  const stroke = mode === "done" ? doneColor : color;
+  const stroke = color;
   const softColorLayer = hexToRgba(color, SOFT_LAYER_OPACITY);
-  const glowColor = hexToRgba(mode === "done" ? doneColor : color, 0.6);
+  const glowColor = hexToRgba(color, 0.6);
 
   return (
     <div className={`relative ${className}`}>
       <svg
-        className={`h-full w-full -rotate-90 ${isPulsing ? "animate-pulse-ring" : ""}`}
-        style={{ "--ring-glow": glowColor } as React.CSSProperties}
+        className={`h-full w-full ${isPulsing ? "animate-pulse-ring" : ""}`}
+        style={
+          {
+            transform: "scaleX(-1) rotate(-90deg)",
+            "--ring-glow": glowColor,
+          } as React.CSSProperties
+        }
         viewBox={`0 0 ${viewSize} ${viewSize}`}
         aria-hidden
       >
@@ -99,7 +103,7 @@ export function ProgressRing({
             cy={center}
             r={radius}
             fill="none"
-            stroke={doneColor}
+            stroke={stroke}
             strokeWidth={strokeWidth}
             strokeLinecap="round"
             strokeDasharray={circumference}

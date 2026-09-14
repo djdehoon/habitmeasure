@@ -29,7 +29,6 @@ type IntervalTimerCircleProps = {
 };
 
 const PAUSED_COLOR = "#FF8C00";
-const FINISHED_COLOR = "#22c55e";
 /** Gap between outer ticks and inner ProgressRing. */
 const RING_GAP = 12;
 const TICK_LENGTH = 9;
@@ -47,9 +46,11 @@ function clamp01(value: number): number {
 }
 
 function polar(cx: number, cy: number, r: number, angleRad: number) {
+  // Round so SSR and client serialize identical SVG attributes (avoid hydration mismatch).
+  const round = (n: number) => Math.round(n * 1000) / 1000;
   return {
-    x: cx + r * Math.cos(angleRad),
-    y: cy + r * Math.sin(angleRad),
+    x: round(cx + r * Math.cos(angleRad)),
+    y: round(cy + r * Math.sin(angleRad)),
   };
 }
 
@@ -147,11 +148,9 @@ export function IntervalTimerCircle({
   const ringColor =
     timerState === "paused"
       ? PAUSED_COLOR
-      : timerState === "finished"
-        ? FINISHED_COLOR
-        : timerState === "idle" || timerState === "waiting"
-          ? templateColor
-          : currentActivity?.color ?? templateColor;
+      : timerState === "finished" || timerState === "idle" || timerState === "waiting"
+        ? templateColor
+        : currentActivity?.color ?? templateColor;
 
   const ringMode =
     timerState === "idle" ? "full" : timerState === "finished" ? "done" : "partial";
@@ -247,7 +246,7 @@ export function IntervalTimerCircle({
       <p className="mt-2 text-base text-white">{statusLabel}</p>
       {showNext && nextActivity ? (
         <p className="mt-1 text-sm text-slate-400">
-          Next: {currentActivityIndex + 2}. {nextActivity.name}
+          {">>"} {currentActivityIndex + 2}. {nextActivity.name}
         </p>
       ) : null}
     </>

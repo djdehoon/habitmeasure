@@ -478,13 +478,13 @@ export function IntervalTimerCountdown({ template }: IntervalTimerCountdownProps
           aria-labelledby="interval-complete-title"
         >
           <div className="max-w-sm rounded-2xl border border-white/10 bg-slate-900 px-8 py-10 text-center shadow-xl shadow-black/40">
-            <h2 id="interval-complete-title" className="heading-font text-2xl font-bold text-emerald-300">
+            <h2 id="interval-complete-title" className="heading-font text-2xl font-bold text-[#00E5C0]">
               Routine Complete!
             </h2>
             <button
               type="button"
               onClick={() => void handleDismissComplete()}
-              className="mt-6 rounded-full bg-[#27AE60] px-8 py-3 text-base font-semibold text-white transition hover:opacity-90"
+              className="mt-6 rounded-full bg-[#00E5C0] px-8 py-3 text-base font-semibold text-[#0C3D3A] transition hover:bg-[#00d4b2]"
             >
               Close
             </button>
