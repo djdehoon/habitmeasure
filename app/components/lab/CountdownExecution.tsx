@@ -24,7 +24,6 @@ import {
   playFinishSound,
   playLongStartSound,
   playPauseSound,
-  playStartSound,
 } from "@/app/lib/sounds";
 import { useCountdown, type CountdownState } from "@/lib/hooks/useCountdown";
 import {
@@ -84,13 +83,17 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
   const terminalSentRef = useRef(false);
   const prevStateRef = useRef(state);
   const fiveMinWarnedRef = useRef(false);
-  const fiveSecWarnedRef = useRef(false);
   const ringContainerRef = useRef<HTMLDivElement>(null);
   const [ringRadius, setRingRadius] = useState(140);
+  const [enterAnim, setEnterAnim] = useState(false);
 
-  const ringMode = state === "idle" || state === "waiting" ? "full" : state === "finished" ? "done" : "partial";
+  const ringMode = state === "idle" ? "full" : state === "finished" ? "done" : "partial";
   const ringStrokeColor = ringMode === "done" ? "#22c55e" : routineColor;
   const label = statusLabel(state);
+
+  useEffect(() => {
+    setEnterAnim(true);
+  }, []);
 
   useEffect(() => {
     const element = ringContainerRef.current;
@@ -170,7 +173,6 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
   useEffect(() => {
     if (state === "idle" || state === "finished") {
       fiveMinWarnedRef.current = false;
-      fiveSecWarnedRef.current = false;
       return;
     }
 
@@ -184,9 +186,6 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
     if (timeRemaining > 300) {
       fiveMinWarnedRef.current = false;
     }
-    if (timeRemaining > 5) {
-      fiveSecWarnedRef.current = false;
-    }
 
     if (state !== "running") return;
 
@@ -194,8 +193,7 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
       fiveMinWarnedRef.current = true;
       play5MinWarningSound();
     }
-    if (timeRemaining === 5 && !fiveSecWarnedRef.current) {
-      fiveSecWarnedRef.current = true;
+    if (timeRemaining >= 1 && timeRemaining <= 5) {
       play5SecWarningSound();
     }
   }, [state, timeRemaining]);
@@ -237,11 +235,14 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
 
   const handlePlay = useCallback(() => {
     if (state === "idle") {
-      if (minDelay > 0) playStartSound();
-      else playLongStartSound();
-      start(durationSeconds, minDelay > 0 ? minDelay : 0);
+      if (minDelay > 0) {
+        // Delayed start: no start beep — first delay tick provides the audio cue
+        start(durationSeconds, minDelay);
+      } else {
+        playLongStartSound();
+        start(durationSeconds, 0);
+      }
     } else if (state === "paused") {
-      playStartSound();
       void (async () => {
         if (sessionIdRef.current) {
           const { error } = await updateTimerSession(sessionIdRef.current, "running");
@@ -250,11 +251,14 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
         resume();
       })();
     } else if (state === "finished") {
-      if (minDelay > 0) playStartSound();
-      else playLongStartSound();
       sessionIdRef.current = null;
       terminalSentRef.current = false;
-      start(durationSeconds, minDelay > 0 ? minDelay : 0);
+      if (minDelay > 0) {
+        start(durationSeconds, minDelay);
+      } else {
+        playLongStartSound();
+        start(durationSeconds, 0);
+      }
     }
   }, [state, start, resume, durationSeconds, minDelay]);
 
@@ -277,7 +281,6 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
       sessionIdRef.current = null;
       terminalSentRef.current = false;
       fiveMinWarnedRef.current = false;
-      fiveSecWarnedRef.current = false;
       reset();
       if (shouldCancel && sessionId) {
         const { error } = await updateTimerSession(sessionId, "cancelled");
@@ -289,7 +292,10 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
 
   const handleDelayedConfirm = useCallback(
     (delaySeconds: number) => {
-      playStartSound();
+      // Delayed start: skip start beep so the first countdown tick is not doubled
+      if (delaySeconds <= 0) {
+        playLongStartSound();
+      }
       if (state === "idle" || state === "finished") {
         sessionIdRef.current = null;
         terminalSentRef.current = false;
@@ -336,7 +342,9 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
   ];
 
   return (
-    <div className="flex min-h-[100dvh] flex-col bg-black text-slate-100">
+    <div
+      className={`flex min-h-[100dvh] flex-col bg-black text-slate-100${enterAnim ? " animate-fullscreen-enter" : ""}`}
+    >
       <header className="relative flex items-center justify-center border-b border-white/10 px-4 py-3">
         <Link
           href="/lab"
@@ -371,6 +379,7 @@ export function CountdownExecution({ template }: CountdownExecutionProps) {
             progress={progress}
             mode={ringMode}
             isPulsing={state === "running"}
+            strokeTransition={false}
             className="h-full w-full"
           />
           <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">

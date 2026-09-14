@@ -7,6 +7,8 @@ type ProgressRingProps = {
   mode: ProgressRingMode;
   className?: string;
   isPulsing?: boolean;
+  /** When false, stroke updates instantly (needed for wall-clock synced countdown). Default true. */
+  strokeTransition?: boolean;
 };
 
 const SOFT_LAYER_OPACITY = 0.15;
@@ -33,6 +35,7 @@ export function ProgressRing({
   mode,
   className = "h-full w-full",
   isPulsing = false,
+  strokeTransition = true,
 }: ProgressRingProps) {
   const strokeWidth = strokeWidthForRadius(radius);
   const pad = strokeWidth / 2 + 4;
@@ -86,7 +89,9 @@ export function ProgressRing({
             strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={strokeOffset}
-            className="transition-[stroke-dashoffset] duration-1000 ease-linear"
+            className={
+              strokeTransition ? "transition-[stroke-dashoffset] duration-1000 ease-linear" : undefined
+            }
           />
         ) : (
           <circle

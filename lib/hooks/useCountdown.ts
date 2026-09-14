@@ -28,14 +28,27 @@ function normalizeDelay(seconds: number): number {
   return Math.max(0, Math.floor(seconds));
 }
 
+function clamp01(value: number): number {
+  return Math.min(1, Math.max(0, value));
+}
+
 export function useCountdown(initialDurationSeconds: number): UseCountdownResult {
-  const normalizedInitial = useMemo(() => normalizeDuration(initialDurationSeconds), [initialDurationSeconds]);
+  const normalizedInitial = useMemo(
+    () => normalizeDuration(initialDurationSeconds),
+    [initialDurationSeconds],
+  );
+
   const [state, setState] = useState<CountdownState>("idle");
   const [timeRemaining, setTimeRemaining] = useState(normalizedInitial);
   const [duration, setDuration] = useState(normalizedInitial);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [progress, setProgress] = useState(1);
+
   const stateRef = useRef<CountdownState>(state);
   const durationRef = useRef(duration);
+  const endsAtRef = useRef<number | null>(null);
+  const phaseTotalMsRef = useRef(normalizedInitial * 1000);
+  const remainingMsRef = useRef(normalizedInitial * 1000);
+  const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
     stateRef.current = state;
@@ -45,98 +58,162 @@ export function useCountdown(initialDurationSeconds: number): UseCountdownResult
     durationRef.current = duration;
   }, [duration]);
 
-  const clearTick = useCallback(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
+  const stopRaf = useCallback(() => {
+    if (rafRef.current !== null) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
     }
   }, []);
 
-  const progress =
-    state === "waiting"
-      ? 1
-      : duration > 0
-        ? Math.min(1, Math.max(0, timeRemaining / duration))
-        : 0;
-
-  const start = useCallback((durationInSeconds: number, delaySeconds = 0) => {
-    const normalized = normalizeDuration(durationInSeconds);
-    const delay = normalizeDelay(delaySeconds);
-    setDuration(normalized);
-
-    if (delay > 0) {
-      setTimeRemaining(delay);
-      setState("waiting");
-    } else {
-      setTimeRemaining(normalized);
-      setState("running");
-    }
+  const applySnapshot = useCallback((remainingMs: number, phaseTotalMs: number) => {
+    const safePhase = Math.max(1, phaseTotalMs);
+    const clampedMs = Math.max(0, remainingMs);
+    remainingMsRef.current = clampedMs;
+    setTimeRemaining(Math.max(0, Math.ceil(clampedMs / 1000)));
+    setProgress(clamp01(clampedMs / safePhase));
   }, []);
+
+  const beginPhase = useCallback(
+    (nextState: "waiting" | "running", totalSeconds: number) => {
+      const totalMs = Math.max(1, Math.floor(totalSeconds) * 1000);
+      phaseTotalMsRef.current = totalMs;
+      remainingMsRef.current = totalMs;
+      endsAtRef.current = Date.now() + totalMs;
+      setState(nextState);
+      applySnapshot(totalMs, totalMs);
+    },
+    [applySnapshot],
+  );
+
+  const start = useCallback(
+    (durationInSeconds: number, delaySeconds = 0) => {
+      const normalized = normalizeDuration(durationInSeconds);
+      const delay = normalizeDelay(delaySeconds);
+      setDuration(normalized);
+      durationRef.current = normalized;
+
+      if (delay > 0) {
+        beginPhase("waiting", delay);
+      } else {
+        beginPhase("running", normalized);
+      }
+    },
+    [beginPhase],
+  );
 
   const startWithDelay = useCallback(
     (delaySeconds: number) => {
-      const normalized = normalizeDuration(duration);
+      const normalized = normalizeDuration(durationRef.current);
       const delay = normalizeDelay(delaySeconds);
       setDuration(normalized);
-      setTimeRemaining(delay > 0 ? delay : normalized);
-      setState(delay > 0 ? "waiting" : "running");
+      if (delay > 0) {
+        beginPhase("waiting", delay);
+      } else {
+        beginPhase("running", normalized);
+      }
     },
-    [duration],
+    [beginPhase],
   );
 
   const pause = useCallback(() => {
-    setState((previous) => (previous === "running" ? "paused" : previous));
-  }, []);
+    setState((previous) => {
+      if (previous !== "running") return previous;
+      if (endsAtRef.current !== null) {
+        remainingMsRef.current = Math.max(0, endsAtRef.current - Date.now());
+      }
+      endsAtRef.current = null;
+      applySnapshot(remainingMsRef.current, phaseTotalMsRef.current);
+      return "paused";
+    });
+  }, [applySnapshot]);
 
   const resume = useCallback(() => {
-    setState((previous) => (previous === "paused" ? "running" : previous));
-  }, []);
+    setState((previous) => {
+      if (previous !== "paused") return previous;
+      const remaining = Math.max(0, remainingMsRef.current);
+      endsAtRef.current = Date.now() + remaining;
+      applySnapshot(remaining, phaseTotalMsRef.current);
+      return "running";
+    });
+  }, [applySnapshot]);
 
   const reset = useCallback(() => {
-    clearTick();
+    stopRaf();
+    endsAtRef.current = null;
+    phaseTotalMsRef.current = normalizedInitial * 1000;
+    remainingMsRef.current = normalizedInitial * 1000;
     setState("idle");
     setDuration(normalizedInitial);
+    durationRef.current = normalizedInitial;
     setTimeRemaining(normalizedInitial);
-  }, [clearTick, normalizedInitial]);
+    setProgress(1);
+  }, [stopRaf, normalizedInitial]);
 
-  const addTime = useCallback((seconds: number) => {
-    const delta = Math.max(0, Math.floor(seconds));
-    if (delta === 0) return;
-
-    setTimeRemaining((previous) => {
+  const addTime = useCallback(
+    (seconds: number) => {
+      const delta = Math.max(0, Math.floor(seconds));
+      if (delta === 0) return;
       const current = stateRef.current;
-      if (current !== "running" && current !== "paused") return previous;
-      const next = clampDuration(previous + delta);
-      setDuration((d) => clampDuration(Math.max(d, next)));
-      return next;
-    });
-  }, []);
+      if (current !== "running" && current !== "paused") return;
+
+      const deltaMs = delta * 1000;
+      const baseRemaining =
+        current === "running" && endsAtRef.current !== null
+          ? Math.max(0, endsAtRef.current - Date.now())
+          : Math.max(0, remainingMsRef.current);
+      const nextRemaining = Math.min(5999_000, baseRemaining + deltaMs);
+      const nextDurationSec = clampDuration(
+        Math.max(durationRef.current, Math.ceil(nextRemaining / 1000)),
+      );
+
+      setDuration(nextDurationSec);
+      durationRef.current = nextDurationSec;
+      phaseTotalMsRef.current = nextDurationSec * 1000;
+      remainingMsRef.current = nextRemaining;
+
+      if (current === "running") {
+        endsAtRef.current = Date.now() + nextRemaining;
+      }
+      applySnapshot(nextRemaining, phaseTotalMsRef.current);
+    },
+    [applySnapshot],
+  );
 
   useEffect(() => {
     if (state !== "running" && state !== "waiting") {
-      clearTick();
+      stopRaf();
       return;
     }
 
-    intervalRef.current = setInterval(() => {
-      setTimeRemaining((previous) => {
-        const current = stateRef.current;
-        if (previous <= 1) {
-          if (current === "waiting") {
-            setState("running");
-            return durationRef.current;
-          }
-          setState("finished");
-          return 0;
+    const tick = () => {
+      const endsAt = endsAtRef.current;
+      if (endsAt === null) {
+        rafRef.current = requestAnimationFrame(tick);
+        return;
+      }
+
+      const remainingMs = endsAt - Date.now();
+      if (remainingMs <= 0) {
+        if (stateRef.current === "waiting") {
+          beginPhase("running", durationRef.current);
+          return;
         }
-        return previous - 1;
-      });
-    }, 1000);
+        endsAtRef.current = null;
+        remainingMsRef.current = 0;
+        setTimeRemaining(0);
+        setProgress(0);
+        setState("finished");
+        stopRaf();
+        return;
+      }
 
-    return clearTick;
-  }, [state, clearTick, duration]);
+      applySnapshot(remainingMs, phaseTotalMsRef.current);
+      rafRef.current = requestAnimationFrame(tick);
+    };
 
-  useEffect(() => clearTick, [clearTick]);
+    rafRef.current = requestAnimationFrame(tick);
+    return stopRaf;
+  }, [state, stopRaf, beginPhase, applySnapshot]);
 
   return {
     state,

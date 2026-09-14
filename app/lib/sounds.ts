@@ -47,8 +47,11 @@ export const playPauseSound = () => {
 };
 
 export const playFinishSound = () => {
-  playBeep(800, 200);
-  setTimeout(() => playBeep(1000, 200), 250);
+  // Same sine / ascending style as long start, resolving higher for “done”
+  playBeep(659, 180);
+  setTimeout(() => playBeep(784, 180), 200);
+  setTimeout(() => playBeep(1047, 220), 400);
+  setTimeout(() => playBeep(1319, 280), 640);
 };
 
 export const play5MinWarningSound = () => {
