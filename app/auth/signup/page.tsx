@@ -61,9 +61,21 @@ export default function SignupPage() {
             <span className="h-2 w-2 shrink-0 rounded-full bg-[#8BA2B5]" aria-hidden />
             HabitMeasure
           </Link>
-          <Link href="/" className="text-sm text-slate-500 transition hover:text-slate-800">
-            Home
-          </Link>
+          <div className="flex items-center gap-3 sm:gap-4">
+            <Link href="/" className="text-sm text-slate-500 transition hover:text-slate-800">
+              Home
+            </Link>
+            <Link
+              href="/lab"
+              className="flex items-center gap-1.5 rounded-lg px-2 py-1 text-sm text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"
+            >
+              <span aria-hidden>🧪</span>
+              <span>Lab</span>
+              <span className="rounded-full bg-amber-500/90 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-950">
+                Beta
+              </span>
+            </Link>
+          </div>
         </div>
       </header>
 

@@ -3,7 +3,8 @@
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { playPauseSound, playStartSound } from "@/app/lib/sounds";
-import { useIntervalTimer } from "@/lib/hooks/useIntervalTimer";
+import { useActivityIntervalTimer } from "@/lib/hooks/useActivityIntervalTimer";
+import { getIntervalActivities } from "@/lib/utils/intervalActivities";
 import type { TimerTemplate } from "@/lib/utils/timerHelpers";
 
 function formatClock(totalSeconds: number): string {
@@ -20,30 +21,37 @@ type TimerCardIntervalRunningProps = {
   template: TimerTemplate;
 };
 
-/** Inline interval (work/rest rounds) with ring + one-tap toggle (View mode compact cards). */
+/** Inline interval with ring + one-tap toggle (View mode compact cards). */
 export function TimerCardIntervalRunning({ template }: TimerCardIntervalRunningProps) {
   const router = useRouter();
-  const work = Math.max(1, Math.floor(Number(template.work_seconds)));
-  const rest = Math.max(1, Math.floor(Number(template.rest_seconds)));
-  const rounds = Math.max(1, Math.floor(Number(template.rounds)));
+  const activities = useMemo(() => getIntervalActivities(template), [template]);
 
-  const { runState, phase, timeRemaining, displayRound, progress, start, pause, resume, stop } =
-    useIntervalTimer(work, rest, rounds);
+  const {
+    timerState,
+    currentActivityIndex,
+    timeRemaining,
+    phaseProgress,
+    start,
+    pause,
+    resume,
+    stop,
+  } = useActivityIntervalTimer(activities);
 
+  const currentActivity = activities[currentActivityIndex];
   const circumference = useMemo(() => 2 * Math.PI * RING_RADIUS, []);
-  const strokeOffset = circumference * (1 - progress);
+  const strokeOffset = circumference * (1 - phaseProgress);
 
   const handleTap = () => {
-    if (runState === "idle") {
+    if (timerState === "idle") {
       playStartSound();
       start();
-    } else if (runState === "running") {
+    } else if (timerState === "running") {
       playPauseSound();
       pause();
-    } else if (runState === "paused") {
+    } else if (timerState === "paused") {
       playStartSound();
       resume();
-    } else if (runState === "finished") {
+    } else if (timerState === "finished") {
       playStartSound();
       start();
     }
@@ -57,55 +65,49 @@ export function TimerCardIntervalRunning({ template }: TimerCardIntervalRunningP
   };
 
   const ariaLabel =
-    runState === "idle"
+    timerState === "idle"
       ? `Start interval for ${template.template_name}`
-      : runState === "running"
+      : timerState === "running"
         ? `Pause interval for ${template.template_name}`
-        : runState === "paused"
+        : timerState === "paused"
           ? `Resume interval for ${template.template_name}`
           : `Restart interval for ${template.template_name}`;
 
   const progressStroke =
-    runState === "paused"
+    timerState === "paused"
       ? "#fbbf24"
-      : runState === "finished"
-        ? "#10b981"
-        : phase === "work"
-          ? "#ef4444"
-          : "#22c55e";
+      : timerState === "finished"
+        ? "#2196F3"
+        : currentActivity?.color ?? "#E74C3C";
 
   const borderClass =
-    runState === "finished"
+    timerState === "finished"
       ? "border-emerald-500"
-      : runState === "paused"
+      : timerState === "paused"
         ? "border-amber-400"
-        : runState === "running" && phase === "work"
+        : timerState === "running"
           ? "border-red-400/70"
-          : runState === "running" && phase === "rest"
-            ? "border-emerald-400"
-            : "border-slate-600";
+          : "border-slate-600";
 
   const hint =
-    runState === "idle"
+    timerState === "idle"
       ? "Tap to start"
-      : runState === "running"
+      : timerState === "running"
         ? "Tap to pause"
-        : runState === "paused"
+        : timerState === "paused"
           ? "Tap to resume"
           : "Tap to restart";
 
   const timeClass =
-    runState === "running" && phase === "work"
+    timerState === "running"
       ? "text-red-400 motion-safe:animate-pulse"
-      : runState === "running" && phase === "rest"
-        ? "text-emerald-400 motion-safe:animate-pulse"
-        : runState === "paused"
-          ? "text-amber-200"
-          : runState === "finished"
-            ? "text-emerald-400"
-            : "text-slate-100";
+      : timerState === "paused"
+        ? "text-amber-200"
+        : timerState === "finished"
+          ? "text-emerald-400"
+          : "text-slate-100";
 
-  const roundLabel = `Round ${Math.min(displayRound, rounds)} / ${rounds}`;
+  const roundLabel = `Step ${Math.min(currentActivityIndex + 1, activities.length)} / ${activities.length}`;
 
   return (
     <div className="space-y-3" onClick={(event) => event.stopPropagation()}>
@@ -131,19 +133,19 @@ export function TimerCardIntervalRunning({ template }: TimerCardIntervalRunningP
               className="stroke-slate-700"
               strokeWidth="8"
             />
-            {runState === "finished" ? (
+            {timerState === "finished" ? (
               <circle
                 cx={CENTER}
                 cy={CENTER}
                 r={RING_RADIUS}
                 fill="none"
-                stroke="#10b981"
+                stroke={progressStroke}
                 strokeWidth="8"
                 strokeLinecap="round"
                 strokeDasharray={circumference}
                 strokeDashoffset={0}
               />
-            ) : runState === "running" || runState === "paused" ? (
+            ) : timerState === "running" || timerState === "paused" || timerState === "idle" ? (
               <circle
                 cx={CENTER}
                 cy={CENTER}
@@ -158,49 +160,33 @@ export function TimerCardIntervalRunning({ template }: TimerCardIntervalRunningP
               />
             ) : null}
           </svg>
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5">
-            {runState === "finished" ? (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5 px-2">
+            {timerState === "finished" ? (
               <span className="text-xs font-semibold uppercase tracking-wide text-emerald-400">Done</span>
             ) : null}
             <span className={`font-mono text-2xl font-bold tabular-nums ${timeClass}`}>
               {formatClock(timeRemaining)}
             </span>
-            {runState !== "finished" && runState !== "idle" ? (
-              <span
-                className={`text-[10px] font-bold uppercase tracking-wider ${
-                  phase === "work" ? "text-red-400" : "text-emerald-400"
-                }`}
-              >
-                {phase === "work" ? "Work" : "Rest"}
+            {timerState !== "finished" && timerState !== "idle" && currentActivity ? (
+              <span className="line-clamp-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                {currentActivity.name}
               </span>
             ) : null}
           </div>
         </div>
 
-        {runState === "finished" ? (
-          <p className="mt-2 text-xs font-medium text-emerald-400/90">{rounds} rounds complete</p>
+        {timerState === "finished" ? (
+          <p className="mt-2 text-xs font-medium text-emerald-400/90">{activities.length} activities complete</p>
         ) : null}
 
-        <p className="mt-2 min-w-0 break-words text-balance text-xs text-slate-400 [overflow-wrap:anywhere]">{template.template_name}</p>
-        <p className="text-xs text-slate-500">{roundLabel}</p>
-        <p
-          className={`text-xs font-medium ${
-            runState === "running"
-              ? phase === "work"
-                ? "text-red-400/90"
-                : "text-emerald-400/90"
-              : runState === "paused"
-                ? "text-amber-400/90"
-                : runState === "finished"
-                  ? "text-emerald-400/90"
-                  : "text-slate-500"
-          }`}
-        >
-          {hint}
+        <p className="mt-2 min-w-0 break-words text-balance text-xs text-slate-400 [overflow-wrap:anywhere]">
+          {template.template_name}
         </p>
+        <p className="text-xs text-slate-500">{roundLabel}</p>
+        <p className="text-xs font-medium text-slate-500">{hint}</p>
       </div>
 
-      {(runState === "running" || runState === "paused") && (
+      {(timerState === "running" || timerState === "paused") && (
         <button
           type="button"
           onClick={(event) => {
@@ -215,7 +201,7 @@ export function TimerCardIntervalRunning({ template }: TimerCardIntervalRunningP
         </button>
       )}
 
-      {runState === "idle" ? (
+      {timerState === "idle" ? (
         <button
           type="button"
           onClick={(event) => {

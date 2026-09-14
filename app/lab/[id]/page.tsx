@@ -3,7 +3,8 @@ import { redirect } from "next/navigation";
 import { IntervalTimerCountdown } from "@/app/components/lab/IntervalTimerCountdown";
 import { TimerDisplay } from "@/components/lab/TimerDisplay";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
-import type { TimerTemplate } from "@/lib/utils/timerHelpers";
+import { getIntervalActivities } from "@/lib/utils/intervalActivities";
+import { hasValidIntervalConfig, type TimerTemplate } from "@/lib/utils/timerHelpers";
 
 type LabTimerPageProps = {
   params: Promise<{ id: string }>;
@@ -38,11 +39,8 @@ export default async function LabTimerPage({ params }: LabTimerPageProps) {
     redirect(`/lab/countdown/${id}`);
   }
 
-  const work = Number(timer.work_seconds);
-  const rest = Number(timer.rest_seconds);
-  const rounds = Number(timer.rounds);
-  const isInterval =
-    timer.timer_type === "interval" && Number.isFinite(work) && work > 0 && Number.isFinite(rest) && rest > 0 && Number.isFinite(rounds) && rounds > 0;
+  const activities = getIntervalActivities(timer);
+  const isInterval = timer.timer_type === "interval" && hasValidIntervalConfig(timer);
 
   const heading = timer.timer_type;
 
@@ -62,9 +60,7 @@ export default async function LabTimerPage({ params }: LabTimerPageProps) {
         <IntervalTimerCountdown
           templateId={timer.id}
           templateName={timer.template_name}
-          workSeconds={work}
-          restSeconds={rest}
-          rounds={rounds}
+          activities={activities}
         />
       ) : (
         <TimerDisplay durationSeconds={timer.duration_seconds} timerName={timer.template_name} />

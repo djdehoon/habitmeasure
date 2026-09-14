@@ -1,24 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { formatIntervalSummary, type TimerTemplate, type TimerType } from "@/lib/utils/timerHelpers";
+import {
+  formatIntervalSummary,
+  hasValidIntervalConfig,
+  type TimerTemplate,
+  type TimerType,
+} from "@/lib/utils/timerHelpers";
 import { TimerCardIntervalRunning } from "@/app/components/lab/TimerCardIntervalRunning";
 import { TimerCardRunning } from "@/app/components/lab/TimerCardRunning";
-
-function hasValidIntervalFields(t: TimerTemplate): boolean {
-  if (t.timer_type !== "interval") return false;
-  const work = Number(t.work_seconds);
-  const rest = Number(t.rest_seconds);
-  const rounds = Number(t.rounds);
-  return (
-    Number.isFinite(work) &&
-    work > 0 &&
-    Number.isFinite(rest) &&
-    rest > 0 &&
-    Number.isFinite(rounds) &&
-    rounds > 0
-  );
-}
 
 const TYPE_LABEL: Record<TimerType, string> = {
   countdown: "Countdown",
@@ -57,7 +47,7 @@ export function TimerCardCompact({ template }: { template: TimerTemplate }) {
     );
   }
 
-  if (hasValidIntervalFields(template)) {
+  if (hasValidIntervalConfig(template)) {
     return (
       <div className="min-w-0 rounded-xl border border-white/10 bg-slate-900/80 p-5 text-slate-100 transition hover:border-emerald-400/40">
         <div className="mb-2 text-3xl leading-none" aria-hidden>

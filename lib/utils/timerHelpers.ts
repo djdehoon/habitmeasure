@@ -1,3 +1,22 @@
+import {
+  computeActivitiesDurationSeconds,
+  createDefaultActivity,
+  getIntervalActivities,
+  type IntervalActivity,
+  validateIntervalActivities,
+} from "@/lib/utils/intervalActivities";
+
+export type { IntervalActivity, IntervalActivityType } from "@/lib/utils/intervalActivities";
+export {
+  calculateActivityBlocks,
+  computeActivitiesDurationSeconds,
+  createDefaultActivity,
+  createIntervalActivityId,
+  formatActivitiesTotalDuration,
+  getIntervalActivities,
+  validateIntervalActivities,
+} from "@/lib/utils/intervalActivities";
+
 export type TimerType = "countdown" | "interval";
 
 export type AddTimeButtonValue = "5s" | "10s" | "30s" | "1m";
@@ -17,6 +36,7 @@ export type TimerTemplate = {
   work_seconds: number | null;
   rest_seconds: number | null;
   rounds: number | null;
+  activities: IntervalActivity[] | unknown;
   created_at: string;
   updated_at: string;
 };
@@ -46,18 +66,14 @@ export type CountdownTemplateFormErrors = Partial<{
 
 export type IntervalTemplateFormData = {
   templateName: string;
-  workSeconds: number;
-  restSeconds: number;
-  rounds: number;
+  activities: IntervalActivity[];
   color: string;
   icon: string;
 };
 
 export type IntervalTemplateFormErrors = Partial<{
   templateName: string;
-  workSeconds: string;
-  restSeconds: string;
-  rounds: string;
+  activities: string;
 }>;
 
 export const TIMER_COLORS = [
@@ -123,9 +139,7 @@ export const COUNTDOWN_DEFAULTS: CountdownTemplateFormData = {
 
 export const INTERVAL_DEFAULTS: IntervalTemplateFormData = {
   templateName: "",
-  workSeconds: 20,
-  restSeconds: 10,
-  rounds: 8,
+  activities: [createDefaultActivity({ name: "Focus", duration: 20, type: "work" })],
   color: "#E74C3C",
   icon: "🏋️",
 };
@@ -173,11 +187,11 @@ export function computeIntervalDurationSeconds(workSeconds: number, restSeconds:
 
 export function formatIntervalSummary(template: TimerTemplate): string {
   if (template.timer_type !== "interval") return formatDuration(template.duration_seconds);
-  const w = template.work_seconds ?? 0;
-  const rs = template.rest_seconds ?? 0;
-  const n = template.rounds ?? 0;
-  if (w <= 0 || rs <= 0 || n <= 0) return formatDuration(template.duration_seconds);
-  return `${n}× ${w}s / ${rs}s`;
+  const activities = getIntervalActivities(template);
+  if (activities.length > 0) {
+    return `${activities.length} activities · ${formatDuration(computeActivitiesDurationSeconds(activities))}`;
+  }
+  return formatDuration(template.duration_seconds);
 }
 
 export function hasValidIntervalFields(template: TimerTemplate): boolean {
@@ -195,11 +209,17 @@ export function hasValidIntervalFields(template: TimerTemplate): boolean {
   );
 }
 
+export function hasValidIntervalConfig(template: TimerTemplate): boolean {
+  if (template.timer_type !== "interval") return false;
+  const activities = getIntervalActivities(template);
+  return activities.length > 0 && validateIntervalActivities(activities) === null;
+}
+
 export function getTimerFullscreenHref(template: TimerTemplate): string | null {
   if (template.timer_type === "countdown") {
     return `/lab/countdown/${template.id}`;
   }
-  if (template.timer_type === "interval" && hasValidIntervalFields(template)) {
+  if (template.timer_type === "interval" && hasValidIntervalConfig(template)) {
     return `/lab/${template.id}`;
   }
   return null;
@@ -235,38 +255,39 @@ export function mapFormDataToPayload(formData: CountdownTemplateFormData, userId
     work_seconds: null,
     rest_seconds: null,
     rounds: null,
+    activities: [],
   };
 }
 
 export function mapTemplateToIntervalFormData(template: TimerTemplate): IntervalTemplateFormData {
+  const activities = getIntervalActivities(template);
   return {
     templateName: template.template_name,
-    workSeconds: template.work_seconds ?? INTERVAL_DEFAULTS.workSeconds,
-    restSeconds: template.rest_seconds ?? INTERVAL_DEFAULTS.restSeconds,
-    rounds: template.rounds ?? INTERVAL_DEFAULTS.rounds,
+    activities: activities.length > 0 ? activities : INTERVAL_DEFAULTS.activities,
     color: template.color ?? INTERVAL_DEFAULTS.color,
     icon: template.icon ?? INTERVAL_DEFAULTS.icon,
   };
 }
 
 export function mapIntervalFormDataToUpsertFields(formData: IntervalTemplateFormData): TimerTemplateUpsertFields {
-  const work = Math.max(1, Math.floor(Number(formData.workSeconds)));
-  const rest = Math.max(1, Math.floor(Number(formData.restSeconds)));
-  const rounds = Math.max(1, Math.floor(Number(formData.rounds)));
-  const duration_seconds = computeIntervalDurationSeconds(work, rest, rounds);
+  const activities = formData.activities;
+  const duration_seconds = computeActivitiesDurationSeconds(activities);
+  const firstWork = activities.find((a) => a.type === "work") ?? activities[0];
+  const firstRest = activities.find((a) => a.type === "rest");
   return {
     template_name: formData.templateName.trim(),
     timer_type: "interval",
     duration_seconds,
-    color: formData.color || INTERVAL_DEFAULTS.color,
+    color: formData.color || firstWork?.color || INTERVAL_DEFAULTS.color,
     icon: formData.icon.trim() || INTERVAL_DEFAULTS.icon,
     autocompletion: true,
     min_delay_seconds: 5,
     add_time_buttons: ["5s"],
     notes: null,
-    work_seconds: work,
-    rest_seconds: rest,
-    rounds,
+    work_seconds: firstWork ? Math.max(1, Math.floor(firstWork.duration)) : null,
+    rest_seconds: firstRest ? Math.max(1, Math.floor(firstRest.duration)) : null,
+    rounds: Math.max(1, activities.filter((a) => a.type === "work").length),
+    activities,
   };
 }
 
@@ -327,29 +348,9 @@ export function validateIntervalTemplateForm(formData: IntervalTemplateFormData)
     errors.templateName = "Template name must be at most 50 characters.";
   }
 
-  const work = Math.floor(Number(formData.workSeconds));
-  const rest = Math.floor(Number(formData.restSeconds));
-  const rounds = Math.floor(Number(formData.rounds));
-
-  if (!Number.isFinite(work) || work < 1) {
-    errors.workSeconds = "Focus phase must be at least 1 second.";
-  }
-
-  if (!Number.isFinite(rest) || rest < 1) {
-    errors.restSeconds = "Rest must be at least 1 second.";
-  }
-
-  if (!Number.isFinite(rounds) || rounds < 1) {
-    errors.rounds = "Rounds must be at least 1.";
-  } else if (rounds > 999) {
-    errors.rounds = "At most 999 rounds.";
-  }
-
-  if (!errors.workSeconds && !errors.restSeconds && !errors.rounds) {
-    const total = computeIntervalDurationSeconds(work, rest, rounds);
-    if (total > 5999) {
-      errors.rounds = "Total duration must not exceed 99:59.";
-    }
+  const activitiesError = validateIntervalActivities(formData.activities);
+  if (activitiesError) {
+    errors.activities = activitiesError;
   }
 
   return errors;

@@ -19,6 +19,7 @@
   --font-sans: var(--font-inter);
   --font-heading: var(--font-plus-jakarta-sans);
   --animate-pulse-ring: pulse-ring 2s ease-in-out infinite;
+  --animate-bounce-ring: bounce-ring 0.5s ease-in-out;
 }
 
 body {
@@ -165,9 +166,23 @@ html {
   }
 }
 
+@keyframes bounce-ring {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
 @layer utilities {
   .animate-pulse-ring {
     animation: var(--animate-pulse-ring);
+  }
+
+  .animate-bounce-ring {
+    animation: var(--animate-bounce-ring);
   }
 }
 

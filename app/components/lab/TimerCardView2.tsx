@@ -4,28 +4,14 @@ import { useEffect, useMemo, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { playFinishSound, playPauseSound, playStartSound } from "@/app/lib/sounds";
 import { useCountdown } from "@/lib/hooks/useCountdown";
-import { useIntervalTimer } from "@/lib/hooks/useIntervalTimer";
-import type { TimerTemplate } from "@/lib/utils/timerHelpers";
+import { useActivityIntervalTimer } from "@/lib/hooks/useActivityIntervalTimer";
+import { getIntervalActivities } from "@/lib/utils/intervalActivities";
+import { hasValidIntervalConfig, type TimerTemplate } from "@/lib/utils/timerHelpers";
 
 function formatClock(totalSeconds: number): string {
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
   return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-}
-
-function hasValidIntervalFields(t: TimerTemplate): boolean {
-  if (t.timer_type !== "interval") return false;
-  const work = Number(t.work_seconds);
-  const rest = Number(t.rest_seconds);
-  const rounds = Number(t.rounds);
-  return (
-    Number.isFinite(work) &&
-    work > 0 &&
-    Number.isFinite(rest) &&
-    rest > 0 &&
-    Number.isFinite(rounds) &&
-    rounds > 0
-  );
 }
 
 const RING_RADIUS = 56;
@@ -63,7 +49,7 @@ export function TimerCardView2({ template }: TimerCardView2Props) {
   if (template.timer_type === "countdown") {
     return <TimerCardView2Countdown template={template} />;
   }
-  if (hasValidIntervalFields(template)) {
+  if (hasValidIntervalConfig(template)) {
     return <TimerCardView2Interval template={template} />;
   }
   return <TimerCardView2Fallback template={template} />;
@@ -297,16 +283,22 @@ function TimerCardView2Countdown({ template }: { template: TimerTemplate }) {
 }
 
 function TimerCardView2Interval({ template }: { template: TimerTemplate }) {
-  const routineColor = template.color?.trim() || "#00E5C0";
-  const work = Math.max(1, Math.floor(Number(template.work_seconds)));
-  const rest = Math.max(1, Math.floor(Number(template.rest_seconds)));
-  const rounds = Math.max(1, Math.floor(Number(template.rounds)));
+  const activities = useMemo(() => getIntervalActivities(template), [template]);
+  const {
+    timerState: runState,
+    currentActivityIndex,
+    timeRemaining,
+    phaseProgress,
+    start,
+    pause,
+    resume,
+  } = useActivityIntervalTimer(activities);
 
-  const { runState, phase, timeRemaining, displayRound, progress, start, pause, resume } =
-    useIntervalTimer(work, rest, rounds);
+  const currentActivity = activities[currentActivityIndex];
+  const routineColor = currentActivity?.color ?? (template.color?.trim() || "#00E5C0");
 
   const circumference = useMemo(() => 2 * Math.PI * RING_RADIUS, []);
-  const strokeOffset = circumference * (1 - progress);
+  const strokeOffset = circumference * (1 - phaseProgress);
 
   const handleTap = () => {
     if (runState === "idle") {
@@ -343,9 +335,9 @@ function TimerCardView2Interval({ template }: { template: TimerTemplate }) {
   const progressStroke = runState === "finished" ? "#10b981" : routineColor;
 
   const ringProgressMode: RingProgressMode =
-    runState === "idle" ? "full" : runState === "finished" ? "none" : "partial";
+    runState === "finished" ? "none" : "partial";
 
-  const roundLabel = `${Math.min(displayRound, rounds)}/${rounds}`;
+  const roundLabel = `${Math.min(currentActivityIndex + 1, activities.length)}/${activities.length}`;
 
   const upperSlot =
     runState === "paused" ? (
@@ -358,11 +350,7 @@ function TimerCardView2Interval({ template }: { template: TimerTemplate }) {
     ) : (
       <span
         className={`${VIEW2_TIME_TEXT} ${
-          runState === "running" && phase === "work"
-            ? "text-red-400 motion-safe:animate-pulse"
-            : runState === "running" && phase === "rest"
-              ? "text-emerald-400 motion-safe:animate-pulse"
-              : "text-slate-100"
+          runState === "running" ? "text-red-400 motion-safe:animate-pulse" : "text-slate-100"
         }`}
       >
         {formatClock(timeRemaining)}
@@ -371,15 +359,15 @@ function TimerCardView2Interval({ template }: { template: TimerTemplate }) {
 
   const lowerExtra = (
     <>
-      {runState === "running" ? (
-        <p
-          className={`mt-0.5 max-w-full min-w-0 text-center text-xs font-normal opacity-70 sm:mt-2 ${phase === "work" ? "text-red-400" : "text-emerald-400"}`}
-        >
-          {phase === "work" ? "Work" : "Rest"} · {roundLabel}
+      {runState === "running" && currentActivity ? (
+        <p className="mt-0.5 max-w-full min-w-0 text-center text-xs font-normal text-red-400 opacity-70 sm:mt-2">
+          {currentActivity.name} · {roundLabel}
         </p>
       ) : null}
       {runState === "finished" ? (
-        <p className="mt-0.5 max-w-full min-w-0 text-center text-xs font-normal text-emerald-400/90 sm:mt-2">{rounds} rounds complete</p>
+        <p className="mt-0.5 max-w-full min-w-0 text-center text-xs font-normal text-emerald-400/90 sm:mt-2">
+          {activities.length} activities complete
+        </p>
       ) : null}
     </>
   );

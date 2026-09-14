@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
@@ -7,6 +8,7 @@ export function Nav() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const isHome = pathname === "/";
+  const labActive = pathname === "/lab" || pathname.startsWith("/lab/");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -28,17 +30,34 @@ export function Nav() {
   const linkClass = isHome
     ? "text-slate-300 hover:text-white"
     : "text-slate-500 hover:text-slate-800";
+  const labActiveClass = isHome
+    ? "bg-white/10 text-white"
+    : "bg-slate-100 text-slate-800";
   const ctaClass = isHome
     ? "shrink-0 rounded-xl bg-emerald-400 px-5 py-2 text-sm font-bold text-slate-950 shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-300"
     : "btn-primary shrink-0 px-5 py-2 text-sm";
 
+  const labLinkClass = `flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm transition ${
+    labActive ? labActiveClass : linkClass
+  }`;
+
+  const labLink = (
+    <Link href="/lab" className={labLinkClass}>
+      <span aria-hidden>🧪</span>
+      <span>Lab</span>
+      <span className="rounded-full bg-amber-500/90 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-950">
+        Beta
+      </span>
+    </Link>
+  );
+
   return (
     <header className={`sticky top-0 z-50 border-b ${headerClass}`}>
-      <nav className="container-shell flex h-16 items-center justify-between">
-        <a href="#" className={`flex items-center gap-2 heading-font font-bold ${logoClass}`}>
+      <nav className="container-shell flex h-16 items-center justify-between gap-3">
+        <Link href="/" className={`flex items-center gap-2 heading-font font-bold ${logoClass}`}>
           <span className={`h-2 w-2 rounded-full ${dotClass}`} />
           HabitMeasure
-        </a>
+        </Link>
         <div className="hidden items-center gap-6 text-sm md:flex">
           <a href="#features" className={linkClass}>
             Features
@@ -49,10 +68,14 @@ export function Nav() {
           <a href="#prijzen" className={linkClass}>
             Pricing
           </a>
+          {labLink}
         </div>
-        <a href="#waitlist" className={ctaClass}>
-          Join the waitlist →
-        </a>
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          <div className="md:hidden">{labLink}</div>
+          <a href="#waitlist" className={ctaClass}>
+            Join the waitlist →
+          </a>
+        </div>
       </nav>
     </header>
   );

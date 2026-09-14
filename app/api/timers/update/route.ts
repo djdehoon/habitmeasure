@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
-import { computeIntervalDurationSeconds, normalizeAddTimeButtons } from "@/lib/utils/timerHelpers";
+import { parseIntervalPayloadFromBody } from "@/lib/utils/parseIntervalApiBody";
+import { normalizeAddTimeButtons } from "@/lib/utils/timerHelpers";
 
 type UpdateTimerBody = {
   templateId?: string;
@@ -25,6 +26,7 @@ type UpdateTimerBody = {
   rest_seconds?: number;
   restSeconds?: number;
   rounds?: number;
+  activities?: unknown;
 };
 
 export async function PUT(request: Request) {
@@ -59,25 +61,12 @@ export async function PUT(request: Request) {
   }
 
   if (timerType === "interval") {
-    const work = Math.floor(Number(body.work_seconds ?? body.workSeconds ?? 0));
-    const rest = Math.floor(Number(body.rest_seconds ?? body.restSeconds ?? 0));
-    const rounds = Math.floor(Number(body.rounds ?? 0));
-
-    if (!Number.isFinite(work) || work < 1) {
-      return NextResponse.json({ error: "work_seconds must be at least 1." }, { status: 400 });
-    }
-    if (!Number.isFinite(rest) || rest < 1) {
-      return NextResponse.json({ error: "rest_seconds must be at least 1." }, { status: 400 });
-    }
-    if (!Number.isFinite(rounds) || rounds < 1 || rounds > 999) {
-      return NextResponse.json({ error: "rounds must be between 1 and 999." }, { status: 400 });
+    const parsed = parseIntervalPayloadFromBody(body as Record<string, unknown>);
+    if (!parsed.ok) {
+      return NextResponse.json({ error: parsed.error }, { status: 400 });
     }
 
-    const durationSeconds = computeIntervalDurationSeconds(work, rest, rounds);
-    if (durationSeconds < 1 || durationSeconds > 5999) {
-      return NextResponse.json({ error: "Total duration must be between 1 and 5999 seconds." }, { status: 400 });
-    }
-
+    const { duration_seconds, activities, work_seconds, rest_seconds, rounds } = parsed.payload;
     const icon = body.icon ?? "⏱️";
     const intervalColor = body.color ?? "#E74C3C";
     const autocompletion = body.autocompletion ?? true;
@@ -89,16 +78,17 @@ export async function PUT(request: Request) {
       .update({
         template_name: name,
         timer_type: "interval",
-        duration_seconds: durationSeconds,
+        duration_seconds,
         color: intervalColor,
         icon,
         autocompletion,
         min_delay_seconds: minDelaySeconds,
         add_time_buttons: addTimeButtons,
         notes: typeof body.notes === "string" ? (body.notes.trim() || null) : null,
-        work_seconds: work,
-        rest_seconds: rest,
+        work_seconds,
+        rest_seconds,
         rounds,
+        activities,
       })
       .eq("id", templateId)
       .eq("user_id", user.id)
@@ -146,6 +136,7 @@ export async function PUT(request: Request) {
       work_seconds: null,
       rest_seconds: null,
       rounds: null,
+      activities: [],
     })
     .eq("id", templateId)
     .eq("user_id", user.id)

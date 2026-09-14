@@ -1,51 +1,44 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { IntervalTimerCircle } from "@/app/components/lab/IntervalTimerCircle";
 import { playPauseSound } from "@/app/lib/sounds";
 import { createTimerSession, updateTimerSession } from "@/lib/hooks/useTimerSessions";
-import { useIntervalTimer } from "@/lib/hooks/useIntervalTimer";
-
-const WORK_COLOR = "#E74C3C";
-const REST_COLOR = "#27AE60";
+import { useActivityIntervalTimer } from "@/lib/hooks/useActivityIntervalTimer";
+import type { IntervalActivity } from "@/lib/utils/intervalActivities";
 
 type IntervalTimerCountdownProps = {
   templateId: string;
   templateName: string;
-  workSeconds: number;
-  restSeconds: number;
-  rounds: number;
+  activities: IntervalActivity[];
 };
-
-function formatClock(totalSeconds: number): string {
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-}
 
 export function IntervalTimerCountdown({
   templateId,
   templateName,
-  workSeconds,
-  restSeconds,
-  rounds,
+  activities,
 }: IntervalTimerCountdownProps) {
-  const { runState, phase, timeRemaining, displayRound, progress, start, pause, resume, stop } =
-    useIntervalTimer(workSeconds, restSeconds, rounds);
+  const {
+    timerState,
+    currentActivityIndex,
+    elapsedTime,
+    globalElapsedTime,
+    start,
+    pause,
+    resume,
+    stop,
+  } = useActivityIntervalTimer(activities);
 
   const sessionIdRef = useRef<string | null>(null);
   const terminalSentRef = useRef(false);
   const [sessionError, setSessionError] = useState<string | null>(null);
   const [isStarting, setIsStarting] = useState(false);
 
-  const ringColor = phase === "work" ? WORK_COLOR : REST_COLOR;
-  const phaseLabel = phase === "work" ? "FOCUS" : "REST";
-
-  const radius = 80;
-  const circumference = useMemo(() => 2 * Math.PI * radius, []);
-  const strokeOffset = circumference * (1 - progress);
+  const currentActivity = activities[currentActivityIndex];
+  const accentColor = currentActivity?.color ?? "#E74C3C";
 
   useEffect(() => {
-    if (runState !== "finished" || !sessionIdRef.current || terminalSentRef.current) {
+    if (timerState !== "finished" || !sessionIdRef.current || terminalSentRef.current) {
       return;
     }
 
@@ -63,7 +56,7 @@ export function IntervalTimerCountdown({
     return () => {
       cancelled = true;
     };
-  }, [runState]);
+  }, [timerState]);
 
   const handleStart = useCallback(async () => {
     setSessionError(null);
@@ -100,7 +93,7 @@ export function IntervalTimerCountdown({
   }, [resume]);
 
   const handleStopOrDismiss = useCallback(async () => {
-    if (runState !== "finished" && sessionIdRef.current && !terminalSentRef.current) {
+    if (timerState !== "finished" && sessionIdRef.current && !terminalSentRef.current) {
       const { error } = await updateTimerSession(sessionIdRef.current, "cancelled");
       if (error) setSessionError(error);
       terminalSentRef.current = true;
@@ -108,7 +101,7 @@ export function IntervalTimerCountdown({
     stop();
     sessionIdRef.current = null;
     terminalSentRef.current = false;
-  }, [runState, stop]);
+  }, [timerState, stop]);
 
   return (
     <section className="relative flex min-h-[calc(100vh-5rem)] flex-col items-center justify-center bg-transparent px-4 py-4 text-slate-100 md:py-6">
@@ -121,42 +114,20 @@ export function IntervalTimerCountdown({
       ) : null}
 
       <p className="mt-2 text-sm font-medium text-slate-400 md:text-base">
-        Round {Math.min(displayRound, rounds)} / {rounds}
+        Activity {Math.min(currentActivityIndex + 1, activities.length)} / {activities.length}
       </p>
 
-      <p
-        className="mt-3 text-2xl font-black tracking-wide md:text-3xl"
-        style={{ color: ringColor }}
-        aria-live="polite"
-      >
-        {phaseLabel}
-      </p>
-
-      <div className="relative mt-2 h-64 w-64 md:mt-3 md:h-72 md:w-72">
-        <svg className="h-full w-full -rotate-90" viewBox="0 0 200 200" aria-hidden>
-          <circle cx="100" cy="100" r={radius} fill="none" stroke="rgb(30 41 59)" strokeWidth="8" />
-          <circle
-            cx="100"
-            cy="100"
-            r={radius}
-            fill="none"
-            stroke={ringColor}
-            strokeWidth="8"
-            strokeDasharray={circumference}
-            strokeDashoffset={strokeOffset}
-            strokeLinecap="round"
-            className="transition-[stroke-dashoffset] duration-1000 ease-linear"
-          />
-        </svg>
-
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="heading-font text-5xl font-black text-slate-100 md:text-6xl">
-            {formatClock(timeRemaining)}
-          </span>
-        </div>
+      <div className="mt-4 w-full max-w-md">
+        <IntervalTimerCircle
+          activities={activities}
+          currentActivityIndex={currentActivityIndex}
+          elapsedTime={elapsedTime}
+          globalElapsedTime={globalElapsedTime}
+          timerState={timerState}
+        />
       </div>
 
-      {runState === "finished" ? (
+      {timerState === "finished" ? (
         <div
           className="fixed inset-0 z-40 flex items-center justify-center bg-black/45 p-4"
           role="dialog"
@@ -179,35 +150,35 @@ export function IntervalTimerCountdown({
       ) : null}
 
       <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-        {runState === "idle" ? (
+        {timerState === "idle" ? (
           <button
             type="button"
             onClick={() => void handleStart()}
-            disabled={isStarting}
+            disabled={isStarting || activities.length === 0}
             className="rounded-full px-8 py-3 text-base font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-            style={{ backgroundColor: WORK_COLOR }}
+            style={{ backgroundColor: accentColor }}
           >
             {isStarting ? "Starting…" : "▶ Start"}
           </button>
         ) : null}
 
-        {runState === "running" ? (
+        {timerState === "running" ? (
           <button
             type="button"
             onClick={() => void handlePause()}
             className="rounded-full px-8 py-3 text-base font-semibold text-white transition hover:opacity-90"
-            style={{ backgroundColor: ringColor }}
+            style={{ backgroundColor: accentColor }}
           >
             ⏸ Pause
           </button>
         ) : null}
 
-        {runState === "paused" ? (
+        {timerState === "paused" ? (
           <button
             type="button"
             onClick={() => void handleResume()}
             className="rounded-full px-8 py-3 text-base font-semibold text-white transition hover:opacity-90"
-            style={{ backgroundColor: ringColor }}
+            style={{ backgroundColor: accentColor }}
           >
             ▶ Resume
           </button>

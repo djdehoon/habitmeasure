@@ -1,6 +1,6 @@
 "use client";
 
-import { ColorPicker } from "@/components/lab/ColorPicker";
+import { IntervalActivityEditor } from "@/app/components/lab/IntervalActivityEditor";
 import { IconPicker } from "@/components/lab/IconPicker";
 import type { IntervalTemplateFormData, IntervalTemplateFormErrors } from "@/lib/utils/timerHelpers";
 
@@ -41,60 +41,20 @@ export function IntervalTimerSetup({
           {errors.templateName ? <p className="mt-1 text-xs text-red-300">{errors.templateName}</p> : null}
         </label>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <label className="block">
-            <span className="mb-1 block text-sm text-slate-400">Focus (seconds) *</span>
-            <input
-              type="number"
-              min={1}
-              step={1}
-              value={formData.workSeconds}
-              onChange={(event) => onChange({ workSeconds: Number(event.target.value) })}
-              className="w-full rounded-md border border-white/15 bg-slate-950 px-3 py-2 text-slate-100"
-            />
-            {errors.workSeconds ? <p className="mt-1 text-xs text-red-300">{errors.workSeconds}</p> : null}
-          </label>
-
-          <label className="block">
-            <span className="mb-1 block text-sm text-slate-400">Rest (seconds) *</span>
-            <input
-              type="number"
-              min={1}
-              step={1}
-              value={formData.restSeconds}
-              onChange={(event) => onChange({ restSeconds: Number(event.target.value) })}
-              className="w-full rounded-md border border-white/15 bg-slate-950 px-3 py-2 text-slate-100"
-            />
-            {errors.restSeconds ? <p className="mt-1 text-xs text-red-300">{errors.restSeconds}</p> : null}
-          </label>
-
-          <label className="block">
-            <span className="mb-1 block text-sm text-slate-400">Rounds *</span>
-            <input
-              type="number"
-              min={1}
-              max={999}
-              step={1}
-              value={formData.rounds}
-              onChange={(event) => onChange({ rounds: Number(event.target.value) })}
-              className="w-full rounded-md border border-white/15 bg-slate-950 px-3 py-2 text-slate-100"
-            />
-            {errors.rounds ? <p className="mt-1 text-xs text-red-300">{errors.rounds}</p> : null}
-          </label>
-        </div>
+        <IntervalActivityEditor
+          activities={formData.activities}
+          onChange={(activities) => onChange({ activities })}
+          error={errors.activities}
+        />
 
         <div>
-          <span className="mb-1 block text-sm text-slate-400">Color</span>
-          <ColorPicker value={formData.color} onChange={(color) => onChange({ color })} />
-        </div>
-
-        <div>
-          <span className="mb-1 block text-sm text-slate-400">Icon</span>
+          <span className="mb-1 block text-sm text-slate-400">Default icon</span>
           <IconPicker value={formData.icon} onChange={(icon) => onChange({ icon })} />
         </div>
 
         <p className="text-sm text-slate-400">
-          Each round is one focus phase. Rest sits between focus phases (no rest after the final focus phase).
+          Activities run in order. The outer ring shows progress for the current activity only; inner blocks
+          fill as you complete each step.
         </p>
 
         <div className="flex flex-wrap gap-3 pt-2">
