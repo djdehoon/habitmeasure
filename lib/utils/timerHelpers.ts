@@ -21,6 +21,8 @@ export type TimerType = "countdown" | "interval";
 
 export type AddTimeButtonValue = "5s" | "10s" | "30s" | "1m";
 
+export const DEFAULT_TIMER_GROUP_NAME = "General";
+
 export type TimerTemplate = {
   id: string;
   user_id: string;
@@ -37,12 +39,14 @@ export type TimerTemplate = {
   rest_seconds: number | null;
   rounds: number | null;
   activities: IntervalActivity[] | unknown;
+  group_name?: string;
+  sort_order?: number;
   created_at: string;
   updated_at: string;
 };
 
 export type TimerTemplatePayload = Omit<TimerTemplate, "id" | "created_at" | "updated_at">;
-export type TimerTemplateUpsertFields = Omit<TimerTemplatePayload, "user_id">;
+export type TimerTemplateUpsertFields = Omit<TimerTemplatePayload, "user_id" | "group_name" | "sort_order">;
 
 export type CountdownTemplateFormData = {
   templateName: string;
@@ -189,7 +193,7 @@ export function formatIntervalSummary(template: TimerTemplate): string {
   if (template.timer_type !== "interval") return formatDuration(template.duration_seconds);
   const activities = getIntervalActivities(template);
   if (activities.length > 0) {
-    return `${activities.length} activities · ${formatDuration(computeActivitiesDurationSeconds(activities))}`;
+    return `${formatDuration(computeActivitiesDurationSeconds(activities))} · ${activities.length} activities`;
   }
   return formatDuration(template.duration_seconds);
 }
@@ -215,7 +219,7 @@ export function hasValidIntervalConfig(template: TimerTemplate): boolean {
   return activities.length > 0 && validateIntervalActivities(activities) === null;
 }
 
-export function getTimerFullscreenHref(template: TimerTemplate): string | null {
+export function getTimerHref(template: TimerTemplate): string | null {
   if (template.timer_type === "countdown") {
     return `/lab/countdown/${template.id}`;
   }
@@ -223,6 +227,16 @@ export function getTimerFullscreenHref(template: TimerTemplate): string | null {
     return `/lab/${template.id}`;
   }
   return null;
+}
+
+/** @deprecated Use getTimerHref */
+export function getTimerFullscreenHref(template: TimerTemplate): string | null {
+  return getTimerHref(template);
+}
+
+export function normalizeGroupName(value: string | null | undefined): string {
+  const trimmed = (value ?? "").trim();
+  return trimmed.length > 0 ? trimmed.slice(0, 50) : DEFAULT_TIMER_GROUP_NAME;
 }
 
 export function mapTemplateToFormData(template: TimerTemplate): CountdownTemplateFormData {
@@ -256,6 +270,8 @@ export function mapFormDataToPayload(formData: CountdownTemplateFormData, userId
     rest_seconds: null,
     rounds: null,
     activities: [],
+    group_name: DEFAULT_TIMER_GROUP_NAME,
+    sort_order: 0,
   };
 }
 
@@ -292,8 +308,10 @@ export function mapIntervalFormDataToUpsertFields(formData: IntervalTemplateForm
 }
 
 export function mapFormDataToUpsertFields(formData: CountdownTemplateFormData): TimerTemplateUpsertFields {
-  const { user_id, ...rest } = mapFormDataToPayload(formData, "");
+  const { user_id, group_name, sort_order, ...rest } = mapFormDataToPayload(formData, "");
   void user_id;
+  void group_name;
+  void sort_order;
   return rest;
 }
 

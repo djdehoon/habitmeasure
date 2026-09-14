@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { parseIntervalPayloadFromBody } from "@/lib/utils/parseIntervalApiBody";
-import { normalizeAddTimeButtons } from "@/lib/utils/timerHelpers";
+import { DEFAULT_TIMER_GROUP_NAME, normalizeAddTimeButtons, normalizeGroupName } from "@/lib/utils/timerHelpers";
 
 type CreateTimerBody = {
   name?: string;
@@ -26,6 +26,8 @@ type CreateTimerBody = {
   restSeconds?: number;
   rounds?: number;
   activities?: unknown;
+  group_name?: string;
+  groupName?: string;
 };
 
 export async function POST(request: Request) {
@@ -45,6 +47,7 @@ export async function POST(request: Request) {
   const minDelaySeconds = Number(body.min_delay_seconds ?? body.minDelaySeconds ?? 5);
   const addTimeButtons = normalizeAddTimeButtons(body.add_time_buttons ?? body.addTimeButtons);
   const notes = typeof body.notes === "string" ? (body.notes.trim() || null) : null;
+  const groupName = normalizeGroupName(body.group_name ?? body.groupName);
 
   if (!name) {
     return NextResponse.json({ error: "Name is required." }, { status: 400 });
@@ -59,6 +62,19 @@ export async function POST(request: Request) {
   if (authError || !user) {
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   }
+
+  const { data: existingInGroup } = await supabase
+    .from("timer_templates")
+    .select("sort_order")
+    .eq("user_id", user.id)
+    .eq("group_name", groupName)
+    .order("sort_order", { ascending: false })
+    .limit(1);
+
+  const nextSortOrder =
+    existingInGroup && existingInGroup.length > 0
+      ? Number(existingInGroup[0].sort_order ?? 0) + 1
+      : 0;
 
   if (timerType === "interval") {
     const parsed = parseIntervalPayloadFromBody(body as Record<string, unknown>);
@@ -86,6 +102,8 @@ export async function POST(request: Request) {
         rest_seconds,
         rounds,
         activities,
+        group_name: groupName,
+        sort_order: nextSortOrder,
       })
       .select("id")
       .single();
@@ -127,6 +145,8 @@ export async function POST(request: Request) {
       rest_seconds: null,
       rounds: null,
       activities: [],
+      group_name: groupName || DEFAULT_TIMER_GROUP_NAME,
+      sort_order: nextSortOrder,
     })
     .select("id")
     .single();

@@ -21,6 +21,8 @@ export default async function TimerGrid() {
     .from("timer_templates")
     .select("*")
     .eq("user_id", user.id)
+    .order("group_name", { ascending: true })
+    .order("sort_order", { ascending: true })
     .order("created_at", { ascending: false });
 
   if (error) {

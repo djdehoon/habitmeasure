@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import {
   formatIntervalSummary,
-  getTimerFullscreenHref,
+  getTimerHref,
   type TimerTemplate,
   type TimerType,
 } from "@/lib/utils/timerHelpers";
@@ -18,34 +18,34 @@ type TimerCardEditProps = {
   template: TimerTemplate;
 };
 
-/** Management-focused card: summary + Edit / Delete; body opens fullscreen when available. */
+/** Management-focused card: summary + Edit / Delete; body opens timer when available. */
 export function TimerCardEdit({ template }: TimerCardEditProps) {
   const router = useRouter();
-  const fullscreenHref = getTimerFullscreenHref(template);
+  const timerHref = getTimerHref(template);
 
-  const openFullscreen = () => {
-    if (fullscreenHref) router.push(fullscreenHref);
+  const openTimer = () => {
+    if (timerHref) router.push(timerHref);
   };
 
   return (
     <article
       className={`glass-panel flex min-w-0 flex-col rounded-xl border border-white/10 p-5 text-slate-100 ${
-        fullscreenHref ? "cursor-pointer transition hover:border-emerald-400/40" : ""
+        timerHref ? "cursor-pointer transition hover:border-emerald-400/40" : ""
       }`}
-      onClick={fullscreenHref ? openFullscreen : undefined}
+      onClick={timerHref ? openTimer : undefined}
       onKeyDown={
-        fullscreenHref
+        timerHref
           ? (event) => {
               if (event.key === "Enter" || event.key === " ") {
                 event.preventDefault();
-                openFullscreen();
+                openTimer();
               }
             }
           : undefined
       }
-      role={fullscreenHref ? "button" : undefined}
-      tabIndex={fullscreenHref ? 0 : undefined}
-      aria-label={fullscreenHref ? `Open ${template.template_name} in full screen` : undefined}
+      role={timerHref ? "button" : undefined}
+      tabIndex={timerHref ? 0 : undefined}
+      aria-label={timerHref ? `Open ${template.template_name}` : undefined}
     >
       <h3 className="order-1 mb-1 min-w-0 break-words text-balance text-center text-lg font-semibold text-slate-100 [overflow-wrap:anywhere] sm:order-2 sm:mb-1">
         {template.template_name}

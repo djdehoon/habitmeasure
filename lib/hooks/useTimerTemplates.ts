@@ -32,6 +32,8 @@ export function useTimerTemplates() {
       .from("timer_templates")
       .select("*")
       .eq("user_id", userResult.data)
+      .order("group_name", { ascending: true })
+      .order("sort_order", { ascending: true })
       .order("created_at", { ascending: false });
 
     if (error) {
