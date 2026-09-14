@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { IntervalTimerCountdown } from "@/app/components/lab/IntervalTimerCountdown";
 import { TimerDisplay } from "@/components/lab/TimerDisplay";
@@ -42,29 +41,13 @@ export default async function LabTimerPage({ params }: LabTimerPageProps) {
   const activities = getIntervalActivities(timer);
   const isInterval = timer.timer_type === "interval" && hasValidIntervalConfig(timer);
 
-  const heading = timer.timer_type;
+  if (isInterval) {
+    return <IntervalTimerCountdown template={timer} />;
+  }
 
   return (
-    <div className="min-h-screen bg-transparent">
-      <header className="relative mx-auto flex w-full max-w-5xl items-center justify-center border-b border-white/10 px-4 py-6">
-        <Link
-          href="/lab"
-          className="absolute left-4 text-sm font-medium text-slate-400 transition hover:text-slate-100"
-        >
-          ← Back
-        </Link>
-        <h1 className="heading-font text-center text-xl font-bold text-slate-100 md:text-2xl">{heading}</h1>
-      </header>
-
-      {isInterval ? (
-        <IntervalTimerCountdown
-          templateId={timer.id}
-          templateName={timer.template_name}
-          activities={activities}
-        />
-      ) : (
-        <TimerDisplay durationSeconds={timer.duration_seconds} timerName={timer.template_name} />
-      )}
+    <div className="min-h-screen bg-transparent px-4 py-6">
+      <TimerDisplay durationSeconds={timer.duration_seconds} timerName={timer.template_name} />
     </div>
   );
 }

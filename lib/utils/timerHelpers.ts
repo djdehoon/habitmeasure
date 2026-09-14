@@ -73,11 +73,16 @@ export type IntervalTemplateFormData = {
   activities: IntervalActivity[];
   color: string;
   icon: string;
+  autocompletion: boolean;
+  minDelaySeconds: number;
+  notes: string;
 };
 
 export type IntervalTemplateFormErrors = Partial<{
   templateName: string;
   activities: string;
+  notes: string;
+  minDelaySeconds: string;
 }>;
 
 export const TIMER_COLORS = [
@@ -146,6 +151,9 @@ export const INTERVAL_DEFAULTS: IntervalTemplateFormData = {
   activities: [createDefaultActivity({ name: "Focus", duration: 20, type: "work" })],
   color: "#E74C3C",
   icon: "🏋️",
+  autocompletion: true,
+  minDelaySeconds: 5,
+  notes: "",
 };
 
 export const TIMER_TYPE_OPTIONS = [
@@ -282,6 +290,9 @@ export function mapTemplateToIntervalFormData(template: TimerTemplate): Interval
     activities: activities.length > 0 ? activities : INTERVAL_DEFAULTS.activities,
     color: template.color ?? INTERVAL_DEFAULTS.color,
     icon: template.icon ?? INTERVAL_DEFAULTS.icon,
+    autocompletion: template.autocompletion ?? true,
+    minDelaySeconds: template.min_delay_seconds ?? 5,
+    notes: template.notes ?? "",
   };
 }
 
@@ -296,10 +307,10 @@ export function mapIntervalFormDataToUpsertFields(formData: IntervalTemplateForm
     duration_seconds,
     color: formData.color || firstWork?.color || INTERVAL_DEFAULTS.color,
     icon: formData.icon.trim() || INTERVAL_DEFAULTS.icon,
-    autocompletion: true,
-    min_delay_seconds: 5,
+    autocompletion: formData.autocompletion,
+    min_delay_seconds: formData.minDelaySeconds,
     add_time_buttons: ["5s"],
-    notes: null,
+    notes: formData.notes.trim() ? formData.notes.trim() : null,
     work_seconds: firstWork ? Math.max(1, Math.floor(firstWork.duration)) : null,
     rest_seconds: firstRest ? Math.max(1, Math.floor(firstRest.duration)) : null,
     rounds: Math.max(1, activities.filter((a) => a.type === "work").length),
@@ -359,6 +370,7 @@ export function validateCountdownTemplateForm(formData: CountdownTemplateFormDat
 export function validateIntervalTemplateForm(formData: IntervalTemplateFormData): IntervalTemplateFormErrors {
   const errors: IntervalTemplateFormErrors = {};
   const name = formData.templateName.trim();
+  const notes = formData.notes.trim();
 
   if (!name || name.length < 1) {
     errors.templateName = "Template name is required.";
@@ -369,6 +381,15 @@ export function validateIntervalTemplateForm(formData: IntervalTemplateFormData)
   const activitiesError = validateIntervalActivities(formData.activities);
   if (activitiesError) {
     errors.activities = activitiesError;
+  }
+
+  if (notes.length > 200) {
+    errors.notes = "Notes must be at most 200 characters.";
+  }
+
+  const minDelay = formData.minDelaySeconds;
+  if (minDelay !== 0 && (minDelay < 5 || minDelay > 60 || minDelay % 5 !== 0)) {
+    errors.minDelaySeconds = "Use 0 for no delay, or choose 5–60 seconds in steps of 5.";
   }
 
   return errors;

@@ -1,73 +1,24 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useReducer, useRef } from "react";
-import { playIntervalComplete, playIntervalPhaseChange } from "@/app/lib/sounds";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { playIntervalPhaseChange } from "@/app/lib/sounds";
 import type { IntervalActivity } from "@/lib/utils/intervalActivities";
 
 export type ActivityIntervalRunState = "idle" | "running" | "paused" | "finished";
 
-type MachineState = {
-  runState: ActivityIntervalRunState;
-  currentActivityIndex: number;
-  elapsedTime: number;
-};
-
-type MachineAction =
-  | { type: "START" }
-  | { type: "TICK" }
-  | { type: "PAUSE" }
-  | { type: "RESUME" }
-  | { type: "STOP" }
-  | { type: "RESET_ACTIVITIES" };
-
-function initialState(): MachineState {
-  return { runState: "idle", currentActivityIndex: 0, elapsedTime: 0 };
-}
-
-function reducer(
-  state: MachineState,
-  action: MachineAction,
-  activities: IntervalActivity[],
-): MachineState {
-  switch (action.type) {
-    case "RESET_ACTIVITIES":
-      return initialState();
-    case "START":
-      if (activities.length === 0) return state;
-      return { runState: "running", currentActivityIndex: 0, elapsedTime: 0 };
-    case "STOP":
-      return initialState();
-    case "PAUSE":
-      return state.runState === "running" ? { ...state, runState: "paused" } : state;
-    case "RESUME":
-      return state.runState === "paused" ? { ...state, runState: "running" } : state;
-    case "TICK": {
-      if (state.runState !== "running" || activities.length === 0) return state;
-      const current = activities[state.currentActivityIndex];
-      if (!current) return { ...state, runState: "finished", elapsedTime: 0 };
-
-      if (state.elapsedTime + 1 < current.duration) {
-        return { ...state, elapsedTime: state.elapsedTime + 1 };
-      }
-
-      const nextIndex = state.currentActivityIndex + 1;
-      if (nextIndex >= activities.length) {
-        return { runState: "finished", currentActivityIndex: activities.length - 1, elapsedTime: current.duration };
-      }
-
-      return { runState: "running", currentActivityIndex: nextIndex, elapsedTime: 0 };
-    }
-    default:
-      return state;
-  }
+function clamp01(value: number): number {
+  return Math.min(1, Math.max(0, value));
 }
 
 export type UseActivityIntervalTimerResult = {
   timerState: ActivityIntervalRunState;
   currentActivityIndex: number;
+  /** Seconds elapsed in current activity (continuous). */
   elapsedTime: number;
   globalElapsedTime: number;
+  /** Remaining fraction of current phase (1 = full, 0 = empty) — countdown-style drain. */
   phaseProgress: number;
+  /** Whole seconds remaining in current activity (ceil). */
   timeRemaining: number;
   start: () => void;
   pause: () => void;
@@ -85,74 +36,191 @@ export function useActivityIntervalTimer(activitiesInput: IntervalActivity[]): U
     [activitiesInput],
   );
 
-  const activityReducer = useCallback(
-    (state: MachineState, action: MachineAction) => reducer(state, action, activities),
-    [activities],
-  );
+  const [timerState, setTimerState] = useState<ActivityIntervalRunState>("idle");
+  const [currentActivityIndex, setCurrentActivityIndex] = useState(0);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [phaseProgress, setPhaseProgress] = useState(1);
+  const [timeRemaining, setTimeRemaining] = useState(0);
 
-  const [state, dispatch] = useReducer(activityReducer, undefined, initialState);
-  const prevIndex = useRef(state.currentActivityIndex);
-  const prevRunState = useRef(state.runState);
+  const stateRef = useRef(timerState);
+  const indexRef = useRef(0);
+  const endsAtRef = useRef<number | null>(null);
+  const phaseTotalMsRef = useRef(1000);
+  const remainingMsRef = useRef(0);
+  const rafRef = useRef<number | null>(null);
+  const activitiesRef = useRef(activities);
+  const prevIndexForSoundRef = useRef(0);
 
   useEffect(() => {
-    dispatch({ type: "RESET_ACTIVITIES" });
+    stateRef.current = timerState;
+  }, [timerState]);
+
+  useEffect(() => {
+    activitiesRef.current = activities;
+    // Reset when activity list identity changes
+    endsAtRef.current = null;
+    remainingMsRef.current = 0;
+    phaseTotalMsRef.current = (activities[0]?.duration ?? 1) * 1000;
+    indexRef.current = 0;
+    prevIndexForSoundRef.current = 0;
+    setTimerState("idle");
+    setCurrentActivityIndex(0);
+    setElapsedTime(0);
+    setPhaseProgress(1);
+    setTimeRemaining(activities[0]?.duration ?? 0);
   }, [activities]);
 
+  const stopRaf = useCallback(() => {
+    if (rafRef.current !== null) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+  }, []);
+
+  const applyPhaseSnapshot = useCallback((remainingMs: number, phaseTotalMs: number) => {
+    const safePhase = Math.max(1, phaseTotalMs);
+    const clamped = Math.max(0, remainingMs);
+    remainingMsRef.current = clamped;
+    const elapsedSec = (safePhase - clamped) / 1000;
+    setElapsedTime(elapsedSec);
+    setTimeRemaining(Math.max(0, Math.ceil(clamped / 1000)));
+    setPhaseProgress(clamp01(clamped / safePhase));
+  }, []);
+
+  const beginActivity = useCallback(
+    (index: number) => {
+      const list = activitiesRef.current;
+      const activity = list[index];
+      if (!activity) {
+        endsAtRef.current = null;
+        remainingMsRef.current = 0;
+        setTimerState("finished");
+        setPhaseProgress(0);
+        setElapsedTime(0);
+        setTimeRemaining(0);
+        stopRaf();
+        return;
+      }
+
+      const totalMs = Math.max(1, activity.duration * 1000);
+      phaseTotalMsRef.current = totalMs;
+      remainingMsRef.current = totalMs;
+      endsAtRef.current = Date.now() + totalMs;
+      indexRef.current = index;
+      setCurrentActivityIndex(index);
+      setTimerState("running");
+      applyPhaseSnapshot(totalMs, totalMs);
+
+      if (index > 0 && prevIndexForSoundRef.current !== index) {
+        playIntervalPhaseChange();
+      }
+      prevIndexForSoundRef.current = index;
+    },
+    [applyPhaseSnapshot, stopRaf],
+  );
+
+  const start = useCallback(() => {
+    if (activitiesRef.current.length === 0) return;
+    prevIndexForSoundRef.current = 0;
+    beginActivity(0);
+  }, [beginActivity]);
+
+  const pause = useCallback(() => {
+    setTimerState((previous) => {
+      if (previous !== "running") return previous;
+      if (endsAtRef.current !== null) {
+        remainingMsRef.current = Math.max(0, endsAtRef.current - Date.now());
+      }
+      endsAtRef.current = null;
+      applyPhaseSnapshot(remainingMsRef.current, phaseTotalMsRef.current);
+      return "paused";
+    });
+  }, [applyPhaseSnapshot]);
+
+  const resume = useCallback(() => {
+    setTimerState((previous) => {
+      if (previous !== "paused") return previous;
+      const remaining = Math.max(0, remainingMsRef.current);
+      endsAtRef.current = Date.now() + remaining;
+      applyPhaseSnapshot(remaining, phaseTotalMsRef.current);
+      return "running";
+    });
+  }, [applyPhaseSnapshot]);
+
+  const stop = useCallback(() => {
+    stopRaf();
+    endsAtRef.current = null;
+    remainingMsRef.current = 0;
+    indexRef.current = 0;
+    prevIndexForSoundRef.current = 0;
+    phaseTotalMsRef.current = (activitiesRef.current[0]?.duration ?? 1) * 1000;
+    setTimerState("idle");
+    setCurrentActivityIndex(0);
+    setElapsedTime(0);
+    setPhaseProgress(1);
+    setTimeRemaining(activitiesRef.current[0]?.duration ?? 0);
+  }, [stopRaf]);
+
   useEffect(() => {
-    if (state.runState !== "running") {
-      prevIndex.current = state.currentActivityIndex;
+    if (timerState !== "running") {
+      stopRaf();
       return;
     }
-    if (prevIndex.current !== state.currentActivityIndex) {
-      playIntervalPhaseChange();
-    }
-    prevIndex.current = state.currentActivityIndex;
-  }, [state.currentActivityIndex, state.runState]);
 
-  useEffect(() => {
-    if (prevRunState.current !== "finished" && state.runState === "finished") {
-      playIntervalComplete();
-    }
-    prevRunState.current = state.runState;
-  }, [state.runState]);
+    const tick = () => {
+      const endsAt = endsAtRef.current;
+      if (endsAt === null) {
+        rafRef.current = requestAnimationFrame(tick);
+        return;
+      }
 
-  useEffect(() => {
-    if (state.runState !== "running") return;
-    const id = window.setInterval(() => dispatch({ type: "TICK" }), 1000);
-    return () => window.clearInterval(id);
-  }, [state.runState]);
+      const remainingMs = endsAt - Date.now();
+      if (remainingMs <= 0) {
+        const list = activitiesRef.current;
+        const nextIndex = indexRef.current + 1;
+        if (nextIndex >= list.length) {
+          endsAtRef.current = null;
+          remainingMsRef.current = 0;
+          const last = list[list.length - 1];
+          setElapsedTime(last?.duration ?? 0);
+          setTimeRemaining(0);
+          setPhaseProgress(0);
+          setTimerState("finished");
+          stopRaf();
+          return;
+        }
+        beginActivity(nextIndex);
+        rafRef.current = requestAnimationFrame(tick);
+        return;
+      }
 
-  const currentActivity = activities[state.currentActivityIndex];
-  const phaseDuration = currentActivity?.duration ?? 1;
-  const elapsedTime = state.runState === "finished" && currentActivity ? phaseDuration : state.elapsedTime;
-  const phaseProgress =
-    phaseDuration > 0 ? Math.min(1, Math.max(0, elapsedTime / phaseDuration)) : 0;
-  const timeRemaining = Math.max(0, phaseDuration - elapsedTime);
+      applyPhaseSnapshot(remainingMs, phaseTotalMsRef.current);
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+    return stopRaf;
+  }, [timerState, stopRaf, beginActivity, applyPhaseSnapshot]);
 
   const globalElapsedTime = useMemo(() => {
     let total = 0;
     for (let i = 0; i < activities.length; i += 1) {
-      if (i < state.currentActivityIndex) {
+      if (i < currentActivityIndex) {
         total += activities[i].duration;
-      } else if (i === state.currentActivityIndex) {
+      } else if (i === currentActivityIndex) {
         total += elapsedTime;
         break;
       }
     }
-    if (state.runState === "finished") {
+    if (timerState === "finished") {
       return activities.reduce((sum, a) => sum + a.duration, 0);
     }
     return total;
-  }, [activities, state.currentActivityIndex, state.runState, elapsedTime]);
-
-  const start = useCallback(() => dispatch({ type: "START" }), []);
-  const pause = useCallback(() => dispatch({ type: "PAUSE" }), []);
-  const resume = useCallback(() => dispatch({ type: "RESUME" }), []);
-  const stop = useCallback(() => dispatch({ type: "STOP" }), []);
+  }, [activities, currentActivityIndex, timerState, elapsedTime]);
 
   return {
-    timerState: state.runState,
-    currentActivityIndex: state.currentActivityIndex,
+    timerState,
+    currentActivityIndex,
     elapsedTime,
     globalElapsedTime,
     phaseProgress,
