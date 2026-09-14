@@ -20,7 +20,7 @@ export function Nav() {
   const headerClass = isHome
     ? scrolled
       ? "border-white/10 bg-slate-950/85 backdrop-blur-md"
-      : "border-transparent bg-transparent"
+      : "border-transparent bg-slate-950"
     : scrolled
       ? "border-slate-200/80 bg-white/92 backdrop-blur-md"
       : "border-transparent bg-transparent";
@@ -49,7 +49,10 @@ export function Nav() {
   );
 
   return (
-    <header className={`sticky top-0 z-50 border-b ${headerClass}`}>
+    <header
+      className={`sticky top-0 z-50 border-b ${headerClass}`}
+      style={{ paddingTop: "env(safe-area-inset-top)" }}
+    >
       <nav className="container-shell flex h-16 items-center justify-between gap-3">
         <Link href="/" className={`flex items-center gap-2 heading-font font-bold ${logoClass}`}>
           <span className={`h-2 w-2 rounded-full ${dotClass}`} />

@@ -52,7 +52,8 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "black",
+    // Translucent + dark page chrome is more reliable on iOS PWAs than solid "black".
+    statusBarStyle: "black-translucent",
     title: "HabitMeasure",
   },
 };
@@ -63,6 +64,7 @@ export const viewport: Viewport = {
     { media: "(prefers-color-scheme: dark)", color: "#0C0F14" },
   ],
   colorScheme: "dark",
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -71,15 +73,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${plusJakartaSans.variable} ${inter.variable}`}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${plusJakartaSans.variable} ${inter.variable} bg-[#0C0F14]`}
+    >
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="format-detection" content="telephone=no,email=no,address=no,date=no,url=no" />
         <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png" />
         <script src="https://t.contentsquare.net/uxa/d8d9368b75f03.js" async />
       </head>
-      <body suppressHydrationWarning className="min-h-full flex flex-col antialiased">
+      <body
+        suppressHydrationWarning
+        className="flex min-h-full min-h-[100dvh] flex-col bg-[#0C0F14] antialiased"
+      >
         {children}
         <Analytics />
       </body>

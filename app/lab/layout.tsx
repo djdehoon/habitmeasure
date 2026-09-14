@@ -22,7 +22,10 @@ export default async function LabLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className="relative flex min-h-screen flex-col overflow-hidden bg-slate-950 text-slate-100">
+    <div
+      className="relative flex min-h-screen flex-col overflow-hidden bg-slate-950 text-slate-100"
+      style={{ paddingTop: "env(safe-area-inset-top)" }}
+    >
       <div
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_85%_55%_at_50%_-25%,rgba(16,185,129,0.2),transparent)]"
         aria-hidden

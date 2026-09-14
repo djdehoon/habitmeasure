@@ -24,14 +24,16 @@
 }
 
 body {
-  background: var(--bg-primary);
+  background: #0c0f14;
   color: var(--text-primary);
   font-family: var(--font-inter), sans-serif;
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 html {
   scroll-behavior: smooth;
+  background: #0c0f14;
 }
 
 .container-shell {
