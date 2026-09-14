@@ -45,9 +45,6 @@ export function Nav() {
     <Link href="/lab" className={labLinkClass}>
       <span aria-hidden>🧪</span>
       <span>Lab</span>
-      <span className="rounded-full bg-amber-500/90 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-950">
-        Beta
-      </span>
     </Link>
   );
 
@@ -73,7 +70,7 @@ export function Nav() {
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <div className="md:hidden">{labLink}</div>
           <a href="#waitlist" className={ctaClass}>
-            Join the waitlist →
+            Waitlist →
           </a>
         </div>
       </nav>
