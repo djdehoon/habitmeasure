@@ -1,5 +1,7 @@
 "use client";
 
+import { authLabel, authPasswordInput } from "@/app/components/auth/authUi";
+
 type PasswordFieldRole = "new" | "confirm";
 
 type PasswordFieldProps = {
@@ -14,9 +16,6 @@ type PasswordFieldProps = {
   minLength?: number;
   required?: boolean;
 };
-
-const inputClassName =
-  "w-full rounded-xl border border-slate-200/90 bg-white px-3 py-2.5 pr-14 text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/25";
 
 function fieldNameForRole(role: PasswordFieldRole, name?: string): string {
   if (name) return name;
@@ -62,7 +61,7 @@ export function PasswordField({
 
   return (
     <label className="block" htmlFor={id}>
-      <span className="mb-1.5 block text-sm font-medium text-slate-700">{label}</span>
+      <span className={authLabel}>{label}</span>
       <div className="relative">
         <input
           id={id}
@@ -73,7 +72,7 @@ export function PasswordField({
           minLength={minLength}
           value={value}
           onChange={(event) => onChange(event.target.value)}
-          className={inputClassName}
+          className={authPasswordInput}
           data-lpignore={isConfirm ? "true" : "false"}
           data-1p-ignore={isConfirm ? "true" : "false"}
           {...(isConfirm ? {} : { "data-form-type": "password" })}
@@ -81,7 +80,7 @@ export function PasswordField({
         <button
           type="button"
           onClick={onToggleShow}
-          className="absolute right-3 top-1/2 z-10 -translate-y-1/2 rounded-lg p-1.5 text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"
+          className="absolute right-3 top-1/2 z-10 -translate-y-1/2 rounded-lg p-1.5 text-slate-400 transition hover:bg-white/10 hover:text-slate-200"
           aria-label={show ? hideLabel : showLabel}
           aria-pressed={show}
           data-lpignore="true"

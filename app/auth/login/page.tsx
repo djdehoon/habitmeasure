@@ -3,13 +3,28 @@
 import Link from "next/link";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import {
+  authBrandLink,
+  authCard,
+  authError,
+  authHeader,
+  authHeaderInner,
+  authInput,
+  authLabel,
+  authLabLink,
+  authLink,
+  authMuted,
+  authNavLink,
+  authPage,
+  authPrimaryButton,
+  authSubtitle,
+  authSuccess,
+  authTitle,
+} from "@/app/components/auth/authUi";
 import { getBrowserUser, requestPasswordReset } from "@/lib/supabase/auth";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 type AuthMode = "login" | "reset";
-
-const inputClassName =
-  "w-full rounded-xl border border-slate-200/90 bg-white px-3 py-2.5 text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/25";
 
 function recoveryErrorMessage(code: string | null): string | null {
   if (code === "recovery_link_invalid") {
@@ -115,21 +130,18 @@ function LoginPageContent() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col bg-[var(--bg-primary)] text-[var(--text-primary)]">
-      <header className="border-b border-slate-200/80 bg-white/80 backdrop-blur-sm">
-        <div className="container-shell flex h-14 items-center justify-between sm:h-16">
-          <Link href="/" className="flex items-center gap-2 heading-font text-sm font-bold text-slate-800 sm:text-base">
-            <span className="h-2 w-2 shrink-0 rounded-full bg-[#8BA2B5]" aria-hidden />
+    <main className={authPage} style={{ paddingTop: "env(safe-area-inset-top)" }}>
+      <header className={authHeader}>
+        <div className={authHeaderInner}>
+          <Link href="/" className={authBrandLink}>
+            <span className="h-2 w-2 shrink-0 rounded-full bg-[#00E5C0]" aria-hidden />
             HabitMeasure
           </Link>
           <div className="flex items-center gap-3 sm:gap-4">
-            <Link href="/" className="text-sm text-slate-500 transition hover:text-slate-800">
+            <Link href="/" className={authNavLink}>
               Home
             </Link>
-            <Link
-              href="/lab"
-              className="flex items-center gap-1.5 rounded-lg px-2 py-1 text-sm text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"
-            >
+            <Link href="/lab" className={authLabLink}>
               <span aria-hidden>🧪</span>
               <span>Lab</span>
               <span className="rounded-full bg-amber-500/90 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-950">
@@ -141,129 +153,106 @@ function LoginPageContent() {
       </header>
 
       <div className="flex flex-1 items-center justify-center p-4 py-10 sm:py-12">
-        <div className="w-full max-w-md rounded-[18px] border border-[var(--border)] bg-[var(--bg-surface)] p-6 shadow-[0_8px_24px_rgba(100,116,139,0.08)] sm:p-8">
+        <div className={authCard}>
           {mode === "login" ? (
             <>
-              <h1 className="heading-font text-2xl font-bold tracking-tight text-slate-800">Login</h1>
-              <p className="mt-1 text-sm text-slate-500">Welcome back to HabitMeasure.</p>
+              <h1 className={authTitle}>Login</h1>
+              <p className={authSubtitle}>Welcome back to HabitMeasure.</p>
 
               <form className="mt-6 space-y-4" onSubmit={handleLogin}>
                 <label className="block">
-                  <span className="mb-1.5 block text-sm font-medium text-slate-700">Email</span>
+                  <span className={authLabel}>Email</span>
                   <input
                     type="email"
                     required
                     autoComplete="email"
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
-                    className={inputClassName}
+                    className={authInput}
                   />
                 </label>
 
                 <label className="block">
-                  <span className="mb-1.5 block text-sm font-medium text-slate-700">Password</span>
+                  <span className={authLabel}>Password</span>
                   <input
                     type="password"
                     required
                     autoComplete="current-password"
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
-                    className={inputClassName}
+                    className={authInput}
                   />
                 </label>
 
                 {error ? (
-                  <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800" role="alert">
+                  <p className={authError} role="alert">
                     {error}
                   </p>
                 ) : null}
 
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="btn-primary w-full py-3 text-sm disabled:pointer-events-none disabled:opacity-60"
-                >
+                <button type="submit" disabled={isSubmitting} className={authPrimaryButton}>
                   {isSubmitting ? "Signing in…" : "Login"}
                 </button>
               </form>
 
-              <p className="mt-4 text-center text-sm text-slate-600">
-                <button
-                  type="button"
-                  onClick={switchToReset}
-                  className="font-semibold text-[#5a7d72] underline-offset-2 hover:underline"
-                >
+              <p className={`mt-4 ${authMuted}`}>
+                <button type="button" onClick={switchToReset} className={authLink}>
                   Forgot your password?
                 </button>
               </p>
 
-              <p className="mt-4 text-center text-sm text-slate-600">
+              <p className={`mt-4 ${authMuted}`}>
                 Don&apos;t have an account?{" "}
-                <Link href="/auth/signup" className="font-semibold text-[#5a7d72] underline-offset-2 hover:underline">
+                <Link href="/auth/signup" className={authLink}>
                   Sign up
                 </Link>
               </p>
             </>
           ) : (
             <>
-              <h1 className="heading-font text-2xl font-bold tracking-tight text-slate-800">Forgot your password</h1>
-              <p className="mt-1 text-sm text-slate-500">
+              <h1 className={authTitle}>Forgot your password</h1>
+              <p className={authSubtitle}>
                 Enter your email and we will send you a link to set a new password.
               </p>
 
               {resetEmailSent ? (
-                <div
-                  className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900"
-                  role="status"
-                >
-                  <p className="font-medium">Check your email</p>
-                  <p className="mt-1">
+                <div className={`mt-6 ${authSuccess}`} role="status">
+                  <p className="font-medium text-teal-50">Check your email</p>
+                  <p className="mt-1 text-teal-100/90">
                     If an account exists for this email, we sent a reset link. The link expires after a short time.
                   </p>
-                  <button
-                    type="button"
-                    onClick={switchToLogin}
-                    className="mt-3 font-semibold text-[#5a7d72] underline-offset-2 hover:underline"
-                  >
+                  <button type="button" onClick={switchToLogin} className={`mt-3 ${authLink}`}>
                     Back to login
                   </button>
                 </div>
               ) : (
                 <form className="mt-6 space-y-4" onSubmit={handleSendResetLink}>
                   <label className="block">
-                    <span className="mb-1.5 block text-sm font-medium text-slate-700">Email</span>
+                    <span className={authLabel}>Email</span>
                     <input
                       type="email"
                       required
                       autoComplete="email"
                       value={email}
                       onChange={(event) => setEmail(event.target.value)}
-                      className={inputClassName}
+                      className={authInput}
                     />
                   </label>
 
                   {error ? (
-                    <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800" role="alert">
+                    <p className={authError} role="alert">
                       {error}
                     </p>
                   ) : null}
 
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="btn-primary w-full py-3 text-sm disabled:pointer-events-none disabled:opacity-60"
-                  >
+                  <button type="submit" disabled={isSubmitting} className={authPrimaryButton}>
                     {isSubmitting ? "Sending…" : "Send reset link"}
                   </button>
                 </form>
               )}
 
-              <p className="mt-6 text-center text-sm text-slate-600">
-                <button
-                  type="button"
-                  onClick={switchToLogin}
-                  className="font-semibold text-[#5a7d72] underline-offset-2 hover:underline"
-                >
+              <p className={`mt-6 ${authMuted}`}>
+                <button type="button" onClick={switchToLogin} className={authLink}>
                   Back to login
                 </button>
               </p>
@@ -277,9 +266,9 @@ function LoginPageContent() {
 
 function LoginPageFallback() {
   return (
-    <main className="flex min-h-screen flex-col bg-[var(--bg-primary)] text-[var(--text-primary)]">
+    <main className={authPage}>
       <div className="flex flex-1 items-center justify-center p-4">
-        <p className="text-sm text-slate-500">Loading…</p>
+        <p className="text-sm text-slate-400">Loading…</p>
       </div>
     </main>
   );

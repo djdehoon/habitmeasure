@@ -3,6 +3,20 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  authBrandLink,
+  authCard,
+  authError,
+  authHeader,
+  authHeaderInner,
+  authLink,
+  authNavLink,
+  authPage,
+  authPrimaryButton,
+  authSubtitle,
+  authSuccess,
+  authTitle,
+} from "@/app/components/auth/authUi";
 import { PasswordField } from "@/app/components/auth/PasswordField";
 import { getBrowserUser, updatePasswordAfterRecovery } from "@/lib/supabase/auth";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
@@ -60,44 +74,38 @@ export default function UpdatePasswordPage() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col bg-[var(--bg-primary)] text-[var(--text-primary)]">
-      <header className="border-b border-slate-200/80 bg-white/80 backdrop-blur-sm">
-        <div className="container-shell flex h-14 items-center justify-between sm:h-16">
-          <Link href="/" className="flex items-center gap-2 heading-font text-sm font-bold text-slate-800 sm:text-base">
-            <span className="h-2 w-2 shrink-0 rounded-full bg-[#8BA2B5]" aria-hidden />
+    <main className={authPage} style={{ paddingTop: "env(safe-area-inset-top)" }}>
+      <header className={authHeader}>
+        <div className={authHeaderInner}>
+          <Link href="/" className={authBrandLink}>
+            <span className="h-2 w-2 shrink-0 rounded-full bg-[#00E5C0]" aria-hidden />
             HabitMeasure
           </Link>
-          <Link href="/" className="text-sm text-slate-500 transition hover:text-slate-800">
+          <Link href="/" className={authNavLink}>
             Home
           </Link>
         </div>
       </header>
 
       <div className="flex flex-1 items-center justify-center p-4 py-10 sm:py-12">
-        <div className="w-full max-w-md rounded-[18px] border border-[var(--border)] bg-[var(--bg-surface)] p-6 shadow-[0_8px_24px_rgba(100,116,139,0.08)] sm:p-8">
+        <div className={authCard}>
           {isLoadingSession ? (
-            <p className="text-sm text-slate-500">Loading…</p>
+            <p className="text-sm text-slate-400">Loading…</p>
           ) : success ? (
             <>
-              <h1 className="heading-font text-2xl font-bold tracking-tight text-slate-800">Password updated</h1>
-              <div
-                className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900"
-                role="status"
-              >
-                <p className="font-medium">Your password has been set.</p>
-                <p className="mt-1">Sign in with your new password.</p>
-                <Link
-                  href="/auth/login"
-                  className="mt-3 inline-block font-semibold text-[#5a7d72] underline-offset-2 hover:underline"
-                >
+              <h1 className={authTitle}>Password updated</h1>
+              <div className={`mt-6 ${authSuccess}`} role="status">
+                <p className="font-medium text-teal-50">Your password has been set.</p>
+                <p className="mt-1 text-teal-100/90">Sign in with your new password.</p>
+                <Link href="/auth/login" className={`mt-3 inline-block ${authLink}`}>
                   Go to login
                 </Link>
               </div>
             </>
           ) : (
             <>
-              <h1 className="heading-font text-2xl font-bold tracking-tight text-slate-800">Set a new password</h1>
-              <p className="mt-1 text-sm text-slate-500">Choose a new password for your account.</p>
+              <h1 className={authTitle}>Set a new password</h1>
+              <p className={authSubtitle}>Choose a new password for your account.</p>
 
               <form className="relative mt-6 space-y-4" onSubmit={handleSubmit} autoComplete="on">
                 {userEmail ? (
@@ -137,16 +145,12 @@ export default function UpdatePasswordPage() {
                 />
 
                 {error ? (
-                  <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800" role="alert">
+                  <p className={authError} role="alert">
                     {error}
                   </p>
                 ) : null}
 
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="btn-primary w-full py-3 text-sm disabled:pointer-events-none disabled:opacity-60"
-                >
+                <button type="submit" disabled={isSubmitting} className={authPrimaryButton}>
                   {isSubmitting ? "Saving…" : "Set new password"}
                 </button>
               </form>

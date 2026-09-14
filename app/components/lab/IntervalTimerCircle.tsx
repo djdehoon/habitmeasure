@@ -6,7 +6,6 @@ import { countdownRingColumnWidth } from "@/app/components/lab/countdownPremiumS
 import {
   calculateActivityBlocks,
   computeActivitiesDurationSeconds,
-  formatActivitiesTotalDuration,
   type IntervalActivity,
 } from "@/lib/utils/intervalActivities";
 import type { ActivityIntervalRunState } from "@/lib/hooks/useActivityIntervalTimer";
@@ -82,6 +81,13 @@ export function IntervalTimerCircle({
     () => Math.max(1, computeActivitiesDurationSeconds(activities)),
     [activities],
   );
+
+  const totalRemainingSeconds =
+    timerState === "finished"
+      ? 0
+      : timerState === "idle" || timerState === "waiting"
+        ? totalSeconds
+        : Math.max(0, Math.ceil(totalSeconds - globalElapsedTime));
 
   const blocks = useMemo(
     () => calculateActivityBlocks(activities, globalElapsedTime),
@@ -205,7 +211,10 @@ export function IntervalTimerCircle({
 
   const showNext =
     Boolean(nextActivity) &&
-    (timerState === "idle" || timerState === "running" || timerState === "paused");
+    (timerState === "idle" ||
+      timerState === "waiting" ||
+      timerState === "running" ||
+      timerState === "paused");
 
   const interactive = Boolean(onRingClick);
 
@@ -218,7 +227,9 @@ export function IntervalTimerCircle({
 
   const face: ReactNode = (
     <>
-      <p className="mb-2 text-sm text-[#999999]">Total: {formatActivitiesTotalDuration(activities)}</p>
+      <p className="mb-2 text-sm tabular-nums text-[#999999]">
+        Total: {formatClock(totalRemainingSeconds)}
+      </p>
 
       <div className="mb-3 grid max-w-[12.5rem] grid-cols-8 gap-1">
         {blocks.slice(0, 24).map((block, index) => (
@@ -243,12 +254,16 @@ export function IntervalTimerCircle({
         style={{ backgroundColor: ringColor, opacity: 0.5 }}
       />
 
-      <p className="mt-2 text-base text-white">{statusLabel}</p>
-      {showNext && nextActivity ? (
-        <p className="mt-1 text-sm text-slate-400">
-          {">>"} {currentActivityIndex + 2}. {nextActivity.name}
-        </p>
-      ) : null}
+      <p className="mt-2 min-h-[1.5rem] max-w-[90%] truncate text-base text-white">{statusLabel}</p>
+      <p className="mt-1 min-h-[1.25rem] max-w-[90%] truncate text-sm text-slate-400">
+        {showNext && nextActivity ? (
+          <>
+            {">>"} {currentActivityIndex + 2}. {nextActivity.name}
+          </>
+        ) : (
+          "\u00a0"
+        )}
+      </p>
     </>
   );
 
